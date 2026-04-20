@@ -1,0 +1,19 @@
+# 本地开发文件，不发布到 ClawHub
+.git/
+.gitignore
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+node_modules/
+__pycache__/
+
+# 本地记忆/测试数据（若你在本仓库内试写）
+test-project/
+sandbox/
+.webnovel-memory/
+
+# 本地编辑器临时文件
+.vscode/
+.idea/
+*.swp
