@@ -38,11 +38,18 @@ metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
 
 触发：用户首次进入 project_root、或目录下不存在 `book.yaml`。
 
-1. 确认 `project_root`（默认 CWD；可问用户）
+1. **确定 `project_root`**（决策优先级）：
+   1. 用户显式指定路径（最高）
+   2. 同工作目录下已有 `book.yaml` 的文件夹
+   3. 询问用户：书名或短名（默认 `${book_title_slug}`）→ 在当前工作目录下新建该名称目录作为 `project_root`
+   4. 若什么都缺 → 退出并要求用户补齐
+
+   `project_root` 一旦确定 → 立即锁定写入 `book.yaml.project_root`，本次会话不得更改。
 2. 询问：长篇预估规模（总字数 / 单章字数 / 章数估计），填入 `book.yaml.target_length` 和 `estimated_chapter_length`
-3. 按 `directory-schema.md` 创建全部空壳目录和空文件
+3. 按 `directory-schema.md` 创建全部空壳目录和空文件（**必须一次性建全 §11 定义的全部子目录**，包括 `state/anti-trope-log.md` 这类新文件）
 4. 若用户已有 `webnovel-story-blueprint` 的立书档案 → 直接把字段灌入 `book.yaml` 和 `fingerprint.md`
 5. 若没有 → 路由到 `webnovel-story-blueprint` 先跑立书，再回到本 skill 固化
+6. **输出给上游**：锁定后的绝对 / 相对 `project_root` 路径 + 固定子目录清单。后续所有子 skill 写文件时**必须**以此为前缀，否则 PERSIST 拒收。
 
 ### 模式 2 · LOAD（生成前拉上下文）
 
@@ -57,7 +64,7 @@ metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
 触发：上游 skill 生成完一章并通过反 AI 味自检后。
 
 1. 接收 `chapter_body` + `chapter_meta`（结构见 write-protocol.md 输入段）
-2. 执行 `write-protocol.md` 的 7 步落盘
+2. 执行 `write-protocol.md` 的 8 步落盘（STEP 0 路径契约校验 + STEP 1–7 内容落盘）
 3. 跑末尾的一致性检查；失败则回滚
 4. 返回成功确认（写入文件清单 + 受影响的人物 / 伏笔 / arc 列表）
 
@@ -104,7 +111,7 @@ metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
 [其他 skill 生成正文 + 反 AI 味自检]
     │
     ▼
-[webnovel-memory · PERSIST] ──→ 7 步落盘 + 一致性检查
+[webnovel-memory · PERSIST] ──→ 8 步落盘（含 STEP 0 路径契约校验）+ 一致性检查
     │
     ▼
 [交付给用户]
@@ -124,8 +131,10 @@ metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
 | live 伏笔（top 3–5） | ≤ 600 | 只取与本章 arc 相关的 |
 | 活跃角色状态 + signature_reactions | ≤ 900 | 每人不超过 220 字 |
 | 禁用清单（句式/爽点/套餐词） | ≤ 300 | — |
-| 反 AI 味监控面板摘要 | ≤ 400 | 主语 / 段长 / 噪声 / 方差 / 打断 5 项 |
-| **合计** | **≤ 4000** | 硬上限 4500 |
+| 反 AI 味监控面板摘要 | ≤ 900 | 主语 / 段长 / 噪声 / 方差 / 打断 / **definition_style_hits / bold_theme_hits / emotion_token_hits / single_sentence_run_max / single_sentence_para_ratio / long_paragraph_count / signature_明牌超限名单 / setting_reveal_overload_hits / transition_types 分布 / filler_density / side_char_autonomous_agenda 名单 / waste_option_ratio** |
+| 本章首登关键角色 soul_fields（≥ 2 条） | ≤ 300 | 回滚级硬门准备 |
+| 上一章 anti-trope 5-清单 + 怪异预算 + 延迟兑付清单 | ≤ 300 | P-4 防重复 |
+| **合计** | **≤ 4800** | 硬上限 5500 |
 
 ## 存储体积估算
 

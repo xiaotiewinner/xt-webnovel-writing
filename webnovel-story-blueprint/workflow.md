@@ -1,6 +1,6 @@
 ---
 name: webnovel-story-blueprint
-description: 生成网文作品的静态设计稿：主线矛盾链、人设表、书名（11 类起名法）、大纲骨架、简介、作者指纹。触发于用户要求"定主线 / 起书名 / 写人设 / 列大纲 / 写简介 / 做立项 / 生成设定"等任务。不写具体章节正文（交给 plot-design 和 excitement-and-craft）。产出必须是结构化表格 / 模板，并同时输出作者指纹字段供下游 skill 在正文生成时固化风格。长篇项目的产出同时灌入 webnovel-memory 维护的 book.yaml / fingerprint.md / characters/*。触发词：主线、书名、人设、大纲、立书、立项、设定、简介、世界观、作者指纹。
+description: 生成网文作品的静态设计稿：主线矛盾链、人设表、书名（11 类起名法）、大纲骨架、简介、作者指纹、世界观 + 世界观怪异预算池（反 P-1）。触发于用户要求"定主线 / 起书名 / 写人设 / 列大纲 / 写简介 / 做立项 / 生成设定 / 怪异预算 / 世界观怪异设定"等任务。不写具体章节正文（交给 plot-design 和 excitement-and-craft）。产出必须是结构化表格 / 模板，并同时输出作者指纹字段供下游 skill 在正文生成时固化风格。长篇项目的产出必须落盘到 SKILL.md §11 规定的固定子目录：`<project_root>/book.yaml` / `<project_root>/fingerprint.md` / `<project_root>/bible/` / `<project_root>/characters/`，禁止在契约外写文件。触发词：主线、书名、人设、大纲、立书、立项、设定、简介、世界观、作者指纹、怪异预算。
 metadata: {"openclaw":{"emoji":"📐","os":["darwin","linux","win32"]}}
 ---
 
@@ -71,7 +71,12 @@ STEP 6 作者指纹（下游生成正文时必须按此固化风格）
 1. 根据矛盾句 + `protagonist_hint` 生成主角表。
 2. **必须给主角一个能被矛盾链持续使用的缺点**（胆小 / 心软 / 贪财 / 不信任人 / 身体缺陷 / 过度谨慎 ……）。
 3. 生成 1–2 个长期配角，每个配角先标注"服务主角哪项功能"（情报 / 武力 / 情感支点 / 对照组），再立即补第 4 步。
-4. **灵魂字段强制输出（反 AI 味 O 条款硬门）**：主角与每个配角都必须至少填一条灵魂字段。角色是动物 / 灵兽 / 灵物 → 必须填独立反应坐标轴；是反派 → 必须填第三维度。**不填 → 整个 STEP 2 重写，不允许跳过**。
+4. **灵魂字段强制输出（反 AI 味 O 条款回滚级硬门）**：按角色分层硬性要求：
+   - **关键角色**（主角 / POV / 女男主 / 核心反派 / 固定配角 top 5）：**≥ 2 条 soul_fields**
+   - **重要有名角色**（预估总出场 ≥ 2 次的有名角色）：**≥ 1 条 soul_fields**
+   - 角色是动物 / 灵兽 / 灵物 → 必须填独立反应坐标轴 ≥ 1 条
+   - 角色是反派 → 必须填第三维度 ≥ 1 条
+   - **任一分层不达标 → 整个 STEP 2 重写，不允许跳过**
 5. 若有长期出场的动物 / 灵兽 / 法宝拟人，也当作角色生成一张卡。
 
 ### 输出 schema
@@ -91,13 +96,15 @@ STEP 6 作者指纹（下游生成正文时必须按此固化风格）
 | 口头禅 / 标志动作 | |
 | 前史（可选） | |
 
-#### 灵魂字段（反 O 硬门，≥ 1 条必填，推荐 2 条）
+#### 灵魂字段（反 O 回滚级硬门 · **关键角色：≥ 2 条必填**）
 | 字段 | 内容 | 与主线是否无关？ |
 |---|---|---|
 | core_wound（核心创伤 / 遗憾） | | 必须无关 |
 | private_desire（私人欲望） | | 必须无关 |
 | contradictory_belief（私下信念） | | 必须无关 |
 | unreasonable_preference（怪癖） | | 必须无关 |
+
+> 主角属于**关键角色**，必须填 ≥ 2 条；任一条与主线 / 剧情功能重合 → 判定 FAIL，重写。首次登场章必须落 ≥ 1 处灵魂渗透（回滚级硬门）。
 
 ### 配角 · <名字> · 功能：[情报 / 武力 / 情感 / 对照]
 | 字段 | 内容 |
@@ -107,12 +114,14 @@ STEP 6 作者指纹（下游生成正文时必须按此固化风格）
 | 与主角的关系和冲突点 | |
 | 退场条件（可选） | |
 
-#### 灵魂字段（反 O 硬门，≥ 1 条必填）
+#### 灵魂字段（反 O 硬门 · 长期配角属**关键 / 重要**角色）
 > 禁止照抄"对主角忠心""为主角赴死"这类只围绕主角的内容；灵魂字段必须是这个角色**自己的**东西。
+> 长期配角若列入"固定配角 top 5" → **关键角色，≥ 2 条必填**；否则为**重要角色，≥ 1 条必填**。
 
 | 字段 | 内容 |
 |---|---|
 | core_wound / private_desire / contradictory_belief / unreasonable_preference | |
+| （若为关键角色再追加一条） | |
 
 ### 反派 · <名字>
 | 字段 | 内容 |
@@ -121,11 +130,14 @@ STEP 6 作者指纹（下游生成正文时必须按此固化风格）
 | 对主角的敌意来源 | |
 | 能力 / 资源 | |
 
-#### 灵魂字段（反 O 硬门，必填 ≥ 1 条"与主角无关、与权力无关"的第三维度）
+#### 灵魂字段（反 O 回滚级硬门 · **核心反派：≥ 2 条必填**，其中至少 1 条是"与主角无关、与权力无关"的第三维度）
 > "想赢 / 恨主角 / 要资源" 都不算第三维度。
+> 核心反派属**关键角色**，首次登场章必须落 ≥ 1 处灵魂渗透（回滚级硬门）。
+
 | 字段 | 内容 |
 |---|---|
-| third_dimension | |
+| third_dimension（必填） | |
+| core_wound / private_desire / unreasonable_preference（选填第二条） | |
 
 ### 灵兽 / 动物 / 法宝拟人 · <名字>
 | 字段 | 内容 |
@@ -329,16 +341,21 @@ STEP 6 作者指纹（下游生成正文时必须按此固化风格）
 
 当用户目标是长篇（`target_length == 长篇` 或明确说"500 万字 / 写系列"等）：
 
-1. 询问或确认 `project_root`（默认 CWD）。
-2. 调用 `webnovel-memory` · INIT 初始化目录结构。
-3. 把本 skill 的输出字段一对一灌入：
-   - STEP 1 主线 → `book.yaml.main_axis` + `book.yaml.l1_conflict`
-   - STEP 2 人设 → 每个角色一个 `characters/<name>.md`，主角标 `role: 主角`；**灵魂字段**一对一落入 `characters/<name>.md` 的 `## 灵魂字段（soul_fields）` 段。`soul_fields` 任一角色为空 → 拒绝落盘并回到 STEP 2 补齐（反 O 硬门）
+1. 按 SKILL.md §11 确认 / 锁定 `project_root`（用户显式指定 > `book.yaml.project_root` > 用户给的短名在当前工作目录建目录）。
+2. 调用 `webnovel-memory` · INIT 初始化**全部固定子目录**（`book.yaml` / `fingerprint.md` / `bible/` / `characters/` / `arcs/` / `chapters/` / `state/`（含 `anti-trope-log.md`）/ `index/` / `.webnovel-memory/`）。
+3. 把本 skill 的输出字段一对一灌入（**所有写入路径严格按 SKILL.md §11 契约**，禁止在 `project_root` 外或契约外子目录写文件）：
+   - STEP 1 主线 → `<project_root>/book.yaml.main_axis` + `book.yaml.l1_conflict`；同时写入 `book.yaml.project_root`（绝对 / 相对一致）锁定
+   - STEP 2 人设 → 每个角色一个 `<project_root>/characters/<name>.md`，主角标 `role: 主角`；**灵魂字段**一对一落入 `characters/<name>.md` 的 `## 灵魂字段（soul_fields）` 段。按分层硬门校验：
+     - 关键角色（主角 / POV / 女男主 / 核心反派 / 固定配角 top 5）`soul_fields ≥ 2` 条
+     - 重要角色 `soul_fields ≥ 1` 条
+     - 反派含 `third_dimension`；动物 / 灵兽含独立反应坐标轴
+     - 任一不达标 → 拒绝落盘并回到 STEP 2 补齐（反 O 回滚级硬门）
    - STEP 3 书名 → `book.yaml.title` + `book.yaml.first_excitement`
-   - STEP 4 大纲 → 按 L1–L5 层级分解为多个 `arcs/arc-<NN>-*.md`（每 arc 一行矛盾句 + 八步位置占位）
+   - STEP 4 大纲 → 按 L1–L5 层级分解为多个 `<project_root>/arcs/arc-<NN>-<slug>.md`（每 arc 一行矛盾句 + 八步位置占位）
    - STEP 5 简介 → `book.yaml.synopsis`
-   - STEP 6 作者指纹 → `fingerprint.md`（完整 6 字段）
-   - 若 STEP 2 涉及世界观要素（修为体系 / 势力 / 术语）→ 分别写入 `bible/power-system.md` / `bible/factions.md` / `bible/glossary.md`
+   - STEP 6 作者指纹 → `<project_root>/fingerprint.md`（完整 6 字段）
+   - 若 STEP 2 涉及世界观要素（修为体系 / 势力 / 术语）→ 分别写入 `<project_root>/bible/power-system.md` / `bible/factions.md` / `bible/glossary.md`
+   - **STEP 7 世界观怪异预算池（反 P-1 · 必填）**：在 `<project_root>/bible/world.md` 末尾生成 `## 怪异预算池` 段，填入 ≥ 10 条候选"剧情无法吸收"的细节 / 场景 / 角色 / 风俗（例："城北街尾每逢雨夜会出现一个吹口哨的小孩，没人知道他家在哪。" 例："灵兽受惊会把舌头吐出来贴在主人手背上。"）。下游 `webnovel-plot-design` 每章必抽 ≥ 1 条落入正文，5 章内不得回收。池子剩余 ≤ 3 条 → 提示补充。
 4. 成功后提示用户："项目已固化到 {project_root}，后续续写请走 webnovel-plot-design 的 draft_prose 模式。"
 
 短中篇不需要落盘，直接返回档案。
@@ -346,4 +363,5 @@ STEP 6 作者指纹（下游生成正文时必须按此固化风格）
 ## 底本
 
 - `../references/foxsan-webnovel-manual.md` §4.1–4.5。
-- `../references/anti-ai-tells.md` § L（作者指纹缺位）、§ O（角色灵魂缺位 / 功能性存在）。
+- `../references/anti-ai-tells.md` § L（作者指纹缺位）、§ O（角色灵魂缺位 / 功能性存在）、§ P-1（怪异预算）、§ D-2（配角自主议题）。
+- SKILL.md §11 项目目录契约（落盘路径必守）。
