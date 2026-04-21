@@ -85,6 +85,17 @@ chapter_meta:
     transition_bridge_declared: true        # 每次切换都显式声明了桥类型与锚点
     forbidden_transition_words_hits: 0      # 反 Q · 禁用转场词命中次数（需 = 0，≥ 2 → 回滚级 FAIL）
     teleport_transitions: 0                 # 反 Q · "瞬移切换"次数（无任何桥）（需 = 0，≥ 1 → 回滚级 FAIL）
+    # —— R / K-补充（2026-04 第 7 轮） ——
+    exclusion_enum_hits: 0                  # 反 R-1 · 「不是…不是…是/而是/只剩」生活流双否定目录（需 = 0；≥ 2 → 回滚；=1 且同段 G+1>0 → 回滚）
+    tutorial_microstep_chain_max: 3         # 反 R-2 · 单段或无对白 200 字窗内纯动作微步峰值（需 ≤ 4；≥ 5 → 回滚）
+    catalog_afterthought_pairs: 0            # 反 R-3 · 「又/再」动作块后接 ≤8 字纯状态验收短句的对数（需 = 0；≥ 1 → 回滚）
+    k_scene_block_violations: 0              # 反 K-补充 · 显著时空跳变该空行未空行（需 ≤ 2；≥ 5 → 回滚）
+    # —— A-补充 / O-在场（2026-04 第 8 轮，并入 A / O，不增加 25 项计数） ——
+    chapter_word_count: 2800                 # 本章正文汉字约数（用于好奇缝隙阈值；可由 agent 数 chapter_body）
+    meta_language_hits: 0                    # 反 O-在场 · 「上一章/下一章/本章/读者/作者/弹幕/评论区」等元叙事词命中（需 = 0；≥ 1 → 回滚）
+    opening_hook_spike: true                 # 反 A-补充 · 章首 ≈200 字内是否出现「刺点钉子」（非常规关系/动作/物件并置）
+    curiosity_gap_markers: 3                 # 反 A-补充 · 全章「具体信息滞后解释」缝隙处数；需 ≥ max(2, chapter_word_count // 1200)
+    flat_atmosphere_streak_max: 4            # 反 A-补充 · 连续「纯氛围/纯位移/纯等待」段数峰值（需 ≤ 5；≥ 6 → 回滚）
   antagonist_reactions:                     # 反 E-扩展
     - name: 柳长风
       template_hits: 2                      # 标准套餐（脸色/冷汗/胸口/沉默/"不可能"）命中数
@@ -191,6 +202,13 @@ chapter_meta:
      - 单一类型在本章使用 ≥ 3 次 → 标记"下一章禁用该类型"
      - `forbidden_transition_words_hits ≥ 1` → 标记"下一章禁用转场词清单强制零容忍"
      - 最近 3 章 `Q-4 摩擦点桥` 使用 < 1 → 标记"下一章必须有 ≥ 1 次摩擦点桥"
+   - **说明书句法面板（反 R）**：写入 `exclusion_enum_hits` / `tutorial_microstep_chain_max` / `catalog_afterthought_pairs`；
+     - `exclusion_enum_hits ≥ 1` → 标记"下一章禁止双否定目录句"
+     - `tutorial_microstep_chain_max ≥ 4` → 标记"下一章日常动作强制合并句 + 插入心理"
+     - `catalog_afterthought_pairs ≥ 1` → 标记"下一章禁止验收式双短句"
+   - **场景块面板（反 K-补充）**：写入 `k_scene_block_violations`；`≥ 3` → 标记"下一章时空跳变强制空行分段"
+   - **元叙事面板（反 O-在场）**：写入 `meta_language_hits`；`≥ 1` → 标记"下一章全文禁上一章/读者/作者等词 + 本章回滚"
+   - **抓眼节奏面板（反 A-补充）**：写入 `opening_hook_spike` / `curiosity_gap_markers` / `flat_atmosphere_streak_max`；`opening_hook_spike == false` 或 `curiosity_gap` 低于阈值 或 `flat_atmosphere_streak_max ≥ 6` → 标记"本章已触回滚阈值须整体重写"；`flat_atmosphere_streak_max == 5` → 标记"下一章减少纯氛围连段并补好奇缝隙"
 6. `state/anti-trope-log.md`：按章追加一条：
    ```markdown
    ## 第 87 章
@@ -254,6 +272,7 @@ chapter_meta:
 
    **B. 段长分布硬门**（反 C / K · 回滚级）
    - `stats.long_paras_over_80 ≥ 3`，且 `stats.long_paras_over_120 ≥ 1`（反 K · 全章 0 长段 → 回滚级 FAIL）
+   - `stats.k_scene_block_violations ≤ 2`，**≥ 5 → 回滚级 FAIL**（反 K-补充 · 场景块黏段 / 该空行未空行）
    - `stats.single_sentence_para_ratio ≤ 0.3`，**> 0.5 → 回滚级 FAIL**（反 C / K · 2026-04 收紧）
    - `stats.single_sentence_run_max ≤ 2`，**≥ 6 → 回滚级 FAIL**（反 C · 2026-04 收紧）
    - `stats.single_sentence_run_clusters ≤ 2`（反 C · 2026-04 收紧）
@@ -272,6 +291,7 @@ chapter_meta:
    - 每个 `animal_independence` 条目：`independent_actions / appearances_in_chapter ≥ 0.5`（反 O · species != 人）
    - `character_interchangeability_check.swapped_line_breaks_plot` 必须为 `false`
    - `character_interchangeability_check.unique_trait_per_named_character` 必须为 `true`
+   - **`stats.meta_language_hits == 0`**（反 **O-在场** · 禁「上一章 / 下一章 / 读者 / 作者 / 弹幕」等元叙事语），**≥ 1 → 回滚级 FAIL**（退回 plot-design 全文检索清零）
 
    **E. 世界自主生活硬门**（反 D · 回滚级）
    - `stats.filler_count ≥ 5`，**< 3 → 回滚级 FAIL**（反 D-1 · 退回 plot-design 补闲笔）
@@ -291,6 +311,16 @@ chapter_meta:
    - `stats.teleport_transitions == 0`，**≥ 1 → 回滚级 FAIL**（反 Q · 任一瞬移切换均回滚）
    - 近 3 章内单一桥类型使用次数 ≤ 章数 × 1.5（避免"永远只用摩擦点桥"这种新套路化）
 
+   **H. 说明书句法硬门**（反 R · 回滚级）
+   - `stats.exclusion_enum_hits == 0`，**≥ 2 → 回滚级 FAIL**；**== 1 且 `stats.definition_style_hits ≥ 1` → 回滚级 FAIL**（R-1 与 G+1 同段叠加）
+   - `stats.tutorial_microstep_chain_max ≤ 4`，**≥ 5 → 回滚级 FAIL**（反 R-2）
+   - `stats.catalog_afterthought_pairs == 0`，**≥ 1 → 回滚级 FAIL**（反 R-3 · 验收式双短句）
+
+   **I. 章首钩子与好奇缝隙硬门**（反 **A-补充** · 回滚级）
+   - `stats.opening_hook_spike == true`，**== false → 回滚级 FAIL**（退回 plot-design 重写章首 ≈200 字）
+   - `stats.curiosity_gap_markers ≥ max(2, stats.chapter_word_count // 1200)`（整数除；短文仍至少 2 处），**不足 → 回滚级 FAIL**
+   - `stats.flat_atmosphere_streak_max ≤ 5`，**≥ 6 → 回滚级 FAIL**（连续纯氛围段过长）
+
 任一"普通硬门"失败 → 回滚写入，要求 `webnovel-plot-design` 重写当章。
 任一"回滚级 FAIL" → 回滚写入 + 强制回退到指定 workflow（见对应硬门注释）+ 标记该章必须整体重做，不允许仅局部修补。
 
@@ -303,6 +333,8 @@ chapter_meta:
 | E（情感独段 / 粗体） / N-细 / G-细 | plot-design |
 | G+1（定义体） / M（爽点链条） / N（质量方差） | plot-design |
 | P-3 / P-4 / Q | plot-design |
+| **R（说明书句法）** / **K-补充（场景块）** | plot-design |
+| **O-在场（元叙事）** / **A-补充（章首钩子·好奇缝隙）** | plot-design |
 | P-1（怪异预算） | story-blueprint（补世界观） → plot-design |
 | O（关键角色首登） | story-blueprint（补 soul_fields） → plot-design |
 

@@ -16,8 +16,8 @@ metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
 
 ### Avoid when
 
-- 短篇（< 5 万字）或一次性单章写作——直接走 `webnovel-plot-design` 即可，没必要持久化。
-- 用户没指定 `project_root`，且任务明确是 "一次性生成" 不续写的。
+- 用户明确说"一次性短文，不建项目、不留记忆"。
+- 仅做纯分析/点评且不写正文时。
 - 仅仅做文本诊断 / 拆解（`webnovel-pitfalls` / `webnovel-text-analysis`），不需要写磁盘。
 
 ## 三份参考文件（必读，按场景取用）
@@ -41,7 +41,7 @@ metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
 1. **确定 `project_root`**（决策优先级）：
    1. 用户显式指定路径（最高）
    2. 同工作目录下已有 `book.yaml` 的文件夹
-   3. 询问用户：书名或短名（默认 `${book_title_slug}`）→ 在当前工作目录下新建该名称目录作为 `project_root`
+   3. 询问用户：书名或短名（默认 `${book_title_slug}`）→ 在当前工作目录下统一创建 `./webnovel-projects/${book_title_slug}/` 作为 `project_root`
    4. 若什么都缺 → 退出并要求用户补齐
 
    `project_root` 一旦确定 → 立即锁定写入 `book.yaml.project_root`，本次会话不得更改。
@@ -117,7 +117,7 @@ metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
 [交付给用户]
 ```
 
-绕过本 skill 直接写章 → 违反套件铁律，上游 skill 会拒绝交付。
+绕过本 skill 直接写章（除非用户明确声明一次性短文）→ 违反套件铁律，上游 skill 会拒绝交付。
 
 ## 上下文预算
 

@@ -19,7 +19,7 @@ mode: draft | revise | diagnose
 3. `bible/power-system.md` + `bible/glossary.md` → 避免设定自相矛盾
 4. `state/foreshadow.md`（只取 `live` 行） → 不能遗忘的伏笔
 5. `state/used-excitement.md`（最近 10 行，含 `interruption` 列） → 避免同类爽点堆叠 + 抽取本章必须使用的打断类型
-6. `state/used-patterns.md` → 当前禁用句式 / 动词清单 + 反 AI 味监控面板最近 3 章状态（主语分布 / 段长熵 / 非理性噪声 / 质量方差 / 反派套餐 / 灵魂渗透缺位名单 / 动物独立反应缺位名单 / **definition_style_hits 近 3 章累计 / bold_theme_hits 近 3 章累计 / emotion_token_solo_paragraphs 近 3 章累计 / single_sentence_run_max 近 3 章累计 / single_sentence_para_ratio 近 3 章 / long_paragraph_count 近 3 章累计 / signature_明牌超限名单 / setting_reveal_overload_hits / transition_types 近 3 章分布 / filler_count 近 3 章 / side_char_autonomous_agenda_count 近 3 章 / waste_option_ratio 近 3 章**）
+6. `state/used-patterns.md` → 当前禁用句式 / 动词清单 + 反 AI 味监控面板最近 3 章状态（主语分布 / 段长熵 / 非理性噪声 / 质量方差 / 反派套餐 / 灵魂渗透缺位名单 / 动物独立反应缺位名单 / **definition_style_hits 近 3 章累计 / bold_theme_hits 近 3 章累计 / emotion_token_solo_paragraphs 近 3 章累计 / single_sentence_run_max 近 3 章累计 / single_sentence_para_ratio 近 3 章 / long_paragraph_count 近 3 章累计 / signature_明牌超限名单 / setting_reveal_overload_hits / transition_types 近 3 章分布 / filler_count 近 3 章 / side_char_autonomous_agenda_count 近 3 章 / waste_option_ratio 近 3 章 / meta_language_hits 近 3 章 / opening_hook_spike 近 3 章 / curiosity_gap_markers 近 3 章均值 / flat_atmosphere_streak_max 近 3 章峰值**）
 7. `state/power-level.md` → 主角当前修为状态
 8. `state/open-threads.md` → 未收束矛盾
 9. `state/anti-trope-log.md`（最近 3 章）→ 最近使用的"真实接续"列表（避免复用）+ 最近的怪异预算 / 延迟兑付清单（避免同质化）
@@ -55,7 +55,7 @@ mode: draft | revise | diagnose
 
 ## Phase 6 · 加载公共 references
 
-1. `../../references/anti-ai-tells.md` → 反 AI 味 17 主条款 + 7 子条款 · 共 24 项（含 D / G+1 / G-细 / E / E+2 / N-细 / O / P / Q 等回滚级硬门）
+1. `../../references/anti-ai-tells.md` → 反 AI 味 18 主条款 + 7 子条款 · 共 25 项（含 D / G+1 / G-细 / E / E+2 / N-细 / O **+ O-在场** / P / Q / **R** / K-补充 / **A-补充** 等回滚级硬门）
 2. `../../references/foxsan-webnovel-manual.md` → 方法论底本
 
 ## 上下文装填模板
@@ -137,6 +137,14 @@ Phase 1–4 的结果在进 prompt 前压成下列结构，而不是原样塞入
   - **摩擦点必填**：任何超过 5 分钟的场景跨度必须含 ≥ 1 处摩擦点（小意外 / 小延迟 / 小错位）
   - 近 3 章单一桥类型使用 ≥ 3 次 → 本章禁用该类型
   - 最近 3 章"真实接续"列表已在 Phase 1 读入 → 本章新选的"真实接续"不得与最近 3 章重复
+- **说明书句法硬门（反 R · 回滚级，见 anti-ai-tells §R）**：
+  - **R-1**：禁止生活流「不是…不是…是/而是/只剩」双否定目录；同段若已有 G+1 定义体命中，禁止任何排除式枚举
+  - **R-2**：同一情绪节拍、无对白无心理时，纯动作微步**单段 ≤ 3**；连续微步 ≥ 5 / 200 字窗 = 回滚级 FAIL
+  - **R-3**：禁止「又/再」串动作后接两个 ≤ 8 字的纯状态验收短句（如「界面没关。」「白字还在。」）；须合并或插入半句主观感受
+  - 落盘后 `exclusion_enum_hits` / `tutorial_microstep_chain_max` / `catalog_afterthought_pairs` 必须写入 `chapter_meta.stats`
+- **场景块分段（反 K-补充）**：跨 ≥30 分钟或换建筑级空间 → 正文 **Markdown 空一行** 起新段；`k_scene_block_violations` ≥ 5 = 回滚级 FAIL
+- **元叙事禁入（反 O-在场 · 并入主条款 O · 回滚级）**：叙述 / 对白 / 内心**禁止**「上一章 / 下一章 / 本章 / 读者 / 作者 / 弹幕 / 评论区」等书籍体外坐标；人物只知道故事内时间——用「刚才 / 昨天夜里 / 前一阵 / 上次点开时」。`meta_language_hits ≥ 1` = 回滚级 FAIL
+- **章首抓眼 + 好奇缝隙（反 A-补充 · 并入主条款 A · 回滚级）**：章首 ≈200 字内须有 **刺点钉子**（非常规关系或称谓 + 非常规动作/声音/物件并置，参见 `anti-ai-tells` 小姨子范式）；全章 `curiosity_gap_markers` ≥ max(2, chapter_word_count // 1200)；`flat_atmosphere_streak_max` ≤ 5（连续纯氛围 / 纯位移段计峰；≥ 6 = 回滚级 FAIL）；`opening_hook_spike` = true
 
 ### 活跃角色当前状态 + 灵魂字段（必入 prompt，反 O）
 - 叶无尘：金丹中期；情绪 = 冷静；位置 = 天剑峰；**soul_fields**：core_wound = "师妹挡剑那事"；private_desire = "再去一次北境看雪"
