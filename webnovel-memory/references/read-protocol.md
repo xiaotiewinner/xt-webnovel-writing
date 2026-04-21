@@ -19,7 +19,7 @@ mode: draft | revise | diagnose
 3. `bible/power-system.md` + `bible/glossary.md` → 避免设定自相矛盾
 4. `state/foreshadow.md`（只取 `live` 行） → 不能遗忘的伏笔
 5. `state/used-excitement.md`（最近 10 行，含 `interruption` 列） → 避免同类爽点堆叠 + 抽取本章必须使用的打断类型
-6. `state/used-patterns.md` → 当前禁用句式 / 动词清单 + 反 AI 味监控面板最近 3 章状态（主语分布 / 段长熵 / 非理性噪声 / 质量方差 / 反派套餐 / 灵魂渗透缺位名单 / 动物独立反应缺位名单 / **definition_style_hits 近 3 章累计 / bold_theme_hits 近 3 章累计 / emotion_token_solo_paragraphs 近 3 章累计 / single_sentence_run_max 近 3 章累计 / single_sentence_para_ratio 近 3 章 / long_paragraph_count 近 3 章累计 / signature_明牌超限名单 / setting_reveal_overload_hits / transition_types 近 3 章分布 / filler_count 近 3 章 / side_char_autonomous_agenda_count 近 3 章 / waste_option_ratio 近 3 章 / meta_language_hits 近 3 章 / opening_hook_spike 近 3 章 / curiosity_gap_markers 近 3 章均值 / flat_atmosphere_streak_max 近 3 章峰值 / system_prompt_template_hits 近 3 章 / coincidence_chain_hits 近 3 章 / forced_detour_hits 近 3 章**）
+6. `state/used-patterns.md` → 当前禁用句式 / 动词清单 + 反 AI 味监控面板最近 3 章状态（主语分布 / 段长熵 / 非理性噪声 / 质量方差 / 反派套餐 / 灵魂渗透缺位名单 / 动物独立反应缺位名单 / **definition_style_hits 近 3 章累计 / bold_theme_hits 近 3 章累计 / emotion_token_solo_paragraphs 近 3 章累计 / single_sentence_run_max 近 3 章累计 / single_sentence_para_ratio 近 3 章 / long_paragraph_count 近 3 章累计 / signature_明牌超限名单 / setting_reveal_overload_hits / transition_types 近 3 章分布 / filler_count 近 3 章 / side_char_autonomous_agenda_count 近 3 章 / waste_option_ratio 近 3 章 / meta_language_hits 近 3 章 / opening_hook_spike 近 3 章 / curiosity_gap_markers 近 3 章均值 / flat_atmosphere_streak_max 近 3 章峰值 / system_prompt_template_hits 近 3 章 / coincidence_chain_hits 近 3 章 / forced_detour_hits 近 3 章 / tech_jargon_density_per_1k 近 3 章 / tech_exposition_block_over_120 近 3 章 / tech_mechanism_closure_hits 近 3 章 / lexeme_cluster_repeat_hits 近 3 章 / abstract_aura_token_density_per_1k 近 3 章 / **cultural_shorthand_clash_hits 近 3 章 / withhold_beat_present 近 3 章（反 P-补充2）**）
 7. `state/power-level.md` → 主角当前修为状态
 8. `state/open-threads.md` → 未收束矛盾
 9. `state/anti-trope-log.md`（最近 3 章）→ 最近使用的"真实接续"列表（避免复用）+ 最近的怪异预算 / 延迟兑付清单（避免同质化）
@@ -32,8 +32,8 @@ mode: draft | revise | diagnose
 
 ## Phase 3 · 相邻章节上下文
 
-1. 读 `index/chapter-log.md`，取 `target_chapter - 3` 到 `target_chapter - 1` 共 3 条摘要
-2. 读 `chapters/<target_chapter - 1>.md` 的 frontmatter（不读正文，只取 hooks_planted / characters / locations）
+1. 读 `index/volume_<VOLUME_NO>_index.md`，取 `target_chapter - 3` 到 `target_chapter - 1` 共 3 条摘要
+2. 读 `chapters/ch<target_chapter - 1:4位零填充>.md` 的 frontmatter（不读正文，只取 hooks_planted / characters / locations）
 3. 若 `target_chapter - 1` 的 `hooks_planted` 非空，本章必须至少承接 1 条
 
 ## Phase 4 · 相关角色按需加载
@@ -48,9 +48,7 @@ mode: draft | revise | diagnose
 ## Phase 5 · 检索型查询（可选，按生成需要）
 
 当 agent 生成过程中不确定：
-- 某人物最后一次出场在哪章 → 查 `index/by-character.md`
-- 某地点上一次出现 → 查 `index/by-location.md`
-- 某法宝/功法上一次提到 → 查 `index/by-item.md`
+- 某人物/地点/法宝上一次出现在哪章 → 查 `index/volume_<VOLUME_NO>_index.md` 的卷内导航区
 - 某专有名词是否已存在（避免误撞同名） → 查 `bible/glossary.md`
 
 ## Phase 6 · 加载公共 references
@@ -130,6 +128,7 @@ Phase 1–4 的结果在进 prompt 前压成下列结构，而不是原样塞入
   - **P-1 怪异预算**：本章必须 ≥ 1 处"剧情无法吸收"的设定 / 场景 / 细节（5 章内不回收，写作时自问"这个三章内会被回收吗？会 = 换一个"）；= 0 = 回滚级 FAIL（退 story-blueprint 补世界观）
   - **P-3 延迟兑付**：本章必须 ≥ 1 处不在 5 章内回收的伏笔 / 细节；不得在章末用"他不知道的是……"这类独白暗示是伏笔
   - **P-2 废选项**：至少一方（主角 / 配角 / 反派）做 ≥ 1 个"非最优"的性格驱动选择
+  - **P-补充2 文化 shorthand + 收束节拍**（并入 P，不增 25 项计数）：`cultural_shorthand_clash_hits ≥ 1`（共有文化/历史/典故/俗语与**对抗动作**同场并置，禁止纯【】标题式点名）；`withhold_beat_present == true`（至少一处「抬高预期 → 拒展示/留白/一句挡回」）。**cultural = 0 → 回滚级 FAIL**；**withhold = false → FAIL（补收束后才可 PERSIST）**；连续 2 章 cultural = 0 → 下一章按回滚级硬门（见 `anti-ai-tells`）
 - **转场硬门（反 Q · 回滚级）**：
   - 本章每次场景切换必须显式声明使用的桥类型（**Q-1 感官桥 / Q-2 物件桥 / Q-3 对话打断桥 / Q-4 摩擦点桥 / Q-5 情绪错位桥**）+ 锚点（具体感官 / 具体物件 / 具体对话 / 具体摩擦 / 具体情绪错位）
   - **禁用转场词（零容忍，≥ 2 次 = 回滚级 FAIL）**：就在这时 / 与此同时 / 然而就在 / 就在他以为 / 三天后 / 第二天 / 一个星期后 / 半个月过去 / 时间一晃 / 转眼间
@@ -177,5 +176,5 @@ Phase 1–4 的结果在进 prompt 前压成下列结构，而不是原样塞入
 | `book.yaml` 不存在 | 拒绝生成；引导用户先跑 `webnovel-story-blueprint` |
 | `fingerprint.md` 不存在 | 允许生成但警告"作品将无作者指纹"；生成完强烈建议补卡 |
 | `state/*` 任一缺失 | 即时创建空文件继续 |
-| `index/chapter-log.md` 缺失 | 从 `chapters/*.md` 扫 frontmatter 全量重建 |
+| `index/volume_<VOLUME_NO>_index.md` 缺失 | 从 `chapters/ch*.md` 扫 frontmatter 全量重建 |
 | `arcs/_index.md` 缺失 | 视为处于默认 arc；提示用户补 arc 划分 |

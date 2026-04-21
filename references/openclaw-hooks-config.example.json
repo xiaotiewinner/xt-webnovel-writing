@@ -1,0 +1,12 @@
+{
+  "hooks": {
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "two-phase-guard": {
+          "enabled": true
+        }
+      }
+    }
+  }
+}

@@ -32,7 +32,7 @@ metadata: {"openclaw":{"emoji":"✍️","os":["darwin","linux","win32"]}}
 9. **转场硬门（反 Q）**：每次场景切换必须显式落入 5 类桥之一（感官 / 物件 / 对话打断 / 摩擦点 / 情绪错位）并在草稿注释里声明桥类型与锚点；禁用转场词（"就在这时 / 然后 / 第二天 / 三天后 / 转眼间" 等）零容忍。违反 → 回 plot-design 重写转场。
 10. **说明书句法硬门（反 R · 与 K-补充 联动）**：禁止生活流里的「不是…不是…是/而是/只剩」双否定目录句；同一情绪节拍、无对白无心理时，纯动作微步**单段 ≤ 3**，第 4 步起必须并句或插入走神/环境/他人声；禁止「又/再」串动作后接两个 ≤ 8 字的纯状态验收短句。显著时间跳变（≥ 30 分钟）或换建筑级空间时，正文须**空一行**起新段（反 K-补充 黏段）。统计写入 `chapter_meta.stats`（`exclusion_enum_hits` / `tutorial_microstep_chain_max` / `catalog_afterthought_pairs` / `k_scene_block_violations`）。违反 → 回 plot-design。
 11. **项目目录契约（必守）**：长篇项目所有产物**只能**落在 `project_root` 下的固定子目录（见 §11）。子 workflow **禁止**自行选择"顺手的目录"。每次落盘前必须校验路径以 `<project_root>/` 开头。违反 → memory PERSIST 拒收。
-12. **新书与连载默认走 memory**：凡是"开新书 / 续写 / 写第 N 章 / 计划连载"的正文任务，生成前必须调用 `webnovel-memory/workflow.md` · LOAD（若无项目则先 INIT），生成后必须调用 PERSIST 落盘；仅在用户明确说明"一次性短文，不建项目、不留记忆"时可跳过。
+12. **新书与连载默认走 memory**：凡是"开新书 / 续写 / 写第 N 章 / 计划连载"的正文任务，生成前必须调用 `webnovel-memory/workflow.md` · LOAD（若无项目则先 INIT），**自检全 PASS 后**必须调用 PERSIST 落盘；仅在用户明确说明"一次性短文，不建项目、不留记忆"时可跳过 LOAD/PERSIST。**顺序**以 `references/openclaw-enforcement-two-phase.md` 为准（先 VERIFY 再 PERSIST，禁止未自检即声称落盘）。
 13. **短句 + 画面感 + 共鸣** 是文笔基线；辞藻华丽不是目标。
 
 ## 3. 内部模块清单
@@ -48,14 +48,21 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
 | pitfalls | 结构 + 反 AI 味双路体检 | `{baseDir}/webnovel-pitfalls/workflow.md` |
 | memory | 长篇持久化记忆系统（READ / WRITE / INIT / AUDIT） | `{baseDir}/webnovel-memory/workflow.md` |
 
+### 3.1 强制两阶段 + 长篇 PERSIST（OpenClaw / 虾魂 / 全局规则）
+
+宿主**不会**自动执行 skill 里的自检；须把流程写进 **SOUL / 全局规则** 或用户固定开场。完整条文与可粘贴的「极短版」见 **`{baseDir}/references/openclaw-enforcement-two-phase.md`**。执行要点：**LOAD（长篇）→ 阶段 1 仅正文 → 阶段 2 自检表 + `chapter_meta.stats` + FAIL 则同轮重写（≤2 轮）→ 全 PASS 后才允许 PERSIST**。
+
 ## 4. 公共 References（强制全局可用）
 
 | 文件 | 用途 |
 |---|---|
 | `{baseDir}/references/anti-ai-tells.md` | 反 AI 味 18 主条款 + 7 子条款 · 共 25 项（生成 / 诊断类模块强制加载） |
+| `{baseDir}/references/openclaw-enforcement-two-phase.md` | **OpenClaw / 虾魂**：强制两阶段（稿→自检重写）+ 长篇 **PERSIST** 落盘顺序；可整段并入 SOUL |
+| `{baseDir}/references/openclaw-hooks-setup.md` | OpenClaw hook 启用步骤（`openclaw hooks enable two-phase-guard`）与验证 |
+| `{baseDir}/references/openclaw-hooks-config.example.json` | OpenClaw `hooks.internal` 配置示例 |
 | `{baseDir}/references/foxsan-webnovel-manual.md` | 方法论底本（狐三玄《网文写作新手入门手册》） |
 
-各 `workflow.md` 引用这两份文件时，从自己所在目录向上一级：`../references/anti-ai-tells.md`、`../references/foxsan-webnovel-manual.md`。
+各 `workflow.md` 引用上述文件时，从自己所在目录向上一级：`../references/anti-ai-tells.md`、`../references/foxsan-webnovel-manual.md`、`../references/openclaw-enforcement-two-phase.md`（OpenClaw 强制顺序时必读）。
 
 ## 5. 路由表
 
@@ -94,12 +101,11 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
     └─→ 固化到 <project_root>/ 下：book.yaml / fingerprint.md / bible/* / characters/*
 [2] plot-design                  开头 5 章骨架（L1 矛盾八步缩影）
     └─→ 固化到 <project_root>/arcs/arc-01-*.md
-[3] plot-design                  正文模式：逐章生成
-    ├─ LOAD  ← memory
-    ├─ ANTI-TROPE 预声明：5-清单 + 怪异预算 + 延迟兑付 + 转场桥类型 → 写入 <project_root>/state/anti-trope-log.md
-    ├─ DRAFT（反 AI 味 18 主 + 7 子 · 25 项嵌入 prompt；含 **A-补充 章首刺点·好奇缝隙** + **O-在场 禁元叙事** + R 说明书句法禁令 + K-补充 空行分段 + 出场 ≥ 2 次有名角色 + 本章首登关键角色的 soul_fields 必现清单 + 9 种定义体禁用模板 + 粗体禁令 + 禁用转场词清单 + 配角自主议题槽）
-    ├─ SELF-CHECK（反 AI 味 25 项自检 + 转场桥声明校验 + **统计清单（含 R / K-补充 / O-在场 / A-补充）** + 结构自检；任一回滚级 FAIL 立即回退指定 workflow）
-    └─ PERSIST → memory 8 步落盘（STEP 0 路径契约校验；路径必须以 <project_root>/ 开头）
+[3] plot-design                  正文模式：逐章生成（**须遵守** `references/openclaw-enforcement-two-phase.md` 顺序）
+    ├─ 阶段 0：LOAD ← memory（无项目则先 INIT）；ANTI-TROPE 预声明 → <project_root>/state/anti-trope-log.md
+    ├─ 阶段 1：DRAFT 仅正文（反 AI 味 25 项嵌入 prompt；soul_fields 必现清单等）；**此阶段禁止「定稿 / 已落盘」式收束**
+    ├─ 阶段 2：VERIFY — §9 自检表 PASS/WARN/FAIL + pitfalls 式 Part B 表 + **完整 `chapter_meta.stats`**；FAIL / 回滚级 FAIL → **同轮内重写**再跑阶段 2（≤2 轮；仍 FAIL → 拒交付模板）
+    └─ 阶段 3：仅全 PASS 后 → PERSIST → memory 8 步落盘（STEP 0 路径契约；路径 `<project_root>/`）
 [4] excitement-and-craft         有需要时对已生成章节做爽点 / 文笔强化
 [5] pitfalls                     每 10 章跑一次 AUDIT；整体质量体检
 [6] memory · AUDIT               每 10 章做一致性审计，发现坑提前告警
@@ -117,7 +123,7 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
   - 本章首次登场的关键角色 soul_fields（≥ 2 条，回滚级硬门准备）
   - 动物 / 灵兽独立反应坐标轴
   - 上一章"纯功能性角色名单"
-  - 近 3 章 `definition_style_hits` / `bold_theme_hits` / `emotion_token_solo_paragraphs` / `single_sentence_run_max` / `long_paras_over_80` / `signature_明牌超限名单` / `setting_reveal_overload_hits` / `transition_types` 分布 / `anti_trope_recent_choices` / **`exclusion_enum_hits` / `tutorial_microstep_chain_max` / `catalog_afterthought_pairs` / `k_scene_block_violations`（反 R + K-补充）** / **`meta_language_hits` / `opening_hook_spike` / `curiosity_gap_markers` / `flat_atmosphere_streak_max`（反 O-在场 + A-补充）**）
+  - 近 3 章 `definition_style_hits` / `bold_theme_hits` / `emotion_token_solo_paragraphs` / `single_sentence_run_max` / `long_paras_over_80` / `signature_明牌超限名单` / `setting_reveal_overload_hits` / `transition_types` 分布 / `anti_trope_recent_choices` / **`exclusion_enum_hits` / `tutorial_microstep_chain_max` / `catalog_afterthought_pairs` / `k_scene_block_violations`（反 R + K-补充）** / **`meta_language_hits` / `opening_hook_spike` / `curiosity_gap_markers` / `flat_atmosphere_streak_max`（反 O-在场 + A-补充）** / **`system_prompt_template_hits` / `coincidence_chain_hits` / `forced_detour_hits` / `tech_jargon_density_per_1k` / `tech_exposition_block_over_120` / `tech_mechanism_closure_hits` / `lexeme_cluster_repeat_hits` / `abstract_aura_token_density_per_1k` / `cultural_shorthand_clash_hits` / `withhold_beat_present`（反 B/G/P 补充 + P-补充2）**）
   - 本章配角自主议题候选（D-2）
 - 相关模块的输出 schema
 
@@ -139,6 +145,10 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
 | N-细 | 全章粗体 ≤ 1 且仅限物理文本 | 情绪 / 主题用 ≥ 1 即回滚 |
 | O | 关键角色首登章 ≥ 1 处灵魂渗透；出场 ≥ 2 次角色每次 ≥ 1 处；渗透必须非功能性（deletion_verified）；**O-在场**：`meta_language_hits` = 0（禁上一章/读者/作者/弹幕等元叙事） | 关键角色首登违反 → 回 story-blueprint 补 soul_fields → 回 plot-design 重写；**元叙事 ≥ 1** → 回 plot-design 全文检索清零 |
 | **A（含 A-补充）** | 节拍器外：章首 ≈200 字须有刺点钉子；`curiosity_gap_markers` ≥ max(2, chapter_word_count//1200)；`flat_atmosphere_streak_max` ≤ 5；`opening_hook_spike` = true | 任一违反 → 回 plot-design 重写章首或全章补缝隙 |
+| **G（补充）** | `system_prompt_template_hits` ≤ 2；`tech_jargon_density_per_1k` ≤ 8；`tech_exposition_block_over_120` ≤ 1 | 模板腔或技术白皮书化超阈值 → 回 plot-design 拆解与降密 |
+| **P（补充）** | `coincidence_chain_hits` ≤ 3；`forced_detour_hits` ≤ 1（推荐=0） | 巧合闭环过快或强导向超阈值 → 回 plot-design 加主动代价节点 |
+| **P-补充2** | `cultural_shorthand_clash_hits` ≥ 1；`withhold_beat_present` = true | cultural = 0 → 回 plot-design 补「共有符号×对抗动作」；withhold false → 补收束节拍后再 PERSIST |
+| **B（补充）** | `lexeme_cluster_repeat_hits` ≤ 3；`abstract_aura_token_density_per_1k` ≤ 10 | 词簇复读超阈值 → 回 plot-design 做抽象词去同构 |
 | **P-1** | 本章 ≥ 1 处"怪异预算"（剧情无法吸收的设定 / 场景 / 细节） | 缺失 → 回 story-blueprint 补世界观 |
 | **P-3** | 本章 ≥ 1 处"延迟兑付"伏笔（≥ 5 章内不回收；章末不得提示这是伏笔） | 缺失 → 回 plot-design |
 | **P-4** | 动笔前必须落盘 5-清单到 `<project_root>/state/anti-trope-log.md`；真实写的接续 ≠ 前 3 名 | 违反 → 回 plot-design 重做 anti-trope 预声明 |
@@ -163,7 +173,7 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
 - [ ] 违反 §2 公理？
 - [ ] 矛盾先于剧情？主角主动？第一个爽点可指？
 - [ ] 反 AI 味 **18 主条款 + 7 子条款（25 项）** 全部 PASS？
-- [ ] 无任何"回滚级 FAIL"？（D-1 / D-2 / D-3 / M / N / N-细 / O / **O-在场 meta_language** / **A-补充 钩子·缝隙·纯氛围峰** / P-1 / P-3 / P-4 / Q 禁用词 / Q 瞬移切换 / **R 排除枚举 / R 教程体链 / R 验收对** / G+1 ≥ 5 / E 独段+粗体 / K 全 0 长段 / **K-补充 场景块违规 ≥ 5** / C ≥ 6 连续或占比 > 0.5）
+- [ ] 无任何"回滚级 FAIL"？（D-1 / D-2 / D-3 / M / N / N-细 / O / **O-在场 meta_language** / **A-补充 钩子·缝隙·纯氛围峰** / P-1 / P-3 / P-4 / **P-补充2 cultural = 0** / Q 禁用词 / Q 瞬移切换 / **R 排除枚举 / R 教程体链 / R 验收对** / G+1 ≥ 5 / E 独段+粗体 / K 全 0 长段 / **K-补充 场景块违规 ≥ 5** / C ≥ 6 连续或占比 > 0.5）
 - [ ] 关键角色首登章 ≥ 1 处灵魂渗透？出场 ≥ 2 次有名角色每次 ≥ 1 处？反派有第三维度？动物独立反应占比 ≥ 50%？渗透句通过"删除验证"？
 - [ ] 9 种定义体模板命中 ≤ 2？全章粗体 ≤ 1 且仅用于物理文本？
 - [ ] 长段（> 80 字）≥ 3 段（含 ≥ 1 段 > 120 字）？单句段占比 ≤ 30%？连续单句段 ≤ 2？
@@ -175,6 +185,10 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
 - [ ] **K-补充**：跨 30 分钟或换地点是否空行分段？`k_scene_block_violations` ≤ 2？
 - [ ] **O-在场**：全文无「上一章/下一章/读者/作者/弹幕」等元叙事？`meta_language_hits` = 0？
 - [ ] **A-补充**：章首有刺点钉子？`opening_hook_spike`；好奇缝隙达标？`curiosity_gap_markers`；纯氛围连段峰 ≤ 5？
+- [ ] **G-补充**：系统提示模板命中 ≤ 2？技术术语密度 ≤ 8/千字？技术长说明段 ≤ 1？
+- [ ] **P-补充**：巧合链条 ≤ 3？强导向 `forced_detour_hits` ≤ 1（推荐 0）？
+- [ ] **P-补充2**：`cultural_shorthand_clash_hits` ≥ 1？`withhold_beat_present` = true？
+- [ ] **B-补充**：词簇复读 ≤ 3？抽象气场词密度 ≤ 10/千字？
 - [ ] 长篇场景已走 memory LOAD/PERSIST？所有落盘路径都以 `<project_root>/` 开头？
 - [ ] 改写类任务给足原文→改写→理由？
 
@@ -188,7 +202,14 @@ xt-webnovel-writing/                    ← skill 根（= baseDir）
 ├── README.md
 ├── references/
 │   ├── anti-ai-tells.md                ← 反 AI 味 18 主 + 7 子条款（25 项，含 D / O / P / Q / R 回滚级）
+│   ├── openclaw-hooks-setup.md         ← OpenClaw hooks 启用与验证
+│   ├── openclaw-hooks-config.example.json ← OpenClaw hooks 配置示例
+│   ├── openclaw-strict-rules.md        ← SOUL/全局规则：强制先用 skill + 两阶段 + 固定目录契约
 │   └── foxsan-webnovel-manual.md       ← 方法论底本
+├── hooks/
+│   └── two-phase-guard/                ← OpenClaw internal hook（提醒两阶段 + PERSIST 顺序）
+│       ├── HOOK.md
+│       └── handler.ts
 ├── webnovel-text-analysis/workflow.md
 ├── webnovel-story-blueprint/workflow.md
 ├── webnovel-plot-design/workflow.md
@@ -228,8 +249,8 @@ xt-webnovel-writing/                    ← skill 根（= baseDir）
 ├── arcs/                                ← 剧情弧
 │   ├── _index.md
 │   └── arc-<NN>-<slug>.md
-├── chapters/                            ← 正文章节（NNNN.md）
-│   └── 0001.md, 0002.md, …
+├── chapters/                            ← 正文章节（SFNC：chNNNN.md）
+│   └── ch0001.md, ch0002.md, …
 ├── state/                               ← 动态状态（每章更新）
 │   ├── timeline.md
 │   ├── relationships.md
@@ -239,11 +260,8 @@ xt-webnovel-writing/                    ← skill 根（= baseDir）
 │   ├── used-patterns.md
 │   ├── open-threads.md
 │   └── anti-trope-log.md                ← 新增：每章 P-4 的 5-清单 + 怪异预算 + 延迟兑付清单
-├── index/                               ← 倒排索引（每 10 章重建）
-│   ├── chapter-log.md
-│   ├── by-character.md
-│   ├── by-location.md
-│   └── by-item.md
+├── index/                               ← 项目导航索引（每卷一个）
+│   └── volume_<VOLUME_NO>_index.md
 └── .webnovel-memory/                    ← 内部元数据（agent 不直接用）
     ├── version.json
     └── last-write.json
@@ -258,7 +276,7 @@ xt-webnovel-writing/                    ← skill 根（= baseDir）
 | 世界观设定 | `<project_root>/bible/<...>.md` |
 | 人物卡 | `<project_root>/characters/<name>.md` |
 | 剧情弧 | `<project_root>/arcs/arc-<NN>-<slug>.md` |
-| 章节正文 | `<project_root>/chapters/<NNNN>.md`（4 位数字零填充） |
+| 章节正文 | `<project_root>/chapters/ch<NNNN>.md`（4 位数字零填充，SFNC） |
 | 动态状态 | `<project_root>/state/<...>.md` |
 | 反套路日志（P-4） | `<project_root>/state/anti-trope-log.md` |
 | 索引 | `<project_root>/index/<...>.md` |

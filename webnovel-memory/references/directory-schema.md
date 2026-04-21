@@ -18,7 +18,7 @@
 │   ├── _index.md              arc 索引
 │   └── arc-<NN>-<slug>.md     每 arc：矛盾 / 八步 / 起止章号 / 结果
 ├── chapters/                  正文章节
-│   └── <NNNN>.md              单章正文，YAML header + 正文
+│   └── ch<NNNN>.md            单章正文，YAML header + 正文（SFNC 唯一终稿命名）
 ├── state/                     动态状态（最频繁更新）
 │   ├── timeline.md            时间线：章号 → 绝对时间 + 事件
 │   ├── relationships.md       关系表：(角色A, 角色B) → 关系等级 + 最近事件章
@@ -29,10 +29,7 @@
 │   ├── open-threads.md        未收束的矛盾/支线/疑团清单
 │   └── anti-trope-log.md      反 P · 每章 5-清单 + 真实接续排名 + 怪异预算 + 延迟兑付
 ├── index/                     可检索索引（每 10 章全量重建）
-│   ├── chapter-log.md         章节摘要（每章 200–400 字）
-│   ├── by-character.md        人物 × 章号倒排
-│   ├── by-location.md         地点 × 章号倒排
-│   └── by-item.md             物品/功法/法宝 × 章号倒排
+│   └── volume_<VOLUME_NO>_index.md   卷目录/章节摘要/进度与导航（SFNC）
 └── .webnovel-memory/          内部元数据（不直接给 agent 用）
     ├── version.json           schema 版本
     └── last-write.json        最近一次写入记录
@@ -182,7 +179,7 @@ status: 活跃 | 退场 | 死亡 | 冷藏
 - 下一步目标：
 ```
 
-### `chapters/<NNNN>.md`
+### `chapters/ch<NNNN>.md`
 
 ```markdown
 ---
@@ -400,7 +397,7 @@ created_at: 2026-04-20
 |---|---|---|---|---|---|
 | 87 | 0 | ✓ | 5 | 3 | ✓ |
 
-- 阈值：`meta_language_hits` = 0（≥ 1 回滚）；`opening_hook_spike` = true（false 回滚）；`curiosity_gap_markers` ≥ max(2, chapter_word_count // 1200)（不足回滚）；`flat_atmosphere_streak_max` ≤ 5（≥ 6 回滚）；`system_prompt_template_hits` ≤ 2（≥ 5 回滚）；`coincidence_chain_hits` ≤ 3（≥ 6 回滚）；`forced_detour_hits` ≤ 1（≥ 2 回滚）
+- 阈值：`meta_language_hits` = 0（≥ 1 回滚）；`opening_hook_spike` = true（false 回滚）；`curiosity_gap_markers` ≥ max(2, chapter_word_count // 1200)（不足回滚）；`flat_atmosphere_streak_max` ≤ 5（≥ 6 回滚）；`system_prompt_template_hits` ≤ 2（≥ 5 回滚）；`coincidence_chain_hits` ≤ 3（≥ 6 回滚）；`forced_detour_hits` ≤ 1（≥ 2 回滚）；`tech_jargon_density_per_1k` ≤ 8（> 12 回滚）；`tech_exposition_block_over_120` ≤ 1（≥ 3 回滚）；`tech_mechanism_closure_hits` ≤ 1（≥ 2 FAIL）；`lexeme_cluster_repeat_hits` ≤ 3（≥ 7 回滚）；`abstract_aura_token_density_per_1k` ≤ 10（> 18 回滚）；**`cultural_shorthand_clash_hits` ≥ 1**（= 0 回滚，反 P-补充2）；**`withhold_beat_present` = true**（false 为 FAIL 须补收束）
 
 ## 设定首现过载监控（反 G-细）
 | 章 | 设定首次出现专名 | 同次携带结构信息项数 | 同次发言设定专名数 | 是否达标 |
@@ -454,7 +451,7 @@ created_at: 2026-04-20
 ## 设计原则
 
 1. **只用 Markdown + YAML**。没有数据库，不依赖任何服务。
-2. **按需加载**。常驻区 ≤ 3000 字：`book.yaml` + `fingerprint.md` + 当前 arc 文件 + 最近 3 章 `chapter-log` 条目 + `live` 伏笔 + 活跃人物（近 10 章出现过的）名字列表 **+ 本章预计出场 ≥ 2 次角色的 soul_fields 段 + 本章首次登场的关键角色 soul_fields 段（必载）** + `used-patterns.md` 最近 3 章的监控摘要（主语分布 / 段长熵 / 非理性噪声计数 / 质量方差 / 反派套餐命中 / 灵魂渗透缺位名单 / 动物独立反应缺位名单 / **definition_style_hits / bold_theme_hits / emotion_token_hits / single_sentence_run_max / single_sentence_para_ratio / long_paragraph_count / signature_明牌超限名单 / setting_reveal_overload_hits / transition_types 分布 / filler_density / side_char_autonomous_agenda 名单 / waste_option_ratio / exclusion_enum_hits / tutorial_microstep_chain_max / catalog_afterthought_pairs / k_scene_block_violations / meta_language_hits / opening_hook_spike / curiosity_gap_markers / flat_atmosphere_streak_max / system_prompt_template_hits / coincidence_chain_hits / forced_detour_hits**）+ `anti-trope-log.md` 最近 3 章的"真实接续"列表（避免下章复用）。
-3. **索引可重建**。`index/` 下所有文件可以从 `chapters/*.md` 的 frontmatter 全量重建——坏掉丢弃重跑即可。
+2. **按需加载**。常驻区 ≤ 3000 字：`book.yaml` + `fingerprint.md` + 当前 arc 文件 + 最近 3 章 `chapter-log` 条目 + `live` 伏笔 + 活跃人物（近 10 章出现过的）名字列表 **+ 本章预计出场 ≥ 2 次角色的 soul_fields 段 + 本章首次登场的关键角色 soul_fields 段（必载）** + `used-patterns.md` 最近 3 章的监控摘要（主语分布 / 段长熵 / 非理性噪声计数 / 质量方差 / 反派套餐命中 / 灵魂渗透缺位名单 / 动物独立反应缺位名单 / **definition_style_hits / bold_theme_hits / emotion_token_hits / single_sentence_run_max / single_sentence_para_ratio / long_paragraph_count / signature_明牌超限名单 / setting_reveal_overload_hits / transition_types 分布 / filler_density / side_char_autonomous_agenda 名单 / waste_option_ratio / exclusion_enum_hits / tutorial_microstep_chain_max / catalog_afterthought_pairs / k_scene_block_violations / meta_language_hits / opening_hook_spike / curiosity_gap_markers / flat_atmosphere_streak_max / system_prompt_template_hits / coincidence_chain_hits / forced_detour_hits / lexeme_cluster_repeat_hits / abstract_aura_token_density_per_1k / **cultural_shorthand_clash_hits / withhold_beat_present**）+ `anti-trope-log.md` 最近 3 章的"真实接续"列表（避免下章复用）。
+3. **索引可重建**。`index/volume_<VOLUME_NO>_index.md` 可以从 `chapters/ch*.md` 的 frontmatter 全量重建——坏掉丢弃重跑即可。
 4. **写多读少**。每次生成新章写入 ≥ 6 个文件（chapter、chapter-log、timeline、foreshadow、used-excitement、used-patterns、相关人物卡、arc 文件）。
 5. **监控驱动**。`used-patterns.md` 的每一列都是反 AI 味的硬阈值，下一章 prompt 必须读取并将超阈值项作为"本章禁用 / 强制补"输入。

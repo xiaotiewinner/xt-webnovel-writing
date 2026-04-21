@@ -61,7 +61,7 @@ metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
 
 ### 模式 3 · PERSIST（生成后落盘）
 
-触发：上游 skill 生成完一章并通过反 AI 味自检后。
+触发：上游 skill 按仓库根 `references/openclaw-enforcement-two-phase.md` 完成**阶段 2 全 PASS**（含 `SKILL.md` §9 自检 + 完整 `chapter_meta.stats`）之后；**禁止**未自检即调用 PERSIST。
 
 1. 接收 `chapter_body` + `chapter_meta`（结构见 write-protocol.md 输入段）
 2. 执行 `write-protocol.md` 的 8 步落盘（STEP 0 路径契约校验 + STEP 1–7 内容落盘）
@@ -73,19 +73,17 @@ metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
 触发：用户问"张三上次出场在哪"、"F-007 伏笔是什么"、"玄铁重剑第几章出现"。
 
 1. 根据问题类型选索引文件：
-   - 人物 → `index/by-character.md` + `characters/<name>.md`
-   - 地点 → `index/by-location.md`
-   - 物品 / 功法 / 法宝 → `index/by-item.md`
+   - 人物 / 地点 / 物品 / 功法 / 法宝 → `index/volume_<VOLUME_NO>_index.md` + `characters/<name>.md`
    - 伏笔 → `state/foreshadow.md`（按 ID 或内容模糊匹配）
-   - 章节内容 → `index/chapter-log.md`
+   - 章节内容 → `index/volume_<VOLUME_NO>_index.md`
 2. 返回"最近一次 + 命中章号列表 + 摘要"
 
 ### 模式 5 · AUDIT（周期性一致性审计）
 
 触发：用户每写完 10 章、或主动要求"帮我检查一下前面有没有坑"。
 
-1. 扫描所有 `chapters/*.md` 的 frontmatter
-2. 重建 `index/*.md`（可丢弃原文件）
+1. 扫描所有 `chapters/ch*.md` 的 frontmatter
+2. 重建 `index/volume_<VOLUME_NO>_index.md`（可丢弃原文件）
 3. 交叉验证：
    - 每个 `live` 伏笔埋点章 ≤ 当前章 - 100 → 标记 `expired`
    - 每个角色的修为历史轨迹是否单调（没有无理由降级）
@@ -143,7 +141,7 @@ metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
 | 路径 | 预估 | 说明 |
 |---|---|---|
 | `chapters/` | ≈ 10 MB | 6000 字 × 833 章 × 2 bytes/字 |
-| `index/chapter-log.md` | ≈ 400 KB | 500 字摘要 × 833 |
+| `index/volume_<VOLUME_NO>_index.md` | ≈ 400 KB | 500 字摘要 × 833 |
 | `state/*` + `bible/*` | ≈ 200 KB | 动态状态 |
 | `characters/*` | ≈ 500 KB | 主要角色 + 配角 |
 | `arcs/*` | ≈ 50 KB | 10–20 个 arc |

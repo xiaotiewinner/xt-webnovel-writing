@@ -99,6 +99,13 @@ chapter_meta:
     system_prompt_template_hits: 1           # 反 G-补充 · 同构系统提示模板命中（如【X：Y——Z】；需 ≤ 2；≥ 5 → 回滚）
     coincidence_chain_hits: 2                # 反 P-补充 · 连续偶然驱动节点数（需 ≤ 3；≥ 6 → 回滚）
     forced_detour_hits: 0                    # 反 P-补充 · 主角可回头但被叙事强导向单一路径次数（需 ≤ 1；≥ 2 → 回滚）
+    tech_jargon_density_per_1k: 5            # 反 G-补充2 · 每千字技术术语数（需 ≤ 8；> 12 → 回滚）
+    tech_exposition_block_over_120: 1        # 反 G-补充2 · >120字技术说明段数量（需 ≤ 1；≥ 3 → 回滚）
+    tech_mechanism_closure_hits: 0           # 反 G-补充2 · 同段完整触发→过程→结果闭环次数（需 ≤ 1；≥ 2 → FAIL）
+    lexeme_cluster_repeat_hits: 2            # 反 B-补充 · 高频抽象词簇复读命中（需 ≤ 3；≥ 7 → 回滚）
+    abstract_aura_token_density_per_1k: 7    # 反 B-补充 · 抽象气场词密度/千字（需 ≤ 10；> 18 → 回滚）
+    cultural_shorthand_clash_hits: 2           # 反 P-补充2 · 共有文化符号贴进对抗动作并置次数（需 ≥ 1；= 0 → 回滚）
+    withhold_beat_present: true               # 反 P-补充2 · 抬高预期后的拒展示/留白收束（需 true；false → FAIL）
   antagonist_reactions:                     # 反 E-扩展
     - name: 柳长风
       template_hits: 2                      # 标准套餐（脸色/冷汗/胸口/沉默/"不可能"）命中数
@@ -138,21 +145,22 @@ chapter_meta:
 
 1. 每条路径必须以 `<project_root>/` 开头（绝对或相对一致）；否则立即 **PERSIST 拒收**。
 2. 路径的第一层子目录必须 ∈ `{book.yaml, fingerprint.md, bible/, characters/, arcs/, chapters/, state/, index/, .webnovel-memory/}`；否则立即 **PERSIST 拒收**。
-3. 章节文件名必须形如 `chapters/\d{4}\.md`；否则拒收。
-4. 人物卡必须落在 `characters/<name>.md`；arc 文件必须落在 `arcs/arc-<NN>-<slug>.md`；否则拒收。
-5. 禁止新建契约以外的目录（如 `drafts/` `output/` `tmp/` `generated/`）——一经发现，整轮 PERSIST 失败并回滚。
+3. 章节文件名必须形如 `chapters/ch\d{4}\.md`（如 `chapters/ch0001.md`）；否则拒收。
+4. 禁止章节终稿使用碎片化命名（如 `part1` / `part2` / `expanded_beats` / `draft` / `tmp` 等）；命中即拒收并要求合并为单一 `chNNNN.md`。
+5. 人物卡必须落在 `characters/<name>.md`；arc 文件必须落在 `arcs/arc-<NN>-<slug>.md`；否则拒收。
+6. 禁止新建契约以外的目录（如 `drafts/` `output/` `tmp/` `generated/`）——一经发现，整轮 PERSIST 失败并回滚。
 
 拒收返回值必须包含：具体违规路径 + 正确目标路径建议。
 
 ### STEP 1 · 写章节本体
 
-1. 写 `chapters/<NNNN>.md`
+1. 写 `chapters/ch<NNNN>.md`（每章且仅一份终稿正文）
 2. YAML header 按 [directory-schema.md §章节模板] 填充
 3. 正文即 `chapter_body`
 
 ### STEP 2 · 追加章节摘要
 
-1. 追加一条到 `index/chapter-log.md`：
+1. 追加一条到 `index/volume_<VOLUME_NO>_index.md`：
 
 ```markdown
 ## 第 87 章 · 一剑破阵
@@ -165,9 +173,8 @@ chapter_meta:
 
 ### STEP 3 · 更新倒排索引
 
-1. `index/by-character.md`：对 `characters_present` 每个名字追加 `<chapter>`
-2. `index/by-location.md`：对 `locations` 每个追加 `<chapter>`
-3. `index/by-item.md`：对 `new_items` 追加 `<chapter>`，非新物品也追加
+1. `index/volume_<VOLUME_NO>_index.md`：在本卷章节目录中追加当前章节条目（含章节号、标题、摘要、状态）
+2. `index/volume_<VOLUME_NO>_index.md`：更新角色/地点/物品在本卷的命中锚点（不再写 `by-*` 分散文件）
 4. `bible/glossary.md`：把 `new_glossary` 条目补入
 
 ### STEP 4 · 更新伏笔表（`state/foreshadow.md`）
@@ -214,6 +221,9 @@ chapter_meta:
    - **抓眼节奏面板（反 A-补充）**：写入 `opening_hook_spike` / `curiosity_gap_markers` / `flat_atmosphere_streak_max`；`opening_hook_spike == false` 或 `curiosity_gap` 低于阈值 或 `flat_atmosphere_streak_max ≥ 6` → 标记"本章已触回滚阈值须整体重写"；`flat_atmosphere_streak_max == 5` → 标记"下一章减少纯氛围连段并补好奇缝隙"
    - **系统提示模板面板（反 G-补充）**：写入 `system_prompt_template_hits`；`≥ 3` → 标记"下一章系统提示改残片化，不得复用同构模板"
    - **巧合闭环面板（反 P-补充）**：写入 `coincidence_chain_hits` / `forced_detour_hits`；`coincidence ≥ 4` 或 `detour ≥ 1` → 标记"下一章强制增加主动决策+代价节点"
+   - **技术说明面板（反 G-补充2）**：写入 `tech_jargon_density_per_1k` / `tech_exposition_block_over_120` / `tech_mechanism_closure_hits`；超阈值则标记"下一章技术段先写体感与误判，禁止白皮书化直讲"
+   - **词簇复读面板（反 B-补充）**：写入 `lexeme_cluster_repeat_hits` / `abstract_aura_token_density_per_1k`；超阈值则标记"下一章先替换抽象词为具象细节"
+   - **文化 shorthand 面板（反 P-补充2）**：写入 `cultural_shorthand_clash_hits` / `withhold_beat_present`；`cultural == 0` → 标记"本章已触回滚阈值" + **回滚级硬门**；`withhold == false` → 标记"下一章必须补一处抬高预期后的拒展示/留白收束"；连续 2 章 `cultural == 0` → 标记"下一章文化符号贴脸对抗为回滚级硬门"
 6. `state/anti-trope-log.md`：按章追加一条：
    ```markdown
    ## 第 87 章
@@ -265,7 +275,8 @@ chapter_meta:
 3. `hooks_planted` 每条必须能在正文中找到对应伏笔句（给出引用片段）
 4. `hooks_resolved` 每条必须能找到兑现场景
 5. `excitement_types` 中每个代号必须在正文中找到落字证据
-6. **反 AI 味硬门（全部通过才允许落盘，任一失败即回滚）**：
+6. **中文落盘约束**：写入到 `<project_root>/` 的 `*.md` 文档默认必须为中文叙述；允许英文仅限路径/字段键/代号（如 `chapter_meta.stats`、`REV`）与必要代码片段。若正文或状态说明出现大段英文叙述，判写入失败并回滚。
+7. **反 AI 味硬门（全部通过才允许落盘，任一失败即回滚）**：
 
    **A. 结构级硬门**（反 M / B-扩展 / H-扩展 / N / E-扩展）
    - `excitement_interruption` 每条 `interruption` 字段 ∈ {`delay`, `denied`, `cost`}（反 M）
@@ -289,6 +300,11 @@ chapter_meta:
    - `stats.setting_reveal_overload_hits == 0`（反 G-细）
    - `stats.signature_ming_pai_hits ≤ 1`（反 E+2）
    - `stats.system_prompt_template_hits ≤ 2`，**≥ 5 → 回滚级 FAIL**（反 G-补充）
+   - `stats.tech_jargon_density_per_1k ≤ 8`，**> 12 → 回滚级 FAIL**（反 G-补充2）
+   - `stats.tech_exposition_block_over_120 ≤ 1`，**≥ 3 → 回滚级 FAIL**（反 G-补充2）
+   - `stats.tech_mechanism_closure_hits ≤ 1`，**≥ 2 → FAIL**（反 G-补充2）
+   - `stats.lexeme_cluster_repeat_hits ≤ 3`，**≥ 7 → 回滚级 FAIL**（反 B-补充）
+   - `stats.abstract_aura_token_density_per_1k ≤ 10`，**> 18 → 回滚级 FAIL**（反 B-补充）
 
    **D. 角色灵魂硬门**（反 O · 回滚级）
    - 每个 `soul_bleed` 条目（`appearances_in_chapter ≥ 2`）：`bleed_count ≥ 1` 且 `deletion_verified == true`
@@ -310,6 +326,8 @@ chapter_meta:
    - `stats.anti_trope_actual_rank` 必须 ≥ 4 或为清单外，**≤ 3 → 回滚级 FAIL**（反 P-4 · 退回 plot-design 重做预声明）
    - `stats.weirdness_budget_count ≥ 1`，**= 0 → 回滚级 FAIL**（反 P-1 · 退回 story-blueprint 补世界观）
    - `stats.deferred_setup_count ≥ 1`（反 P-3）
+   - `stats.cultural_shorthand_clash_hits ≥ 1`，**= 0 → 回滚级 FAIL**（反 P-补充2 · 退回 plot-design 补「共有符号 × 对抗动作」并置）
+   - `stats.withhold_beat_present == true`，**== false → FAIL**（反 P-补充2 · 补一处「抬高预期→拒展示/收束」后才可 PERSIST）
    - `stats.coincidence_chain_hits ≤ 3`，**≥ 6 → 回滚级 FAIL**（反 P-补充 · 巧合闭环过快）
    - `stats.forced_detour_hits ≤ 1`，**≥ 2 → 回滚级 FAIL**（反 P-补充 · 强导向）
 
@@ -344,6 +362,7 @@ chapter_meta:
 | **R（说明书句法）** / **K-补充（场景块）** | plot-design |
 | **O-在场（元叙事）** / **A-补充（章首钩子·好奇缝隙）** | plot-design |
 | P-1（怪异预算） | story-blueprint（补世界观） → plot-design |
+| **P-补充2**（`cultural_shorthand_clash_hits == 0`） | plot-design（补文化 shorthand 贴脸对抗） |
 | O（关键角色首登） | story-blueprint（补 soul_fields） → plot-design |
 
 ## 并发与锁
@@ -363,9 +382,9 @@ chapter_meta:
 
 1. 读 `.webnovel-memory/last-write.json` 找到上次写入的文件清单
 2. 对每个文件用 `git checkout HEAD~1 <file>` 或读取 `.webnovel-memory/backup/<chapter>/` 还原
-3. 从 `chapter-log.md` 删除该章摘要
+3. 从 `volume_<VOLUME_NO>_index.md` 删除该章摘要条目
 4. 从 `index/by-*.md` 删除该章号
 5. 从 `foreshadow.md` 撤销本章相关状态变更
-6. 删除 `chapters/<NNNN>.md`
+6. 删除 `chapters/ch<NNNN>.md`
 
 这就要求 STEP 1–7 开始前**备份所有将改动的文件副本到 `.webnovel-memory/backup/<chapter>/`**。

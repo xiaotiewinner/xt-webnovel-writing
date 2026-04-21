@@ -234,8 +234,8 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 
 ### 写正文前的加载
 1. 加载 `author_fingerprint`（偏好动词 / 物象 / 口头禅 / 断句偏好 / 章末钩子偏好）。
-2. 加载 `../references/anti-ai-tells.md` 的 18 主条款（A–R）+ 7 子条款（B+ / C / D-1 / D-2 / D-3 / E+1 / E+2 / G+1 / G+2 / G-细 / H+ / N-细 / P-1 / P-3 / P-4 / Q-1..Q-5 / **R-1..R-3** / **K-补充**）全部规则。
-3. **长篇必须**调用 `webnovel-memory` · LOAD(project_root, target_chapter) 获取记忆快照，把"必须承接钩子 / 禁用句式 / 禁用爽点类型 / 活跃角色当前状态 + soul_fields / 动物独立反应坐标轴 / live 伏笔（top 3） / 上一章'纯功能性角色名单'与'动物纯工具化名单' / 上一章 used-patterns 命中项（definition_style_hits / bold_theme_hits / emotion_token_hits / single_sentence_run_max / long_paragraph_count / signature_明牌超限名单 / setting_reveal_overload_hits / system_prompt_template_hits / coincidence_chain_hits / forced_detour_hits）"全部并入 prompt。
+2. 加载 `../references/anti-ai-tells.md` 的 18 主条款（A–R）+ 7 子条款（B+ / C / D-1 / D-2 / D-3 / E+1 / E+2 / G+1 / G+2 / G-细 / H+ / N-细 / P-1 / P-3 / P-4 / **P-补充2** / Q-1..Q-5 / **R-1..R-3** / **K-补充**）全部规则。
+3. **长篇必须**调用 `webnovel-memory` · LOAD(project_root, target_chapter) 获取记忆快照，把"必须承接钩子 / 禁用句式 / 禁用爽点类型 / 活跃角色当前状态 + soul_fields / 动物独立反应坐标轴 / live 伏笔（top 3） / 上一章'纯功能性角色名单'与'动物纯工具化名单' / 上一章 used-patterns 命中项（definition_style_hits / bold_theme_hits / emotion_token_hits / single_sentence_run_max / long_paragraph_count / signature_明牌超限名单 / setting_reveal_overload_hits / system_prompt_template_hits / coincidence_chain_hits / forced_detour_hits / **cultural_shorthand_clash_hits / withhold_beat_present**）"全部并入 prompt。
 4. **反 O 必现清单**：下列任一角色的 `soul_fields` 至少 1 条必须作为**本章必现项**写进 prompt：
    - 本章出场 ≥ 2 次的每个有名角色
    - **本章首次登场的关键角色（主角 / POV / top 5 配角 / 核心反派 / 女主男主）——无论出场几次**
@@ -247,6 +247,13 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
    - 情绪词（恐惧 / 愤怒 / 警惕 / 保护欲 / 饥饿 等）禁止独立成段、禁止以"词 + 句号"形式连列
    - 设定专有名词首次出现禁止在同一对话 / 叙述段内携带 ≥ 2 项结构性信息（规模 / 性质 / 运作 / 历史任选其二）
    - 上一章 used-patterns 命中项转为本章禁用词：上一章 `definition_style_hits ≥ 2` 则本章该结构全部禁；上一章 `bold_theme_hits ≥ 1` 则本章全章禁粗体；上一章 signature 明牌 ≥ 2 则本章该 signature 只许现象级出现
+
+### 写正文前的五项闸门（未通过不得开写）
+1. **词簇闸门**：`lexeme_cluster_repeat_hits` 近 3 章均值 < 4 且 `abstract_aura_token_density_per_1k` 近 3 章均值 ≤ 10；否则先做“抽象词→具象细节”替换再开写。
+2. **模板闸门**：`system_prompt_template_hits` 近 3 章均值 < 3；否则先重写本章系统提示策略（残片化+去同构）。
+3. **巧合闸门**：本章章纲 `coincidence_chain_hits` 预估 ≤ 3 且 `forced_detour_hits` 预估 = 0；否则先补主动决策代价节点。
+4. **技术闸门**：本章章纲 `tech_jargon_density_per_1k` 预估 ≤ 8 且 `tech_exposition_block_over_120` 预估 ≤ 1；否则先把技术解释拆为体验+残缺信息。
+5. **想象力 shorthand 闸门（反 P-补充2）**：章纲内须预标 ≥1 处「读者共有文化/历史/典故/俗语符号 × 具体对抗动作」并置落点，且 ≥1 处「抬高预期 → 拒展示/留白收束」节拍落点；禁止纯【】标题式点名而无动作承载。近 2 章 `cultural_shorthand_clash_hits` 均为 0 时本章该闸门**强制通过档**（预标必须可验收）。
 
 ### 写正文时的硬手法（全部是反 AI 味 A–R 的落地）
 
@@ -292,6 +299,9 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 7r. **章首抓眼 + 好奇缝隙（A-补充 · 回滚级）**：章首 ≈200 字内必须有 **刺点钉子**（非常规关系或称谓 + 非常规动作/声音/物件并置，参见 `anti-ai-tells` 小姨子范式）；全章每 800–1200 字须有 ≥1 处**好奇缝隙**（具体信息先抛出、滞后数行再收一小步）；连续纯氛围 / 纯位移段 **≥ 6** → **回滚级 FAIL**。`opening_hook_spike` / `curiosity_gap_markers` / `flat_atmosphere_streak_max` 落盘到 `chapter_meta.stats`。
 7s. **系统提示去模板化（G-补充）**：同构提示模板（`【X：Y——Z】`）单章命中 ≤ 2；第 3 次起必须改为角色化残片提示。`system_prompt_template_hits ≥ 5` → **回滚级 FAIL**。
 7t. **巧合闭环限速（P-补充）**：连续偶然驱动节点 `coincidence_chain_hits ≤ 3`；达到 3 后后续推进必须改为主角主动决策并付代价。`coincidence_chain_hits ≥ 6` 或 `forced_detour_hits ≥ 2` → **回滚级 FAIL**。
+7u. **技术白皮书化限额（G-补充2）**：技术术语密度 `tech_jargon_density_per_1k ≤ 8`；技术说明长段（>120字）`tech_exposition_block_over_120 ≤ 1`；同段完整讲完触发→过程→结果的 `tech_mechanism_closure_hits ≤ 1`。`tech_jargon_density_per_1k > 12` 或 `tech_exposition_block_over_120 ≥ 3` → **回滚级 FAIL**。
+7v. **词簇复读限额（B-补充）**：高频抽象气场词簇复读 `lexeme_cluster_repeat_hits ≤ 3`，抽象词密度 `abstract_aura_token_density_per_1k ≤ 10`；`lexeme_cluster_repeat_hits ≥ 7` 或 `abstract_aura_token_density_per_1k > 18` → **回滚级 FAIL**。
+7w. **文化 shorthand 贴脸对抗 + 收束节拍（P-补充2 · 回滚级 / 硬门）**：全章须 `cultural_shorthand_clash_hits ≥ 1`（共有符号与对抗动作同场并置，可不用【】；**≠ 旁白堆原创专名讲设定**，与 G-细不冲突）；须 `withhold_beat_present == true`（至少一处抬高预期后的拒展示/留白/一句挡回）。`cultural_shorthand_clash_hits == 0` → **回滚级 FAIL**；`withhold_beat_present == false` → **FAIL（补收束后才可 PERSIST）**。连续 2 章 `cultural == 0` → 下一章本项按回滚级硬门执行（见 `anti-ai-tells` P-补充2）。
 
 #### 情绪与反应层
 8. 情绪表达每用一次形容词必须紧跟一个具体动作或生理反应作为证据。（反 E）
@@ -371,6 +381,13 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 - `system_prompt_template_hits` ≤ 2（反 G-补充；≥ 5 回滚级）
 - `coincidence_chain_hits` ≤ 3（反 P-补充；≥ 6 回滚级）
 - `forced_detour_hits` = 0（反 P-补充；≥ 2 回滚级）
+- `tech_jargon_density_per_1k` ≤ 8（反 G-补充2；> 12 回滚级）
+- `tech_exposition_block_over_120` ≤ 1（反 G-补充2；≥ 3 回滚级）
+- `tech_mechanism_closure_hits` ≤ 1（反 G-补充2；≥ 2 FAIL）
+- `lexeme_cluster_repeat_hits` ≤ 3（反 B-补充；≥ 7 回滚级）
+- `abstract_aura_token_density_per_1k` ≤ 10（反 B-补充；> 18 回滚级）
+- `cultural_shorthand_clash_hits` ≥ 1（反 P-补充2；= 0 回滚级）
+- `withhold_beat_present` = true（反 P-补充2；false 为 FAIL，补收束后重检）
 
 **反 O 专项必跑**（回滚级）：
 - **灵魂渗透计数**：本章出场 ≥ 2 次的每个有名角色 + 首次登场的关键角色都必须 ≥ 1 次灵魂渗透（可删除不影响剧情）；缺位 → 该角色进入"纯功能性名单"，当章整体判 FAIL，回滚 story-blueprint 补 soul_fields
@@ -396,7 +413,8 @@ PASS 通过后，调用 `webnovel-memory` · PERSIST 执行 8 步落盘（含 ST
 - [ ] （正文模式）本章转场每次都已声明桥类型与锚点？禁用转场词 = 0？瞬移切换 = 0？
 - [ ] （正文模式）闲笔 ≥ 5 处且剧情无关 ≥ 2？配角自主议题 ≥ 80 字 ≥ 1 位？
 - [ ] （正文模式）怪异预算 ≥ 1 + 延迟兑付 ≥ 1？
-- [ ] （正文模式）上述统计清单**全部** PASS？（含 R 四项 + K-补充 + **O-在场 meta_language** + **A-补充 钩子/缝隙/纯氛围峰**）
+- [ ] （正文模式）**P-补充2**：`cultural_shorthand_clash_hits` ≥ 1 且 `withhold_beat_present` = true？
+- [ ] （正文模式）上述统计清单**全部** PASS？（含 R 四项 + K-补充 + **O-在场 meta_language** + **A-补充 钩子/缝隙/纯氛围峰** + **P-补充2**）
 - [ ] （正文模式）作者指纹字段在文本中可被识别到至少 2 条？
 - [ ] （项目目录）所有写入路径都落在 `<project_root>/{book.yaml,fingerprint.md,bible/,characters/,arcs/,chapters/,state/,index/,.webnovel-memory/}`？
 - [ ] （长篇）已跑 webnovel-memory · LOAD 与 PERSIST 且一致性检查 PASS？
