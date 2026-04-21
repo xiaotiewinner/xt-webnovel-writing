@@ -19,7 +19,7 @@ mode: draft | revise | diagnose
 3. `bible/power-system.md` + `bible/glossary.md` → 避免设定自相矛盾
 4. `state/foreshadow.md`（只取 `live` 行） → 不能遗忘的伏笔
 5. `state/used-excitement.md`（最近 10 行，含 `interruption` 列） → 避免同类爽点堆叠 + 抽取本章必须使用的打断类型
-6. `state/used-patterns.md` → 当前禁用句式 / 动词清单 + 反 AI 味监控面板最近 3 章状态（主语分布 / 段长熵 / 非理性噪声 / 质量方差 / 反派套餐 / 灵魂渗透缺位名单 / 动物独立反应缺位名单 / **definition_style_hits 近 3 章累计 / bold_theme_hits 近 3 章累计 / emotion_token_solo_paragraphs 近 3 章累计 / single_sentence_run_max 近 3 章累计 / single_sentence_para_ratio 近 3 章 / long_paragraph_count 近 3 章累计 / signature_明牌超限名单 / setting_reveal_overload_hits / transition_types 近 3 章分布 / filler_count 近 3 章 / side_char_autonomous_agenda_count 近 3 章 / waste_option_ratio 近 3 章 / meta_language_hits 近 3 章 / opening_hook_spike 近 3 章 / curiosity_gap_markers 近 3 章均值 / flat_atmosphere_streak_max 近 3 章峰值**）
+6. `state/used-patterns.md` → 当前禁用句式 / 动词清单 + 反 AI 味监控面板最近 3 章状态（主语分布 / 段长熵 / 非理性噪声 / 质量方差 / 反派套餐 / 灵魂渗透缺位名单 / 动物独立反应缺位名单 / **definition_style_hits 近 3 章累计 / bold_theme_hits 近 3 章累计 / emotion_token_solo_paragraphs 近 3 章累计 / single_sentence_run_max 近 3 章累计 / single_sentence_para_ratio 近 3 章 / long_paragraph_count 近 3 章累计 / signature_明牌超限名单 / setting_reveal_overload_hits / transition_types 近 3 章分布 / filler_count 近 3 章 / side_char_autonomous_agenda_count 近 3 章 / waste_option_ratio 近 3 章 / meta_language_hits 近 3 章 / opening_hook_spike 近 3 章 / curiosity_gap_markers 近 3 章均值 / flat_atmosphere_streak_max 近 3 章峰值 / system_prompt_template_hits 近 3 章 / coincidence_chain_hits 近 3 章 / forced_detour_hits 近 3 章**）
 7. `state/power-level.md` → 主角当前修为状态
 8. `state/open-threads.md` → 未收束矛盾
 9. `state/anti-trope-log.md`（最近 3 章）→ 最近使用的"真实接续"列表（避免复用）+ 最近的怪异预算 / 延迟兑付清单（避免同质化）

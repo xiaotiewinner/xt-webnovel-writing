@@ -235,7 +235,7 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 ### 写正文前的加载
 1. 加载 `author_fingerprint`（偏好动词 / 物象 / 口头禅 / 断句偏好 / 章末钩子偏好）。
 2. 加载 `../references/anti-ai-tells.md` 的 18 主条款（A–R）+ 7 子条款（B+ / C / D-1 / D-2 / D-3 / E+1 / E+2 / G+1 / G+2 / G-细 / H+ / N-细 / P-1 / P-3 / P-4 / Q-1..Q-5 / **R-1..R-3** / **K-补充**）全部规则。
-3. **长篇必须**调用 `webnovel-memory` · LOAD(project_root, target_chapter) 获取记忆快照，把"必须承接钩子 / 禁用句式 / 禁用爽点类型 / 活跃角色当前状态 + soul_fields / 动物独立反应坐标轴 / live 伏笔（top 3） / 上一章'纯功能性角色名单'与'动物纯工具化名单' / 上一章 used-patterns 命中项（definition_style_hits / bold_theme_hits / emotion_token_hits / single_sentence_run_max / long_paragraph_count / signature_明牌超限名单 / setting_reveal_overload_hits）"全部并入 prompt。
+3. **长篇必须**调用 `webnovel-memory` · LOAD(project_root, target_chapter) 获取记忆快照，把"必须承接钩子 / 禁用句式 / 禁用爽点类型 / 活跃角色当前状态 + soul_fields / 动物独立反应坐标轴 / live 伏笔（top 3） / 上一章'纯功能性角色名单'与'动物纯工具化名单' / 上一章 used-patterns 命中项（definition_style_hits / bold_theme_hits / emotion_token_hits / single_sentence_run_max / long_paragraph_count / signature_明牌超限名单 / setting_reveal_overload_hits / system_prompt_template_hits / coincidence_chain_hits / forced_detour_hits）"全部并入 prompt。
 4. **反 O 必现清单**：下列任一角色的 `soul_fields` 至少 1 条必须作为**本章必现项**写进 prompt：
    - 本章出场 ≥ 2 次的每个有名角色
    - **本章首次登场的关键角色（主角 / POV / top 5 配角 / 核心反派 / 女主男主）——无论出场几次**
@@ -290,6 +290,8 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 7p. **场景块空行分段（K-补充）**：时间跨 ≥ 30 分钟或换建筑级空间 → 正文 **Markdown 空一行** 起新段（时间 / 地点锚可单独成行再续叙述）。`k_scene_block_violations` ≥ 5 → **回滚级 FAIL**。
 7q. **元叙事禁入（O-在场 · 回滚级）**：叙述 / 对白 / 内心**禁止**出现「上一章 / 下一章 / 本章 / 读者 / 作者 / 弹幕 / 评论区」等书籍体外坐标。人物只知道故事内时间——用「刚才 / 昨天夜里 / 前一阵 / 上次点开时」。`meta_language_hits ≥ 1` → **回滚级 FAIL**。
 7r. **章首抓眼 + 好奇缝隙（A-补充 · 回滚级）**：章首 ≈200 字内必须有 **刺点钉子**（非常规关系或称谓 + 非常规动作/声音/物件并置，参见 `anti-ai-tells` 小姨子范式）；全章每 800–1200 字须有 ≥1 处**好奇缝隙**（具体信息先抛出、滞后数行再收一小步）；连续纯氛围 / 纯位移段 **≥ 6** → **回滚级 FAIL**。`opening_hook_spike` / `curiosity_gap_markers` / `flat_atmosphere_streak_max` 落盘到 `chapter_meta.stats`。
+7s. **系统提示去模板化（G-补充）**：同构提示模板（`【X：Y——Z】`）单章命中 ≤ 2；第 3 次起必须改为角色化残片提示。`system_prompt_template_hits ≥ 5` → **回滚级 FAIL**。
+7t. **巧合闭环限速（P-补充）**：连续偶然驱动节点 `coincidence_chain_hits ≤ 3`；达到 3 后后续推进必须改为主角主动决策并付代价。`coincidence_chain_hits ≥ 6` 或 `forced_detour_hits ≥ 2` → **回滚级 FAIL**。
 
 #### 情绪与反应层
 8. 情绪表达每用一次形容词必须紧跟一个具体动作或生理反应作为证据。（反 E）
@@ -336,7 +338,7 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 ### 正文输出前自检
 生成后，agent 内部对 **A–R 主条款 + B / E / G / H / N / D / P / Q 的 7 个子条款**（共 18 主 + 7 子 = 25 项）逐项自打 PASS/WARN/FAIL/回滚级 FAIL，命中任一 FAIL 则重写当章，命中回滚级 FAIL 则退回对应 workflow。重写 2 轮仍未通过 → 交付时把命中项与原因一起告知用户。
 
-另外必跑下列统计项（**全部**必须 PASS 才能 PERSIST；当前清单共 29 行）：
+另外必跑下列统计项（**全部**必须 PASS 才能 PERSIST）：
 - `subject_top1_ratio` ≤ 40%（top-1 主语段落占比）
 - `paragraph_length_stdev` ≥ 8 字（连续 5 段）
 - `excitement_interruption`：本章每条爽点至少标注一种 `delay` / `denied` / `cost`
@@ -366,6 +368,9 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 - `opening_hook_spike` = true（反 A-补充；false 回滚级）
 - `curiosity_gap_markers` ≥ max(2, chapter_word_count // 1200)（反 A-补充；不足回滚级）
 - `flat_atmosphere_streak_max` ≤ 5（反 A-补充；≥ 6 回滚级）
+- `system_prompt_template_hits` ≤ 2（反 G-补充；≥ 5 回滚级）
+- `coincidence_chain_hits` ≤ 3（反 P-补充；≥ 6 回滚级）
+- `forced_detour_hits` = 0（反 P-补充；≥ 2 回滚级）
 
 **反 O 专项必跑**（回滚级）：
 - **灵魂渗透计数**：本章出场 ≥ 2 次的每个有名角色 + 首次登场的关键角色都必须 ≥ 1 次灵魂渗透（可删除不影响剧情）；缺位 → 该角色进入"纯功能性名单"，当章整体判 FAIL，回滚 story-blueprint 补 soul_fields

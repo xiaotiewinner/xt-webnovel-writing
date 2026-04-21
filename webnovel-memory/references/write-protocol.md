@@ -96,6 +96,9 @@ chapter_meta:
     opening_hook_spike: true                 # 反 A-补充 · 章首 ≈200 字内是否出现「刺点钉子」（非常规关系/动作/物件并置）
     curiosity_gap_markers: 3                 # 反 A-补充 · 全章「具体信息滞后解释」缝隙处数；需 ≥ max(2, chapter_word_count // 1200)
     flat_atmosphere_streak_max: 4            # 反 A-补充 · 连续「纯氛围/纯位移/纯等待」段数峰值（需 ≤ 5；≥ 6 → 回滚）
+    system_prompt_template_hits: 1           # 反 G-补充 · 同构系统提示模板命中（如【X：Y——Z】；需 ≤ 2；≥ 5 → 回滚）
+    coincidence_chain_hits: 2                # 反 P-补充 · 连续偶然驱动节点数（需 ≤ 3；≥ 6 → 回滚）
+    forced_detour_hits: 0                    # 反 P-补充 · 主角可回头但被叙事强导向单一路径次数（需 ≤ 1；≥ 2 → 回滚）
   antagonist_reactions:                     # 反 E-扩展
     - name: 柳长风
       template_hits: 2                      # 标准套餐（脸色/冷汗/胸口/沉默/"不可能"）命中数
@@ -209,6 +212,8 @@ chapter_meta:
    - **场景块面板（反 K-补充）**：写入 `k_scene_block_violations`；`≥ 3` → 标记"下一章时空跳变强制空行分段"
    - **元叙事面板（反 O-在场）**：写入 `meta_language_hits`；`≥ 1` → 标记"下一章全文禁上一章/读者/作者等词 + 本章回滚"
    - **抓眼节奏面板（反 A-补充）**：写入 `opening_hook_spike` / `curiosity_gap_markers` / `flat_atmosphere_streak_max`；`opening_hook_spike == false` 或 `curiosity_gap` 低于阈值 或 `flat_atmosphere_streak_max ≥ 6` → 标记"本章已触回滚阈值须整体重写"；`flat_atmosphere_streak_max == 5` → 标记"下一章减少纯氛围连段并补好奇缝隙"
+   - **系统提示模板面板（反 G-补充）**：写入 `system_prompt_template_hits`；`≥ 3` → 标记"下一章系统提示改残片化，不得复用同构模板"
+   - **巧合闭环面板（反 P-补充）**：写入 `coincidence_chain_hits` / `forced_detour_hits`；`coincidence ≥ 4` 或 `detour ≥ 1` → 标记"下一章强制增加主动决策+代价节点"
 6. `state/anti-trope-log.md`：按章追加一条：
    ```markdown
    ## 第 87 章
@@ -283,6 +288,7 @@ chapter_meta:
    - `stats.emotion_token_solo_paragraphs ≤ 1` 且 `stats.emotion_token_bold == 0`，**emotion_token_bold ≥ 1 → 回滚级 FAIL**（反 E）
    - `stats.setting_reveal_overload_hits == 0`（反 G-细）
    - `stats.signature_ming_pai_hits ≤ 1`（反 E+2）
+   - `stats.system_prompt_template_hits ≤ 2`，**≥ 5 → 回滚级 FAIL**（反 G-补充）
 
    **D. 角色灵魂硬门**（反 O · 回滚级）
    - 每个 `soul_bleed` 条目（`appearances_in_chapter ≥ 2`）：`bleed_count ≥ 1` 且 `deletion_verified == true`
@@ -304,6 +310,8 @@ chapter_meta:
    - `stats.anti_trope_actual_rank` 必须 ≥ 4 或为清单外，**≤ 3 → 回滚级 FAIL**（反 P-4 · 退回 plot-design 重做预声明）
    - `stats.weirdness_budget_count ≥ 1`，**= 0 → 回滚级 FAIL**（反 P-1 · 退回 story-blueprint 补世界观）
    - `stats.deferred_setup_count ≥ 1`（反 P-3）
+   - `stats.coincidence_chain_hits ≤ 3`，**≥ 6 → 回滚级 FAIL**（反 P-补充 · 巧合闭环过快）
+   - `stats.forced_detour_hits ≤ 1`，**≥ 2 → 回滚级 FAIL**（反 P-补充 · 强导向）
 
    **G. 转场硬门**（反 Q · 回滚级）
    - `stats.transition_count == len(stats.transition_types)` 且 `stats.transition_bridge_declared == true`（每次切换都必须声明桥）
