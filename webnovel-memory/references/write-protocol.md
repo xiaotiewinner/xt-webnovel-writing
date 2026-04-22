@@ -96,6 +96,8 @@ chapter_meta:
     opening_hook_spike: true                 # 反 A-补充 · 章首 ≈200 字内是否出现「刺点钉子」（非常规关系/动作/物件并置）
     curiosity_gap_markers: 3                 # 反 A-补充 · 全章「具体信息滞后解释」缝隙处数；需 ≥ max(2, chapter_word_count // 1200)
     flat_atmosphere_streak_max: 4            # 反 A-补充 · 连续「纯氛围/纯位移/纯等待」段数峰值（需 ≤ 5；≥ 6 → 回滚）
+    series_opening_strike_count: 2           # 反 A-补充 · 首章前500字抓手数（仅 chapter 1 强制；需 ≥ 2）
+    opening_question_debt_present: true      # 反 A-补充 · 首章是否留下未全兑付的具体追问债（仅 chapter 1 强制）
     system_prompt_template_hits: 1           # 反 G-补充 · 同构系统提示模板命中（如【X：Y——Z】；需 ≤ 2；≥ 5 → 回滚）
     coincidence_chain_hits: 2                # 反 P-补充 · 连续偶然驱动节点数（需 ≤ 3；≥ 6 → 回滚）
     forced_detour_hits: 0                    # 反 P-补充 · 主角可回头但被叙事强导向单一路径次数（需 ≤ 1；≥ 2 → 回滚）
@@ -104,8 +106,31 @@ chapter_meta:
     tech_mechanism_closure_hits: 0           # 反 G-补充2 · 同段完整触发→过程→结果闭环次数（需 ≤ 1；≥ 2 → FAIL）
     lexeme_cluster_repeat_hits: 2            # 反 B-补充 · 高频抽象词簇复读命中（需 ≤ 3；≥ 7 → 回滚）
     abstract_aura_token_density_per_1k: 7    # 反 B-补充 · 抽象气场词密度/千字（需 ≤ 10；> 18 → 回滚）
+    near_duplicate_paragraph_pairs: 0        # 反 B-补充2 · 近重复段落对数（需 = 0；>=1 FAIL；>=2 回滚）
+    max_paragraph_similarity: 0.42           # 反 B-补充2 · 章内段落最大相似度（需 < 0.88；>=0.92 回滚）
+    duplicate_dialogue_openers: 0            # 反 B-补充2 · 重复对话开场且无信息增量（需 = 0）
     cultural_shorthand_clash_hits: 2           # 反 P-补充2 · 共有文化符号贴进对抗动作并置次数（需 ≥ 1；= 0 → 回滚）
     withhold_beat_present: true               # 反 P-补充2 · 抬高预期后的拒展示/留白收束（需 true；false → FAIL）
+    trope_chain_hits: 2                      # 反 P-补充3 · 模板剧情节点命中数（>=4 FAIL）
+    trope_chain_max_run: 1                   # 反 P-补充3 · 连续模板节点最长链（>=3 且怪异预算=0 回滚）
+    predictability_score: low                # 反 P-补充3 · 低/中/高（high 需重排节拍）
+    simile_density_per_1k: 6                 # 反 B-补充3 · 比喻密度（>10 WARN；>14 FAIL）
+    simile_cluster_max: 2                    # 反 B-补充3 · 连续比喻峰值（>=4 FAIL）
+    simile_pattern_repeat_hits: 1            # 反 B-补充3 · 同构比喻句法重复（>=3 FAIL）
+    hyper_precision_detail_hits: 0           # 反 B-补充4 · 无工具高精度感知命中（>=3 FAIL）
+    noninstrumental_numeric_density_per_1k: 3 # 反 B-补充4 · 无仪器数字密度/千字（>10 FAIL）
+    signature_tick_overuse_hits: 0           # 反 E-扩展3 · 标志动作过度重复（>=1 FAIL）
+    chapter_edge_tick_reuse: false           # 反 E-扩展3 · 章首/章尾同 tick 复用（近3章重复则 FAIL）
+    system_option_matrix_hits: 0             # 反 G-补充3 · A/B/C/D 等完整选项矩阵命中（>=2 FAIL）
+    bracket_system_block_count: 2            # 反 G-补充3 · 【系统块】数量（>=7 FAIL）
+    multi_genre_graft_count: 2               # 反 P-补充4 · 同章强曝光题材轨道数（首章>=3 FAIL）
+    graft_overload_hits: 0                   # 反 P-补充4 · 无代价硬缝合命中（>=1 FAIL；首章回滚级）
+    foreshadow_pack_density_per_1k: 2        # 反 P-补充5 · 千字高权重伏笔数（>5 FAIL）
+    high_priority_foreshadow_count: 2        # 反 P-补充5 · 高优先伏笔数（>=4 FAIL）
+    golden_closing_line_hits: 0              # 反 N-补充 · 金句式收束命中（章尾命中权重更高）
+    maxim_style_summary_hits: 0              # 反 N-补充 · 格言体总结句命中（>=2 FAIL）
+    contrastive_negation_hits: 0             # 反 R-补充 · 「不是A，是B」对照句命中（>=2 FAIL）
+    keyzone_contrastive_negation_hits: 0     # 反 R-补充 · 章首/章尾/高潮区命中（>=1 FAIL）
   antagonist_reactions:                     # 反 E-扩展
     - name: 柳长风
       template_hits: 2                      # 标准套餐（脸色/冷汗/胸口/沉默/"不可能"）命中数
@@ -219,11 +244,22 @@ chapter_meta:
    - **场景块面板（反 K-补充）**：写入 `k_scene_block_violations`；`≥ 3` → 标记"下一章时空跳变强制空行分段"
    - **元叙事面板（反 O-在场）**：写入 `meta_language_hits`；`≥ 1` → 标记"下一章全文禁上一章/读者/作者等词 + 本章回滚"
    - **抓眼节奏面板（反 A-补充）**：写入 `opening_hook_spike` / `curiosity_gap_markers` / `flat_atmosphere_streak_max`；`opening_hook_spike == false` 或 `curiosity_gap` 低于阈值 或 `flat_atmosphere_streak_max ≥ 6` → 标记"本章已触回滚阈值须整体重写"；`flat_atmosphere_streak_max == 5` → 标记"下一章减少纯氛围连段并补好奇缝隙"
+   - **首章开胃面板（反 A-补充 · chapter 1 特判）**：若本章为 `chapter == 1`，强制写入 `series_opening_strike_count` / `opening_question_debt_present`；`strike_count < 2` 或 `opening_question_debt_present == false` → 标记"首章抓手不足，回滚级重写开头"
    - **系统提示模板面板（反 G-补充）**：写入 `system_prompt_template_hits`；`≥ 3` → 标记"下一章系统提示改残片化，不得复用同构模板"
    - **巧合闭环面板（反 P-补充）**：写入 `coincidence_chain_hits` / `forced_detour_hits`；`coincidence ≥ 4` 或 `detour ≥ 1` → 标记"下一章强制增加主动决策+代价节点"
    - **技术说明面板（反 G-补充2）**：写入 `tech_jargon_density_per_1k` / `tech_exposition_block_over_120` / `tech_mechanism_closure_hits`；超阈值则标记"下一章技术段先写体感与误判，禁止白皮书化直讲"
    - **词簇复读面板（反 B-补充）**：写入 `lexeme_cluster_repeat_hits` / `abstract_aura_token_density_per_1k`；超阈值则标记"下一章先替换抽象词为具象细节"
+   - **近重复段面板（反 B-补充2）**：写入 `near_duplicate_paragraph_pairs` / `max_paragraph_similarity` / `duplicate_dialogue_openers`；`pairs >= 1` 或 `duplicate_dialogue_openers >= 1` → 标记"下一章先做段落去重再开写"；`pairs >= 2` 或 `similarity >= 0.92` → 本章回滚级
+   - **比喻密度面板（反 B-补充3）**：写入 `simile_density_per_1k` / `simile_cluster_max` / `simile_pattern_repeat_hits`；超阈值则标记"下一章降低同构比喻并改为动作证据"
+   - **数值化感知面板（反 B-补充4）**：写入 `hyper_precision_detail_hits` / `noninstrumental_numeric_density_per_1k`；超阈值则标记"下一章把伪精确数字改成体感表达"
    - **文化 shorthand 面板（反 P-补充2）**：写入 `cultural_shorthand_clash_hits` / `withhold_beat_present`；`cultural == 0` → 标记"本章已触回滚阈值" + **回滚级硬门**；`withhold == false` → 标记"下一章必须补一处抬高预期后的拒展示/留白收束"；连续 2 章 `cultural == 0` → 标记"下一章文化符号贴脸对抗为回滚级硬门"
+   - **模板链条面板（反 P-补充3）**：写入 `trope_chain_hits` / `trope_chain_max_run` / `predictability_score`；`trope_hits >= 4` 或 `predictability == high` → 标记"下一章强制插入非收益扰动节点并拆开模板链"
+   - **系统面板面板（反 G-补充3）**：写入 `system_option_matrix_hits` / `bracket_system_block_count`；超阈值则标记"下一章系统信息必须碎片化"
+   - **跨题材缝合面板（反 P-补充4）**：写入 `multi_genre_graft_count` / `graft_overload_hits`；首章若超阈值标记"回滚级重写开局节拍"
+   - **伏笔装载面板（反 P-补充5）**：写入 `foreshadow_pack_density_per_1k` / `high_priority_foreshadow_count`；超阈值标记"下一章降伏笔装载密度"
+   - **金句收束面板（反 N-补充）**：写入 `golden_closing_line_hits` / `maxim_style_summary_hits`；章尾命中则标记"下章改用动作后果收束"
+   - **对照句面板（反 R-补充）**：写入 `contrastive_negation_hits` / `keyzone_contrastive_negation_hits`；关键段命中则标记"下章关键段禁用不是X是Y"
+   - **标志动作面板（反 E-扩展3）**：写入 `signature_tick_overuse_hits` / `chapter_edge_tick_reuse`；`tick_overuse >= 1` → 标记"下一章更换角色标志动作表达"
 6. `state/anti-trope-log.md`：按章追加一条：
    ```markdown
    ## 第 87 章
@@ -305,6 +341,17 @@ chapter_meta:
    - `stats.tech_mechanism_closure_hits ≤ 1`，**≥ 2 → FAIL**（反 G-补充2）
    - `stats.lexeme_cluster_repeat_hits ≤ 3`，**≥ 7 → 回滚级 FAIL**（反 B-补充）
    - `stats.abstract_aura_token_density_per_1k ≤ 10`，**> 18 → 回滚级 FAIL**（反 B-补充）
+   - `stats.near_duplicate_paragraph_pairs == 0`，**>= 2 → 回滚级 FAIL**（反 B-补充2）
+   - `stats.max_paragraph_similarity < 0.88`，**>= 0.92 → 回滚级 FAIL**（反 B-补充2）
+   - `stats.duplicate_dialogue_openers == 0`（反 B-补充2）
+   - `stats.simile_density_per_1k ≤ 10`，**> 14 → FAIL**（反 B-补充3）
+   - `stats.simile_cluster_max ≤ 3`，**>= 4 → FAIL**（反 B-补充3）
+   - `stats.simile_pattern_repeat_hits ≤ 2`，**>= 3 → FAIL**（反 B-补充3）
+   - `stats.hyper_precision_detail_hits ≤ 1`，**>= 3 → FAIL**（反 B-补充4）
+   - `stats.noninstrumental_numeric_density_per_1k ≤ 6`，**> 10 → FAIL**（反 B-补充4）
+   - `stats.signature_tick_overuse_hits == 0`（反 E-扩展3）
+   - `stats.system_option_matrix_hits ≤ 1`，**>= 2 → FAIL**（反 G-补充3）
+   - `stats.bracket_system_block_count ≤ 4`，**>= 7 → FAIL**（反 G-补充3）
 
    **D. 角色灵魂硬门**（反 O · 回滚级）
    - 每个 `soul_bleed` 条目（`appearances_in_chapter ≥ 2`）：`bleed_count ≥ 1` 且 `deletion_verified == true`
@@ -328,6 +375,13 @@ chapter_meta:
    - `stats.deferred_setup_count ≥ 1`（反 P-3）
    - `stats.cultural_shorthand_clash_hits ≥ 1`，**= 0 → 回滚级 FAIL**（反 P-补充2 · 退回 plot-design 补「共有符号 × 对抗动作」并置）
    - `stats.withhold_beat_present == true`，**== false → FAIL**（反 P-补充2 · 补一处「抬高预期→拒展示/收束」后才可 PERSIST）
+   - `stats.trope_chain_hits < 4`，**>= 4 → FAIL**（反 P-补充3）
+   - `stats.trope_chain_max_run < 3` 或 `stats.weirdness_budget_count ≥ 1`，**连链>=3 且怪异预算=0 → 回滚级 FAIL**（反 P-补充3）
+   - `stats.predictability_score != high`（反 P-补充3）
+   - `stats.multi_genre_graft_count ≤ 2`，**>= 3 → FAIL**（反 P-补充4）
+   - `stats.graft_overload_hits == 0`，**>= 1 → FAIL**（反 P-补充4；chapter 1 命中按回滚级）
+   - `stats.foreshadow_pack_density_per_1k ≤ 3`，**> 5 → FAIL**（反 P-补充5）
+   - `stats.high_priority_foreshadow_count ≤ 2`，**>= 4 → FAIL**（反 P-补充5）
    - `stats.coincidence_chain_hits ≤ 3`，**≥ 6 → 回滚级 FAIL**（反 P-补充 · 巧合闭环过快）
    - `stats.forced_detour_hits ≤ 1`，**≥ 2 → 回滚级 FAIL**（反 P-补充 · 强导向）
 
@@ -341,11 +395,18 @@ chapter_meta:
    - `stats.exclusion_enum_hits == 0`，**≥ 2 → 回滚级 FAIL**；**== 1 且 `stats.definition_style_hits ≥ 1` → 回滚级 FAIL**（R-1 与 G+1 同段叠加）
    - `stats.tutorial_microstep_chain_max ≤ 4`，**≥ 5 → 回滚级 FAIL**（反 R-2）
    - `stats.catalog_afterthought_pairs == 0`，**≥ 1 → 回滚级 FAIL**（反 R-3 · 验收式双短句）
+   - `stats.contrastive_negation_hits ≤ 1`，**>= 2 → FAIL**（反 R-补充）
+   - `stats.keyzone_contrastive_negation_hits == 0`，**>= 1 → FAIL**（反 R-补充；chapter 1 命中按回滚级）
+
+   **H-2. 收束腔调硬门**（反 N-补充）
+   - `stats.golden_closing_line_hits ≤ 1`
+   - `stats.maxim_style_summary_hits ≤ 1`，**>= 2 → FAIL**（格言体过密）
 
    **I. 章首钩子与好奇缝隙硬门**（反 **A-补充** · 回滚级）
    - `stats.opening_hook_spike == true`，**== false → 回滚级 FAIL**（退回 plot-design 重写章首 ≈200 字）
    - `stats.curiosity_gap_markers ≥ max(2, stats.chapter_word_count // 1200)`（整数除；短文仍至少 2 处），**不足 → 回滚级 FAIL**
    - `stats.flat_atmosphere_streak_max ≤ 5`，**≥ 6 → 回滚级 FAIL**（连续纯氛围段过长）
+   - 若本章 `chapter == 1`：`stats.series_opening_strike_count ≥ 2` 且 `stats.opening_question_debt_present == true`，任一不满足 → **回滚级 FAIL**（退回 plot-design 重写首章开头）
 
 任一"普通硬门"失败 → 回滚写入，要求 `webnovel-plot-design` 重写当章。
 任一"回滚级 FAIL" → 回滚写入 + 强制回退到指定 workflow（见对应硬门注释）+ 标记该章必须整体重做，不允许仅局部修补。
@@ -363,6 +424,8 @@ chapter_meta:
 | **O-在场（元叙事）** / **A-补充（章首钩子·好奇缝隙）** | plot-design |
 | P-1（怪异预算） | story-blueprint（补世界观） → plot-design |
 | **P-补充2**（`cultural_shorthand_clash_hits == 0`） | plot-design（补文化 shorthand 贴脸对抗） |
+| **B-补充2**（近重复段 `pairs >= 2` 或 `similarity >= 0.92`） | plot-design（先段落去重） |
+| **P-补充3**（模板链 `max_run >=3` 且怪异预算=0） | plot-design（重排节拍并插入扰动） |
 | O（关键角色首登） | story-blueprint（补 soul_fields） → plot-design |
 
 ## 并发与锁

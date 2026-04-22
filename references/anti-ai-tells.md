@@ -58,6 +58,10 @@
 **生成期规则**：
 - 写章首前自问：**如果删掉环境描写，还剩什么让读者必须看第二眼？** 若答不出 → 重写章首，先上钉子再铺街景。
 - `chapter_meta.stats` 必填：`opening_hook_spike`（bool）、`curiosity_gap_markers`（int）、`flat_atmosphere_streak_max`（int）、`chapter_word_count`（用于阈值；可由 `chapter_body` 字数估算）。
+- **新书首章特判（chapter 1 硬门）**：
+  - 首章前 ≈500 字内必须满足：`series_opening_strike_count >= 2`（至少两类抓手并置：非常规关系/非常规动作声音/非常规物件处境）。
+  - 首章必须 `opening_question_debt_present == true`（留下一个当章不完全兑付、但足够具体的追问债）。
+  - 任一不满足都按 **回滚级 FAIL** 处理，不允许以“后面再热起来”豁免。
 
 ---
 
@@ -98,6 +102,60 @@
 **生成期规则**：
 - 单章 `lexeme_cluster_repeat_hits ≤ 3`。
 - `abstract_aura_token_density_per_1k ≤ 10`，超阈值必须以具象句替换至少 30%。
+
+### B-补充2 · 近重复段落（并入 B，不增加 25 项计数）
+
+**症状**：同一章内出现整段“同义替换式重写”并并排保留，常见于生成时改稿残留（同一开头句、同一信息链、仅替换少量词）。
+
+**典型 AI 示例**：连续两段都以“下一个，林风。检测执事的声音平得像尺子量过。”起手，并重复“上台/众人漠然/测灵石像干涸河床”的信息序列。
+
+**改写方向**：
+- 同一叙事功能只保留一段终稿；替换稿必须删净。
+- 若必须重复（仪式口令/咒语），每次重复必须带来新信息（结果、风险、关系至少一项变化）。
+
+**检测信号**：
+- `near_duplicate_paragraph_pairs`：近重复段落对数（段落级）
+- `max_paragraph_similarity`：章内段落最大相似度（0~1）
+- `duplicate_dialogue_openers`：重复对话开场命中（如“下一个，林风。”）
+
+**生成期规则**：
+- `near_duplicate_paragraph_pairs == 0` 才可 PASS；`>= 1` 为 FAIL，`>= 2` 为回滚级 FAIL。
+- `max_paragraph_similarity < 0.88`；`>= 0.92` 直接回滚级 FAIL。
+- `duplicate_dialogue_openers >= 1` 且无信息增量（结果/风险/关系未变）判 FAIL。
+
+### B-补充3 · 比喻密度与同构句法（并入 B，不增加 25 项计数）
+
+**症状**：比喻句（像/仿佛/如同）密度过高，且句法模板高度一致，形成“算法美感”而非角色视角。
+
+**改写方向**：
+- 每千字比喻控制在可感知但不过载区间；同一段内优先留 1 个比喻，其余改成动作/物件/声音证据。
+- 同章避免反复使用同一壳句式（“X像Y”“像一块/一道/一阵…”）。
+
+**检测信号**：
+- `simile_density_per_1k`：每千字比喻数
+- `simile_cluster_max`：连续比喻峰值
+- `simile_pattern_repeat_hits`：同构比喻句法重复命中
+
+**生成期规则**：
+- `simile_density_per_1k ≤ 10`，`> 14` 判 FAIL。
+- `simile_cluster_max ≤ 3`，`>= 4` 判 FAIL。
+- `simile_pattern_repeat_hits ≤ 2`，`>= 3` 判 FAIL。
+
+### B-补充4 · 感知数值化过度（并入 B，不增加 25 项计数）
+
+**症状**：角色在无测量工具条件下持续输出“高精度数字感知”（如三度、零点五厘米、六十二度），文本像传感器日志而非人物体感。
+
+**改写方向**：
+- 无仪器/无专业流程场景，优先写“偏差感”“不适感”“经验估计”，避免伪精确小数。
+- 每章保留少量“硬数字”即可，其余改为可拍摄细节（姿态、节奏、触感、声纹）。
+
+**检测信号**：
+- `hyper_precision_detail_hits`：无工具高精度细节命中（含小数、厘米级、角度级）
+- `noninstrumental_numeric_density_per_1k`：无仪器数字密度/千字
+
+**生成期规则**：
+- `hyper_precision_detail_hits ≤ 1`，`>= 3` 判 FAIL。
+- `noninstrumental_numeric_density_per_1k ≤ 6`，`> 10` 判 FAIL。
 
 ### B-扩展 · 主语单调与句长熵过低（隐蔽型）
 
@@ -285,6 +343,22 @@
 - 每次写入 signature 行为时 self-check：本章是否已明牌过 1 次？已过 → 本次只写现象，不写指认语 / 解读。
 - 上一章任一 signature 明牌 ≥ 2 → 下一章 LOAD 阶段该 signature 列为"本章只许现象级出现，禁止任何指认"。
 
+### E-扩展 3 · 标志动作符号化过度（并入 E，不增加 25 项计数）
+
+**症状**：角色“个性 tick”（如“啧”“扯嘴角”“眯眼”）在单章过度重复，尤其被固定在章首+章尾，形成机械标签而非自然行为。
+
+**改写方向**：
+- 同一 `signature_tick` 单章内出现 ≤ 2 次；第 3 次起必须替换为等价但不同的行为证据。
+- 章首与章尾若使用同一 tick，需保证中段有“反向行为”或语气变化，不得纯粹首尾打点。
+
+**检测信号**：
+- `signature_tick_overuse_hits`：单章同一 tick 超阈命中
+- `chapter_edge_tick_reuse`：章首与章尾同一 tick 复用（bool）
+
+**生成期规则**：
+- `signature_tick_overuse_hits >= 1` 判 FAIL。
+- `chapter_edge_tick_reuse == true` 且近 3 章重复同一 tick 判 FAIL。
+
 ---
 
 ## F. 能力 / 修为清单化
@@ -468,6 +542,22 @@
 **生成期规则**：
 - 单章技术说明长段（>120 字）最多 1 段。
 - 技术解释段必须插入至少 1 条主角误判/失败代价，禁止纯说明书直讲。
+
+### G-补充3 · 系统面板选项树模板化（并入 G，不增加 25 项计数）
+
+**症状**：系统流段落连续出现“任务类型/奖励倍率/A-B-C-D选项/风险回报”完整面板，像游戏 UI 文档直接粘贴。
+
+**改写方向**：
+- 系统信息应碎片化、角色化：同一章仅保留 1 次完整面板，其余改为残片提示或后果反馈。
+- A/B/C/D 选项若出现，必须伴随角色误读或情绪偏差，不可纯理性菜单。
+
+**检测信号**：
+- `system_option_matrix_hits`：完整选项矩阵命中次数（含 A/B/C/D 或等价多选结构）
+- `bracket_system_block_count`：括号系统提示块数量（`【...】`）
+
+**生成期规则**：
+- `system_option_matrix_hits ≤ 1`，`>= 2` 判 FAIL。
+- `bracket_system_block_count ≤ 4`，`>= 7` 判 FAIL。
 
 ---
 
@@ -698,6 +788,22 @@
 - 成稿 self-check 统计所有粗体实例，分类为"物理文本类"（保留）与"主题 / 情绪类"（删除粗体或重写）。
 - `state/used-patterns.md` 追踪 `bold_theme_hits`；上一章 ≥ 1 → 下一章全章禁用粗体。
 
+### N-补充 · 金句收束与“太工整”尾句（并入 N，不增加 25 项计数）
+
+**症状**：段尾/章尾高频出现“可摘抄金句”式总结（如“有些……不需要……”/“一旦……就再也……”），语义完整、情绪稳妥，但像写作课作业。
+
+**改写方向**：
+- 章尾优先交付“动作后果”而非“主题总结”。
+- 若必须抒情，改成角色视角下的不完整句或带瑕疵的口语，不做万能结论。
+
+**检测信号**：
+- `golden_closing_line_hits`：金句式收束命中
+- `maxim_style_summary_hits`：格言体总结句命中
+
+**生成期规则**：
+- 单章 `golden_closing_line_hits ≤ 1`；章尾最后 120 字出现格言体总结则计重权重。
+- `maxim_style_summary_hits >= 2` 判 FAIL。
+
 ---
 
 ## O. 角色灵魂缺位 / 功能性存在
@@ -876,6 +982,56 @@
 - 每章必须 `withhold_beat_present == true`（至少一处收束刹车；可与对白合一）。
 - `chapter_meta.stats` 必须填报上述两项；`used-patterns.md` 滑窗追踪，连续 2 章 `cultural_shorthand_clash_hits == 0` → 下一章升级为**回滚级硬门**。
 
+### P-补充3 · 模板剧情链条过密（并入 P，不增加 25 项计数）
+
+**症状**：单章关键推进过度贴合“黄金三章模板链”（如：测灵失败 → 执事压迫 → 离宗受辱 → 神秘老人/道具 → 金手指显影），读者可在中段高命中预测后续。
+
+**改写方向**：
+- 同章模板链条节点不得连成“直线五连”；至少插入 1 个与主线收益无关的扰动节点（误判/岔路/关系反转）。
+- “神秘老人 + 神秘道具 + 能力命名”三项禁止同章全开，至少拆开一项到下一章。
+
+**检测信号**：
+- `trope_chain_hits`：模板节点命中总数
+- `trope_chain_max_run`：连续模板节点最长链
+- `predictability_score`：low/med/high（基于链条密度与是否缺扰动）
+
+**生成期规则**：
+- `trope_chain_hits >= 4` 判 FAIL。
+- `trope_chain_max_run >= 3` 且 `weirdness_budget_count == 0` 判回滚级 FAIL。
+- `predictability_score == high` 时必须重排章节节拍并补“非收益扰动节点”。
+
+### P-补充4 · 跨题材缝合过载（并入 P，不增加 25 项计数）
+
+**症状**：同章同时高密度拼接职场/修真/系统/悬疑等多赛道爽点，读者能看出“要素清单式堆叠”。
+
+**改写方向**：
+- 首章只允许 1 条主赛道 + 1 条副赛道强曝光，其余以弱信号埋伏，不得同章全开。
+- 每新增一条赛道，必须付出“信息负担代价”（删掉一段解释或延后一个爽点）。
+
+**检测信号**：
+- `multi_genre_graft_count`：同章强曝光题材轨道数
+- `graft_overload_hits`：无代价硬缝合命中
+
+**生成期规则**：
+- `multi_genre_graft_count ≤ 2`（首章更严格），`>= 3` 判 FAIL。
+- `graft_overload_hits >= 1` 判 FAIL；首章命中按回滚级处理。
+
+### P-补充5 · 伏笔装载过密（并入 P，不增加 25 项计数）
+
+**症状**：短篇幅内同时投放过多高权重线索（身世债、旧伤、异象、关键道具、异常动物、神秘联系人等），读者感到“每句都在埋点”。
+
+**改写方向**：
+- 单章只保留“主线伏笔 + 一条侧线伏笔”强曝光，其余改弱信号或后移。
+- 伏笔必须有轻重层级：至少 1 条可暂时作废，避免“条条都要回收”。
+
+**检测信号**：
+- `foreshadow_pack_density_per_1k`：千字高权重伏笔数
+- `high_priority_foreshadow_count`：高优先伏笔数
+
+**生成期规则**：
+- `foreshadow_pack_density_per_1k ≤ 3`，`> 5` 判 FAIL。
+- `high_priority_foreshadow_count ≤ 2`，`>= 4` 判 FAIL。
+
 ---
 
 ## Q. 转场机械 / 黏滞转场（回滚级）
@@ -959,6 +1115,22 @@
 - 动笔前在内部提纲标注：**本章禁止出现「不是…不是…是」骨架**；若必须写否定，**同一段落最多 1 个否定词**指向该认知对象。
 - 任何「点烟 / 解锁手机 / 翻包 / 付款码」类日常动作，**单段不得超过 3 个连贯微步**；超过必须插入半句走神、半句环境、或他人半句声。
 - `webnovel-memory` 的 `chapter_meta.stats` 必须填报 `exclusion_enum_hits` / `tutorial_microstep_chain_max` / `catalog_afterthought_pairs`（R-3 命中次数）；`used-patterns.md` 滑窗追踪，上一章 R 任一 WARN → 下一章该对象动作强制改用「合并句 + 心理」写法。
+
+### R-补充 · “不是X，是Y”再收紧（并入 R，不增加 25 项计数）
+
+**症状**：虽未触发高频阈值，但在关键段反复使用“不是A，是B”做解释性对照，读者会立刻感到“模型在证明自己”。
+
+**改写方向**：
+- 关键段（章首 500 字、章尾 200 字、高潮前后 300 字）默认禁用“不是X，是Y”。
+- 用“直接现象 + 角色误判”替代否定对照句。
+
+**检测信号**：
+- `contrastive_negation_hits`：全章“不是A，是B/而是B”命中
+- `keyzone_contrastive_negation_hits`：关键段命中
+
+**生成期规则**：
+- `contrastive_negation_hits ≤ 1`，`>= 2` 判 FAIL。
+- `keyzone_contrastive_negation_hits >= 1` 直接判 FAIL；首章命中按回滚级处理。
 
 ### R 与 G+1 的边界
 
