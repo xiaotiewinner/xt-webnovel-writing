@@ -1,6 +1,6 @@
 ---
 name: webnovel-plot-design
-description: 生成网文剧情结构：开头章节骨架、矛盾驱动的剧情段、八步事件法节奏、章节正文草案。触发于用户要求"写开头 / 前几章 / 切入点 / 第一章怎么写 / 剧情怎么推 / 节奏 / 高潮铺垫 / 分剧情 / 这段剧情不顺 / 写正文 / 续写第 X 章"等。强制遵循"矛盾 → 剧情 → 爽点"顺序，并在生成前把反 AI 味 18 主条款 + 7 子条款 · 共 25 项嵌入 prompt 作为硬约束（含 D：世界自主生活 + 配角自主议题 + 废选项戏剧化；含 O：关键角色首次登场即须灵魂渗透；含 P：怪异预算 + 延迟兑付 + 反套路 5-清单预声明；含 Q：5 类转场桥 + 禁用转场词 + 摩擦点必填；含 **R：说明书式排除枚举 + 教程体微动作链 + 验收式对句**；含 **K-补充：显著时空跳变必须 Markdown 空行分段**；含 G-扩展 1 九种定义体模板禁用；含 E / N-细化 情绪词与主题句禁粗体；含 G-细化 角色 PPT 直讲禁令）；长篇场景（目标 ≥ 100 万字或已存在 project_root）必须先调用 webnovel-memory · LOAD 拉上下文，生成完调用 PERSIST 落盘。所有产物严格遵守 SKILL.md §11 项目目录契约（chapters/ / characters/ / arcs/ / state/ / bible/ / index/），不允许在契约外落盘。触发词：开头、前几章、第一章、剧情、节奏、八步、切入点、续写、接着写、写第 X 章、写正文、outline、draft prose。
+description: 生成网文剧情结构：开头章节骨架、矛盾驱动的剧情段、八步事件法节奏、章节正文草案。触发于用户要求"写开头 / 前几章 / 切入点 / 第一章怎么写 / 剧情怎么推 / 节奏 / 高潮铺垫 / 分剧情 / 这段剧情不顺 / 写正文 / 续写第 X 章"等。强制遵循"矛盾 → 剧情 → 爽点"顺序，并在生成前把反 AI 味 18 主条款 + 7 子条款 · 共 25 项嵌入 prompt 作为硬约束（含 D：世界自主生活 + 配角自主议题 + 废选项戏剧化；含 O：关键角色首次登场即须灵魂渗透；含 P：怪异预算 + 延迟兑付 + 反套路 5-清单预声明；含 Q：5 类转场桥 + 禁用转场词 + 摩擦点必填；含 **R：说明书式排除枚举 + 教程体微动作链 + 验收式对句**；含 **K-补充：显著时空跳变必须 Markdown 空行分段**；含 G-扩展 1 九种定义体模板禁用；含 E / N-细化 情绪词与主题句禁粗体；含 G-细化 角色 PPT 直讲禁令）；项目正文任务默认必须先调用 webnovel-memory · LOAD 拉上下文，生成完调用 PERSIST 落盘（仅一次性短文可跳过）。所有产物严格遵守 SKILL.md §11 项目目录契约（chapters/ / characters/ / arcs/ / state/ / bible/ / index/），不允许在契约外落盘。触发词：开头、前几章、第一章、剧情、节奏、八步、切入点、续写、接着写、写第 X 章、写正文、outline、draft prose。
 metadata: {"openclaw":{"emoji":"🎬","os":["darwin","linux","win32"]}}
 ---
 
@@ -13,7 +13,7 @@ metadata: {"openclaw":{"emoji":"🎬","os":["darwin","linux","win32"]}}
 3. **每段剧情必须能用八步事件法至少对上 4 步**，否则打回自己重写。
 4. **反 AI 味必读**：启动生成前加载 `../references/anti-ai-tells.md`，把 A–R 主条款 + B / E / G / H / N / D / P 的 7 个子条款（共 18 主 + 7 子 = 25 项）全部嵌入 prompt 作为硬约束，生成后逐项自查。其中 **D（世界无自主生活 · 回滚级）**、**M（爽点链条过完整）**、**N（质量曲线过稳定）+ N-细化（粗体主题句）**、**O（角色灵魂缺位）**、**P（剧情算法化 · 回滚级）**、**Q（转场机械 · 回滚级）**、**R（说明书句法 · 回滚级）**、**K-补充（场景块空行 · 回滚级）**、**G-扩展 1（9 种定义体模板）**、**E-情感标签独段 / 粗体**、**G-细化（角色 PPT 直讲）** 是元层级 / 回滚级硬门，单独 FAIL 即视为整体失败并按相应等级回滚。
 5. **正文默认走 memory（新书也适用）**：当 `output_mode == draft_prose` 时，生成前必须先调 `webnovel-memory`（有 `project_root` 则 LOAD；无则先 INIT 再 LOAD），生成后必须调 PERSIST 落盘。仅用户明确声明"一次性短文，不建项目、不留记忆"时可跳过。
-6. **项目目录契约**：所有产物按 SKILL.md §11 的固定子目录落盘（`chapters/NNNN.md` / `characters/<name>.md` / `arcs/arc-<NN>-<slug>.md` / `state/...` / `bible/...` / `index/...`）；禁止在 `project_root` 之外或契约外子目录写文件。违反者 PERSIST 直接拒收。
+6. **项目目录契约**：所有产物按 SKILL.md §11 的固定子目录落盘（`chapters/chNNNN.md` / `characters/<name>.md` / `arcs/arc-<NN>-<slug>.md` / `state/...` / `bible/...` / `index/...`）；禁止在 `project_root` 之外或契约外子目录写文件。违反者 PERSIST 直接拒收。
 7. **P-4 反套路预声明**（draft_prose 必跑）：动笔前将"当前场景最常见 5 种接续 + 真实要写的接续（必须 ≠ 前 3 名）"写入 `state/anti-trope-log.md`，未落盘不得进入正文生成。
 8. **Q 转场桥预声明**（draft_prose 必跑）：每一次场景 / 时间切换必须在章纲阶段标记使用哪类桥（Q-1 感官 / Q-2 物件 / Q-3 对话打断 / Q-4 摩擦点 / Q-5 情绪错位）及其锚点，未声明不得下场。
 
@@ -26,14 +26,14 @@ stage: opening | mid_arc | climax | ending | tiny
 arc_goal: <本段剧情要解决主线第几层矛盾，例如 L1 身份 | L2 实力>
 length_scale: tiny（单场景）| small（3–5 章）| medium（1 个完整 arc）| large（跨 arc）
 output_mode: outline | draft_prose   # outline=骨架；draft_prose=正文草稿
-target_chapter: <整数；output_mode=draft_prose 时必填；长篇必填>
+target_chapter: <整数；output_mode=draft_prose 时必填>
 project_root: <绝对路径；若作品已有 webnovel-memory 目录则必填>
 constraints: <用户给定的硬约束，如"不能死人""必须有双女主登场"等；可空>
 ```
 
 `author_fingerprint` 为空时拒绝生成正文（`output_mode=draft_prose`），但允许生成骨架。
 
-## 长篇记忆接入（output_mode = draft_prose 时强制）
+## 项目持久化 memory 接入（output_mode = draft_prose 时强制）
 
 当 `output_mode == draft_prose` 且未被用户明确豁免 memory：
 
@@ -235,7 +235,7 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 ### 写正文前的加载
 1. 加载 `author_fingerprint`（偏好动词 / 物象 / 口头禅 / 断句偏好 / 章末钩子偏好）。
 2. 加载 `../references/anti-ai-tells.md` 的 18 主条款（A–R）+ 7 子条款（B+ / C / D-1 / D-2 / D-3 / E+1 / E+2 / G+1 / G+2 / G-细 / H+ / N-细 / P-1 / P-3 / P-4 / **P-补充2** / Q-1..Q-5 / **R-1..R-3** / **K-补充**）全部规则。
-3. **长篇必须**调用 `webnovel-memory` · LOAD(project_root, target_chapter) 获取记忆快照，把"必须承接钩子 / 禁用句式 / 禁用爽点类型 / 活跃角色当前状态 + soul_fields / 动物独立反应坐标轴 / live 伏笔（top 3） / 上一章'纯功能性角色名单'与'动物纯工具化名单' / 上一章 used-patterns 命中项（definition_style_hits / bold_theme_hits / emotion_token_hits / single_sentence_run_max / long_paragraph_count / signature_明牌超限名单 / setting_reveal_overload_hits / system_prompt_template_hits / coincidence_chain_hits / forced_detour_hits / **cultural_shorthand_clash_hits / withhold_beat_present**）"全部并入 prompt。
+3. **默认必须**调用 `webnovel-memory` · LOAD(project_root, target_chapter) 获取记忆快照，把"必须承接钩子 / 禁用句式 / 禁用爽点类型 / 活跃角色当前状态 + soul_fields / 动物独立反应坐标轴 / live 伏笔（top 3） / 上一章'纯功能性角色名单'与'动物纯工具化名单' / 上一章 used-patterns 命中项（definition_style_hits / bold_theme_hits / emotion_token_hits / single_sentence_run_max / long_paragraph_count / signature_明牌超限名单 / setting_reveal_overload_hits / system_prompt_template_hits / coincidence_chain_hits / forced_detour_hits / **cultural_shorthand_clash_hits / withhold_beat_present**）"全部并入 prompt；仅用户明确声明"一次性短文，不建项目、不留记忆"时可跳过。
 4. **反 O 必现清单**：下列任一角色的 `soul_fields` 至少 1 条必须作为**本章必现项**写进 prompt：
    - 本章出场 ≥ 2 次的每个有名角色
    - **本章首次登场的关键角色（主角 / POV / top 5 配角 / 核心反派 / 女主男主）——无论出场几次**
@@ -265,7 +265,7 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 13. **伏笔装载闸门（反 P-补充5）**：章纲 `foreshadow_pack_density_per_1k` 预估 ≤ 3，`high_priority_foreshadow_count` 预估 ≤ 2；超阈值先删减伏笔再开写。
 14. **金句收束闸门（反 N-补充）**：章尾不得预置“总结真理句”；结尾必须优先落在动作后果/未完成动作上。
 15. **对照句闸门（反 R-补充）**：章首500字、章尾200字、高潮区默认禁用“不是X，是Y/而是Y”句型；若出现必须改写。
-16. **感情过审闸门（反 E-扩展4）**：感情/暧昧段允许按用户占比提升强度，但必须是“可过审表达”：禁露骨器官/体液/步骤化性动作；若存在高风险关系元素（未成年人/强迫/权力滥用/血缘），本章禁止进入正文生成。不得以“过审”为由把用户要求的感情/色情张力清零。
+16. **感情过审闸门（反 E-扩展4）**：感情/暧昧段允许按用户占比提升强度，但必须是“可过审表达”：禁露骨器官/体液/步骤化性动作；若存在高风险关系元素（未成年人/强迫/权力滥用/血缘），本章禁止进入正文生成。不得以“过审”为由把用户要求的感情/色情张力清零。**本闸门未通过时不得进入草稿写作，不得以“先写后改”绕过。**
 17. **反差钩子闸门（反 P-补充6，可选低频）**：默认关闭；仅当本章存在“关系单线化”风险且 `contrast_hook_frequency_10ch ≤ 2`、`contrast_hook_chapter_gap ≥ 3` 时可开启。未满足条件不得启用反差桥段。
 
 ### 感情线构思硬约束（题材自适应）
@@ -338,7 +338,7 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 7af. **伏笔装载限额（P-补充5）**：`foreshadow_pack_density_per_1k ≤ 3` 且 `high_priority_foreshadow_count ≤ 2`；超阈值 → **FAIL**（先降线索密度再写）。
 7ag. **金句收束限额（N-补充）**：`golden_closing_line_hits ≤ 1` 且 `maxim_style_summary_hits ≤ 1`；格言体总结句 ≥2 → **FAIL**。
 7ah. **对照句关键区限额（R-补充）**：`contrastive_negation_hits ≤ 1` 且 `keyzone_contrastive_negation_hits == 0`；关键区命中直接 **FAIL**，首章命中按回滚级。
-7ai. **感情过审硬门（E-扩展4）**：`explicit_sexual_content_hits == 0` 且 `high_risk_relationship_hits == 0`；`suggestive_erotic_risk_hits` 采用占比驱动上限：`explicitness_target_ratio == 0` 时 `< 2`，`0 < explicitness_target_ratio ≤ 10%` 时 `≤ 2`，`10% < explicitness_target_ratio ≤ 20%` 时 `≤ 3`。命中露骨性描写或高风险关系 → **回滚级 FAIL**。
+7ai. **感情过审硬门（E-扩展4）**：`explicit_sexual_content_hits == 0` 且 `high_risk_relationship_hits == 0`；`suggestive_erotic_risk_hits` 采用占比驱动上限：`explicitness_target_ratio == 0` 时 `< 2`，`0 < explicitness_target_ratio ≤ 10%` 时 `≤ 2`，`explicitness_target_ratio > 10%` 时 `≤ 3`。`explicitness_target_ratio` 不封顶，但不得突破过审阈值。命中露骨性描写或高风险关系 → **回滚级 FAIL**。**若占比字段缺失或 E-扩展4 面板缺字段，同样按 FAIL 处理且禁止 PERSIST。**
 7aj. **感情功能位硬门**：`romance_functional_scene_ratio >= 0.8`（感情段中有明确功能位的占比）；不足 → **FAIL**。
 7ak. **欲望梯度硬门**：`desire_gradient_jump_hits == 0` 且 `desire_gradient_coverage >= 3`（同章至少覆盖 3 级）；违规 → **FAIL**。
 7al. **模板完整度硬门**：`ambiguity_scene_template_compliance >= 0.7`（暧昧场景四步模板达标占比）；不足 → **FAIL**。
@@ -390,7 +390,7 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 - 单句段占比 > 55% → 回滚级 FAIL
 
 ### 正文输出前自检
-生成后，agent 内部对 **A–R 主条款 + B / E / G / H / N / D / P / Q 的 7 个子条款**（共 18 主 + 7 子 = 25 项）逐项自打 PASS/WARN/FAIL/回滚级 FAIL，命中任一 FAIL 则重写当章，命中回滚级 FAIL 则退回对应 workflow。重写 2 轮仍未通过 → 交付时把命中项与原因一起告知用户。
+生成后，agent 内部对反 AI 味**25 项基础计数体系（18 主 + 7 子）及并入扩展硬门**逐项自打 PASS/WARN/FAIL/回滚级 FAIL，命中任一 FAIL 则重写当章，命中回滚级 FAIL 则退回对应 workflow。重写 2 轮仍未通过 → 交付时把命中项与原因一起告知用户。
 
 另外必跑下列统计项（**全部**必须 PASS 才能 PERSIST）：
 - `subject_top1_ratio` ≤ 40%（top-1 主语段落占比）
@@ -443,7 +443,7 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 - `foreshadow_pack_density_per_1k` ≤ 3 且 `high_priority_foreshadow_count` ≤ 2（反 P-补充5）
 - `golden_closing_line_hits` ≤ 1 且 `maxim_style_summary_hits` ≤ 1（反 N-补充）
 - `contrastive_negation_hits` ≤ 1 且 `keyzone_contrastive_negation_hits` = 0（反 R-补充）
-- `explicit_sexual_content_hits = 0` 且 `high_risk_relationship_hits = 0`，并按 `explicitness_target_ratio` 控制 `suggestive_erotic_risk_hits`（0%: <2；1-10%: ≤2；11-20%: ≤3）（反 E-扩展4）
+- `explicit_sexual_content_hits = 0` 且 `high_risk_relationship_hits = 0`，并按 `explicitness_target_ratio` 控制 `suggestive_erotic_risk_hits`（0%: <2；1-10%: ≤2；>10%: ≤3；占比不封顶）（反 E-扩展4）
 - `romance_functional_scene_ratio` ≥ 0.8（感情段功能位覆盖）
 - `desire_gradient_jump_hits` = 0 且 `desire_gradient_coverage` ≥ 3（欲望梯度递进）
 - `ambiguity_scene_template_compliance` ≥ 0.7（触发->失控->收束->余波四步模板）
@@ -458,7 +458,7 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 - **反派第三维度**：若该章有反派登场，折叠测试若落入"想赢 / 恨主角" → FAIL，补第三维度
 - **配角可互换测试**：随机抽 2 句配角台词做"换成另一个同阵营同身份角色说"的替换测试，可无违和 → FAIL
 
-### 落盘（长篇强制）
+### 落盘（项目正文模式强制）
 PASS 通过后，调用 `webnovel-memory` · PERSIST 执行 8 步落盘（含 STEP 0 路径契约校验）+ 一致性检查。失败（路径违约 / 一致性断裂：伏笔未兑现 / 修为矛盾 / 名词未入词典 …） → 回滚本章并重写。
 
 ---
@@ -483,10 +483,12 @@ PASS 通过后，调用 `webnovel-memory` · PERSIST 执行 8 步落盘（含 ST
 - [ ] （正文模式）**B-补充3 / E-扩展3**：比喻密度同构与标志动作复用均未超阈？
 - [ ] （正文模式）**B-补充4 / G-补充3 / P-补充4**：数值化感知、系统面板模板化、跨题材缝合均未超阈？
 - [ ] （正文模式）**E-扩展4**：感情段已做过审降级（无露骨性描写/无高风险关系）？
+- [ ] （正文模式）E-扩展4 风控面板字段齐全？（`romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio` / `suggestive_erotic_risk_hits` / `explicit_sexual_content_hits` / `high_risk_relationship_hits` / `chapter1_tension_hook_present`）
+- [ ] （正文模式）若 E-扩展4 任一项 FAIL：已在本轮重写并重跑验证，且未宣称“已落盘/已通过”？
 - [ ] （正文模式）上述统计清单**全部** PASS？（含 R 四项 + K-补充 + **O-在场 meta_language** + **A-补充 钩子/缝隙/纯氛围峰** + **P-补充2**）
 - [ ] （正文模式）作者指纹字段在文本中可被识别到至少 2 条？
 - [ ] （项目目录）所有写入路径都落在 `<project_root>/{book.yaml,fingerprint.md,bible/,characters/,arcs/,chapters/,state/,index/,.webnovel-memory/}`？
-- [ ] （长篇）已跑 webnovel-memory · LOAD 与 PERSIST 且一致性检查 PASS？
+- [ ] （正文默认）已跑 webnovel-memory · LOAD 与 PERSIST 且一致性检查 PASS？（仅一次性短文声明可豁免）
 
 不通过则内部重写，不交付。
 
@@ -494,4 +496,4 @@ PASS 通过后，调用 `webnovel-memory` · PERSIST 执行 8 步落盘（含 ST
 
 - `../references/foxsan-webnovel-manual.md` §4.6 / §5.3 / §5.4
 - `../references/anti-ai-tells.md` 全文（正文模式必读）
-- `webnovel-memory` · `references/read-protocol.md` + `references/write-protocol.md`（长篇模式必读）
+- `webnovel-memory` · `references/read-protocol.md` + `references/write-protocol.md`（项目型写作 / 正文落盘必读）

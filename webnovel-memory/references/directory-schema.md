@@ -1,6 +1,6 @@
 # 小说项目目录结构 · Schema
 
-所有长篇网文项目都必须落在一个 **project_root** 下，并遵循下列固定目录。新建项目时 `webnovel-memory` 会一次性建好全部空壳。
+所有项目型写作都必须落在一个 **project_root** 下，并遵循下列固定目录。新建项目时 `webnovel-memory` 会一次性建好全部空壳。
 
 ```
 <project_root>/

@@ -1,6 +1,6 @@
 ---
 name: webnovel-excitement-and-craft
-description: 生成或改写网文的"爽点"与"文笔层"。触发于用户要求"加爽点 / 这段不够爽 / 打脸 / 装逼 / 改文笔 / 加画面感 / 换描写 / 提升文风 / 替换重复词 / 共鸣感 / 去 AI 味 / 转场不顺 / 转场太生硬 / 段落一行一行"等。爽点必须从上游矛盾长出，禁止悬浮爽点。文笔按"规范 → 准确 → 感染力 → 反 AI 味（18 主 + 7 子 = 25 项含 D / P / Q / R 回滚级；**并入 A-补充 章首抓眼与好奇缝隙、O-在场 禁元叙事**）"四层诊断与修复，不追求辞藻华丽，以"短句 + 画面感 + 共鸣 + 段落（2–5 句） + 5 类转场桥"为输出基线。长篇场景改写后必须回写 webnovel-memory 更新对应章节与状态，并严格落在 SKILL.md §11 项目目录契约规定的固定子目录下。触发词：爽点、打脸、装逼、改文笔、画面感、描写、AI 味、换句、加细节、共鸣、转场、并段、polish、rewrite。
+description: 生成或改写网文的"爽点"与"文笔层"。触发于用户要求"加爽点 / 这段不够爽 / 打脸 / 装逼 / 改文笔 / 加画面感 / 换描写 / 提升文风 / 替换重复词 / 共鸣感 / 去 AI 味 / 转场不顺 / 转场太生硬 / 段落一行一行"等。爽点必须从上游矛盾长出，禁止悬浮爽点。文笔按"规范 → 准确 → 感染力 → 反 AI 味（18 主 + 7 子 = 25 项含 D / P / Q / R 回滚级；**并入 A-补充 章首抓眼与好奇缝隙、O-在场 禁元叙事**）"四层诊断与修复，不追求辞藻华丽，以"短句 + 画面感 + 共鸣 + 段落（2–5 句） + 5 类转场桥"为输出基线。项目型写作场景改写后必须回写 webnovel-memory 更新对应章节与状态，并严格落在 SKILL.md §11 项目目录契约规定的固定子目录下。触发词：爽点、打脸、装逼、改文笔、画面感、描写、AI 味、换句、加细节、共鸣、转场、并段、polish、rewrite。
 metadata: {"openclaw":{"emoji":"🔥","os":["darwin","linux","win32"]}}
 ---
 
@@ -258,10 +258,10 @@ STEP 5  给出对照改写（含 L4 改动理由标注）
 - [ ] 改动理由全部落到 L1/L2/L3/L4 某一层
 - [ ] L4 无 FAIL 项；尤其 D / P / Q / **R** / **K-补充** / O **+ O-在场** / A **+ A-补充** / M / N / N-细 / E 独段 / G+1 无回滚级 FAIL
 - [ ] 若存在爽点结构问题或 D / P / Q 回滚级 FAIL，已标出并回退 `webnovel-plot-design` / `webnovel-story-blueprint`
-- [ ] （长篇改写）若涉及落盘，所有写入路径严格按 SKILL.md §11 契约（`<project_root>/chapters/NNNN.md` 等），不允许新建契约外目录
+- [ ] （项目改写）若涉及落盘，所有写入路径严格按 SKILL.md §11 契约（`<project_root>/chapters/chNNNN.md` 等），不允许新建契约外目录
 
 ## 底本
 
 - `../references/foxsan-webnovel-manual.md` §5.1 / §5.2
 - `../references/anti-ai-tells.md` 全文
-- `webnovel-memory` · `references/write-protocol.md`（长篇改写后回写）
+- `webnovel-memory` · `references/write-protocol.md`（项目型写作场景改写后回写）

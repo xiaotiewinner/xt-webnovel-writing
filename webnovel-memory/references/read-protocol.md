@@ -1,6 +1,6 @@
 # 读取协议 · 生成任何新章节之前必须执行
 
-下游 skill（`webnovel-plot-design` 的正文模式、`webnovel-excitement-and-craft` 的加爽/改写）在启动前调用本协议，拉齐**最小必要上下文**，避免长篇失忆。
+下游 skill（`webnovel-plot-design` 的正文模式、`webnovel-excitement-and-craft` 的加爽/改写）在启动前调用本协议，拉齐**最小必要上下文**，避免跨章 / 跨会话失忆。
 
 ## 输入
 

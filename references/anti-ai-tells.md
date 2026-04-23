@@ -380,7 +380,8 @@
 - `suggestive_erotic_risk_hits` 采用“占比驱动上限”：
   - `explicitness_target_ratio == 0`：`suggestive_erotic_risk_hits < 2`
   - `0 < explicitness_target_ratio ≤ 10%`：`suggestive_erotic_risk_hits ≤ 2`
-  - `10% < explicitness_target_ratio ≤ 20%`：`suggestive_erotic_risk_hits ≤ 3`
+  - `explicitness_target_ratio > 10%`：`suggestive_erotic_risk_hits ≤ 3`
+- `explicitness_target_ratio` 不设上限封顶（按用户提示词接收），但写作执行必须满足上面可过审阈值。
 - 禁止“过审清空”写法：若 `romance_target_ratio + erotic_tension_target_ratio > 0`，章节内必须出现至少 1 个关系张力触点（靠近/误读/克制反噬任一）。
 
 ### E-扩展5 · 感情不可控噪声缺位（并入 E，不增加 25 项计数）

@@ -52,6 +52,6 @@ hooks/two-phase-guard/handler.ts
 
 1. `references/openclaw-strict-rules.md` 粘到 SOUL/全局规则（强制“先走 skill、再两阶段、再 PERSIST”）。
 2. 启用本 hook（会话内持续提醒，减少漏检）。
-3. 长篇务必让输出包含 `chapter_meta.stats` 并执行 `write-protocol` 的一致性硬门。
+3. 项目正文任务务必让输出包含 `chapter_meta.stats` 并执行 `write-protocol` 的一致性硬门。
 
 若第 1 层缺失，模型仍可能直接“写完就收尾”。

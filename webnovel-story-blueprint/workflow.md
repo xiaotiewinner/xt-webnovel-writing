@@ -1,6 +1,6 @@
 ---
 name: webnovel-story-blueprint
-description: 生成网文作品的静态设计稿：主线矛盾链、人设表、书名（11 类起名法）、大纲骨架、简介、作者指纹、世界观 + 世界观怪异预算池（反 P-1）。触发于用户要求"定主线 / 起书名 / 写人设 / 列大纲 / 写简介 / 做立项 / 生成设定 / 怪异预算 / 世界观怪异设定"等任务。不写具体章节正文（交给 plot-design 和 excitement-and-craft）。产出必须是结构化表格 / 模板，并同时输出作者指纹字段供下游 skill 在正文生成时固化风格。长篇项目的产出必须落盘到 SKILL.md §11 规定的固定子目录：`<project_root>/book.yaml` / `<project_root>/fingerprint.md` / `<project_root>/bible/` / `<project_root>/characters/`，禁止在契约外写文件。触发词：主线、书名、人设、大纲、立书、立项、设定、简介、世界观、作者指纹、怪异预算。
+description: 生成网文作品的静态设计稿：主线矛盾链、人设表、书名（11 类起名法）、大纲骨架、简介、作者指纹、世界观 + 世界观怪异预算池（反 P-1）。触发于用户要求"定主线 / 起书名 / 写人设 / 列大纲 / 写简介 / 做立项 / 生成设定 / 怪异预算 / 世界观怪异设定"等任务。不写具体章节正文（交给 plot-design 和 excitement-and-craft）。产出必须是结构化表格 / 模板，并同时输出作者指纹字段供下游 skill 在正文生成时固化风格。项目型写作产出必须落盘到 SKILL.md §11 规定的固定子目录：`<project_root>/book.yaml` / `<project_root>/fingerprint.md` / `<project_root>/bible/` / `<project_root>/characters/`，禁止在契约外写文件。触发词：主线、书名、人设、大纲、立书、立项、设定、简介、世界观、作者指纹、怪异预算。
 metadata: {"openclaw":{"emoji":"📐","os":["darwin","linux","win32"]}}
 ---
 
@@ -337,7 +337,7 @@ STEP 6 作者指纹（下游生成正文时必须按此固化风格）
 建议交接给 webnovel-plot-design，输入以上档案，产出开头 5 章骨架。
 ```
 
-## 落盘（长篇场景）
+## 落盘（项目型写作场景）
 
 当用户目标是长篇（`target_length == 长篇` 或明确说"500 万字 / 写系列"等）：
 

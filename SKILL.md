@@ -1,6 +1,6 @@
 ---
 name: xt-webnovel-writing
-description: 中文网络小说写作 agent 的总入口。处理网文构思、写开头、设计主线、起书名、写大纲、写简介、设计剧情、加爽点、改文笔、拆解参考文本、自检错误、续写长篇等任何中文网文生成类任务。内部路由到 6 个模块：text-analysis / story-blueprint / plot-design / excitement-and-craft / pitfalls / memory。内置反 AI 味硬约束（18 主条款 + 7 子条款 · 共 25 项：节拍器 **+ A-补充 章首刺点与好奇缝隙** / 句式复用 / 主语熵 / **单句段连续 ≤ 2 且占比 ≤ 0.3** / 信息密度与世界自主生活（含闲笔密度 / 配角自主议题 / 废选项戏剧化 · 回滚级）/ 情感标签含独段与粗体 / 反应套餐 / signature 明牌化 / 设定说明书 / 9 种定义体模板 / 角色 PPT 直讲 / 算法思维链 / 爽点链条过完整 / 质量曲线过稳定含粗体主题句点题 / 角色灵魂缺位含首登即生效 **+ O-在场 禁元叙事（上一章/读者等）** / **剧情算法化/想象力贫血（含怪异预算/废选项/延迟兑付/反套路检查 · 回滚级）** / **转场机械/黏滞转场（含 5 类桥/禁用转场词/摩擦点必填 · 回滚级）** / **说明书式排除枚举+教程体微动作链（R-1/R-2/R-3 · 回滚级）**），其中 D / M / N / N-细 / O / P / Q / **R** / G+1 / E（独段+粗体）/ K（0 长段 **或 K-补充 场景块违规 ≥ 5**）/ C（≥ 6 连续单句段或占比 > 0.5）/ **A-补充（opening_hook / curiosity_gap / flat_atmosphere）** / **O-在场（meta_language_hits ≥ 1）** 为**回滚级硬门**，任一命中强制整章退回指定 workflow 重写；每个有名出场 ≥ 2 次角色（含动物 / 灵兽 / 反派）和本章首登的关键角色都必须带独立内部状态并在当章非功能性地"被偶然看见"（deletion_verified）；长篇项目（≥ 100 万字）强制走 memory 持久化流程，所有文件严格落在 **project_root** 下的固定子目录（chapters / characters / state / arcs / bible / index / references），禁止散落。触发词：写网文、写网络小说、构思小说、写玄幻、写仙侠、起书名、大纲、人设、爽点、开头、签到流、系统流、重生、打脸、装逼、改文笔、AI 味、续写、接着写、第 X 章、长篇、500 万字、webnovel、web novel。
+description: 中文网络小说写作 agent 的总入口。处理网文构思、写开头、设计主线、起书名、写大纲、写简介、设计剧情、加爽点、改文笔、拆解参考文本、自检错误、续写连载等任何中文网文生成类任务。内部路由到 6 个模块：text-analysis / story-blueprint / plot-design / excitement-and-craft / pitfalls / memory。内置反 AI 味硬约束（18 主条款 + 7 子条款 · 共 25 项：节拍器 **+ A-补充 章首刺点与好奇缝隙** / 句式复用 / 主语熵 / **单句段连续 ≤ 2 且占比 ≤ 0.3** / 信息密度与世界自主生活（含闲笔密度 / 配角自主议题 / 废选项戏剧化 · 回滚级）/ 情感标签含独段与粗体 / 反应套餐 / signature 明牌化 / 设定说明书 / 9 种定义体模板 / 角色 PPT 直讲 / 算法思维链 / 爽点链条过完整 / 质量曲线过稳定含粗体主题句点题 / 角色灵魂缺位含首登即生效 **+ O-在场 禁元叙事（上一章/读者等）** / **剧情算法化/想象力贫血（含怪异预算/废选项/延迟兑付/反套路检查 · 回滚级）** / **转场机械/黏滞转场（含 5 类桥/禁用转场词/摩擦点必填 · 回滚级）** / **说明书式排除枚举+教程体微动作链（R-1/R-2/R-3 · 回滚级）**），其中 D / M / N / N-细 / O / P / Q / **R** / G+1 / E（独段+粗体）/ K（0 长段 **或 K-补充 场景块违规 ≥ 5**）/ C（≥ 6 连续单句段或占比 > 0.5）/ **A-补充（opening_hook / curiosity_gap / flat_atmosphere）** / **O-在场（meta_language_hits ≥ 1）** 为**回滚级硬门**，任一命中强制整章退回指定 workflow 重写；每个有名出场 ≥ 2 次角色（含动物 / 灵兽 / 反派）和本章首登的关键角色都必须带独立内部状态并在当章非功能性地"被偶然看见"（deletion_verified）；项目型写作默认走 memory 持久化流程（仅一次性短文可豁免），所有文件严格落在 **project_root** 下的固定子目录（book.yaml / fingerprint.md / bible / characters / arcs / chapters / state / index / .webnovel-memory），禁止散落。触发词：写网文、写网络小说、构思小说、写玄幻、写仙侠、起书名、大纲、人设、爽点、开头、签到流、系统流、重生、打脸、装逼、改文笔、AI 味、续写、接着写、第 X 章、连载、webnovel、web novel。
 metadata: {"openclaw":{"emoji":"✍️","os":["darwin","linux","win32"]}}
 ---
 
@@ -31,11 +31,12 @@ metadata: {"openclaw":{"emoji":"✍️","os":["darwin","linux","win32"]}}
 8. **想象力硬门（反 P）**：动笔前必须在 `state/anti-trope-log.md` 落盘本章"最常见 5 种接续清单"，真实写的那一步必须 **≠ 前 3 名**；本章必须含 ≥ 1 处"怪异预算"（剧情无法吸收的细节）+ ≥ 1 处"延迟兑付"（5 章内不回收的伏笔 / 设定）。违反 → 回 plot-design；无怪异预算 → 回 story-blueprint 补世界观与场景。
 9. **转场硬门（反 Q）**：每次场景切换必须显式落入 5 类桥之一（感官 / 物件 / 对话打断 / 摩擦点 / 情绪错位）并在草稿注释里声明桥类型与锚点；禁用转场词（"就在这时 / 然后 / 第二天 / 三天后 / 转眼间" 等）零容忍。违反 → 回 plot-design 重写转场。
 10. **说明书句法硬门（反 R · 与 K-补充 联动）**：禁止生活流里的「不是…不是…是/而是/只剩」双否定目录句；同一情绪节拍、无对白无心理时，纯动作微步**单段 ≤ 3**，第 4 步起必须并句或插入走神/环境/他人声；禁止「又/再」串动作后接两个 ≤ 8 字的纯状态验收短句。显著时间跳变（≥ 30 分钟）或换建筑级空间时，正文须**空一行**起新段（反 K-补充 黏段）。统计写入 `chapter_meta.stats`（`exclusion_enum_hits` / `tutorial_microstep_chain_max` / `catalog_afterthought_pairs` / `k_scene_block_violations`）。违反 → 回 plot-design。
-11. **项目目录契约（必守）**：长篇项目所有产物**只能**落在 `project_root` 下的固定子目录（见 §11）。子 workflow **禁止**自行选择"顺手的目录"。每次落盘前必须校验路径以 `<project_root>/` 开头。违反 → memory PERSIST 拒收。
+11. **项目目录契约（必守）**：项目型写作所有产物**只能**落在 `project_root` 下的固定子目录（见 §11）。子 workflow **禁止**自行选择"顺手的目录"。每次落盘前必须校验路径以 `<project_root>/` 开头。违反 → memory PERSIST 拒收。
 12. **新书与连载默认走 memory**：凡是"开新书 / 续写 / 写第 N 章 / 计划连载"的正文任务，生成前必须调用 `webnovel-memory/workflow.md` · LOAD（若无项目则先 INIT），**自检全 PASS 后**必须调用 PERSIST 落盘；仅在用户明确说明"一次性短文，不建项目、不留记忆"时可跳过 LOAD/PERSIST。**顺序**以 `references/openclaw-enforcement-two-phase.md` 为准（先 VERIFY 再 PERSIST，禁止未自检即声称落盘）。
 13. **感情/色情张力占比先问后写**：凡是"开新书 / 设计章节 / 续写正文"，必须先向用户确认本书目标占比：`romance_target_ratio`（感情）/ `erotic_tension_target_ratio`（色情张力）/ `explicitness_target_ratio`（露骨强度）。未确认前不得进入正文生成；默认值仅在用户拒绝回答时使用（`20% / 8% / 0%`）。
 14. **首章吸引力优先**：chapter 1 除通用钩子外，若 `romance_target_ratio + erotic_tension_target_ratio > 0`，前 800 字必须至少落 1 处“关系高压触点”（靠近-误读-克制/反噬），禁止为了“过审”把感情张力清空。
-15. **短句 + 画面感 + 共鸣** 是文笔基线；辞藻华丽不是目标。
+15. **E-扩展4 严格执行硬门**：每次 VERIFY 必须输出 E-扩展4 风控面板（`romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio` / `suggestive_erotic_risk_hits` / `explicit_sexual_content_hits` / `high_risk_relationship_hits` / `chapter1_tension_hook_present`）。缺字段、露骨命中或高风险关系命中，均视为 FAIL/回滚级 FAIL，**禁止 PERSIST**。
+16. **短句 + 画面感 + 共鸣** 是文笔基线；辞藻华丽不是目标。
 
 ## 3. 内部模块清单
 
@@ -48,18 +49,18 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
 | plot-design | 开头骨架 / 八步事件法 / 章节正文草案 | `{baseDir}/webnovel-plot-design/workflow.md` |
 | excitement-and-craft | 爽点增强 / 文笔四层改写 | `{baseDir}/webnovel-excitement-and-craft/workflow.md` |
 | pitfalls | 结构 + 反 AI 味双路体检 | `{baseDir}/webnovel-pitfalls/workflow.md` |
-| memory | 长篇持久化记忆系统（READ / WRITE / INIT / AUDIT） | `{baseDir}/webnovel-memory/workflow.md` |
+| memory | 项目持久化记忆系统（READ / WRITE / INIT / AUDIT） | `{baseDir}/webnovel-memory/workflow.md` |
 
-### 3.1 强制两阶段 + 长篇 PERSIST（OpenClaw / 虾魂 / 全局规则）
+### 3.1 强制两阶段 + 项目 PERSIST（OpenClaw / 虾魂 / 全局规则）
 
-宿主**不会**自动执行 skill 里的自检；须把流程写进 **SOUL / 全局规则** 或用户固定开场。完整条文与可粘贴的「极短版」见 **`{baseDir}/references/openclaw-enforcement-two-phase.md`**。执行要点：**LOAD（长篇）→ 阶段 1 仅正文 → 阶段 2 自检表 + `chapter_meta.stats` + FAIL 则同轮重写（≤2 轮）→ 全 PASS 后才允许 PERSIST**。
+宿主**不会**自动执行 skill 里的自检；须把流程写进 **SOUL / 全局规则** 或用户固定开场。完整条文与可粘贴的「极短版」见 **`{baseDir}/references/openclaw-enforcement-two-phase.md`**。执行要点：**项目正文任务默认 LOAD → 阶段 1 仅正文 → 阶段 2 自检表 + `chapter_meta.stats` + FAIL 则同轮重写（≤2 轮）→ 全 PASS 后才允许 PERSIST**。
 
 ## 4. 公共 References（强制全局可用）
 
 | 文件 | 用途 |
 |---|---|
 | `{baseDir}/references/anti-ai-tells.md` | 反 AI 味 18 主条款 + 7 子条款 · 共 25 项（生成 / 诊断类模块强制加载） |
-| `{baseDir}/references/openclaw-enforcement-two-phase.md` | **OpenClaw / 虾魂**：强制两阶段（稿→自检重写）+ 长篇 **PERSIST** 落盘顺序；可整段并入 SOUL |
+| `{baseDir}/references/openclaw-enforcement-two-phase.md` | **OpenClaw / 虾魂**：强制两阶段（稿→自检重写）+ 项目 **PERSIST** 落盘顺序；可整段并入 SOUL |
 | `{baseDir}/references/openclaw-hooks-setup.md` | OpenClaw hook 启用步骤（`openclaw hooks enable two-phase-guard`）与验证 |
 | `{baseDir}/references/openclaw-hooks-config.example.json` | OpenClaw `hooks.internal` 配置示例 |
 | `{baseDir}/references/foxsan-webnovel-manual.md` | 方法论底本（狐三玄《网文写作新手入门手册》） |
@@ -90,7 +91,7 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
 - **感情线目标占比** `romance_target_ratio`（0~100%）
 - **色情张力目标占比** `erotic_tension_target_ratio`（0~100%）
 - **露骨强度目标占比** `explicitness_target_ratio`（0~100%，但受过审硬门约束）
-- **（长篇必填）** project_root 路径
+- **（项目正文任务必填）** `project_root` 路径（无目录则先 memory·INIT）
 
 **输出**：
 
@@ -123,7 +124,7 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
 进入任何正文生成任务前，先加载：
 
 - `{baseDir}/references/anti-ai-tells.md`（反 AI 味 18 主条款 + 7 子条款 · 共 25 项）
-- `memory` · LOAD 产出的记忆快照（长篇必须，含：
+- `memory` · LOAD 产出的记忆快照（项目正文任务默认必须，含：
   - 本章出场 ≥ 2 次的有名角色 soul_fields 必现清单
   - 本章首次登场的关键角色 soul_fields（≥ 2 条，回滚级硬门准备）
   - 动物 / 灵兽独立反应坐标轴
@@ -192,11 +193,13 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
 - [ ] **A-补充**：章首有刺点钉子？`opening_hook_spike`；好奇缝隙达标？`curiosity_gap_markers`；纯氛围连段峰 ≤ 5？
 - [ ] 已先询问并记录占比：`romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio`？
 - [ ] 若为首章且感情/色情目标占比 > 0：前 800 字是否已有至少 1 处“关系高压触点”？
+- [ ] 已输出 E-扩展4 风控面板且字段完整？（`romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio` / `suggestive_erotic_risk_hits` / `explicit_sexual_content_hits` / `high_risk_relationship_hits` / `chapter1_tension_hook_present`）
+- [ ] **E-扩展4** 是否严格 PASS？（`explicit_sexual_content_hits == 0`、`high_risk_relationship_hits == 0`、`suggestive_erotic_risk_hits` 未超占比档位上限）
 - [ ] **G-补充**：系统提示模板命中 ≤ 2？技术术语密度 ≤ 8/千字？技术长说明段 ≤ 1？
 - [ ] **P-补充**：巧合链条 ≤ 3？强导向 `forced_detour_hits` ≤ 1（推荐 0）？
 - [ ] **P-补充2**：`cultural_shorthand_clash_hits` ≥ 1？`withhold_beat_present` = true？
 - [ ] **B-补充**：词簇复读 ≤ 3？抽象气场词密度 ≤ 10/千字？
-- [ ] 长篇场景已走 memory LOAD/PERSIST？所有落盘路径都以 `<project_root>/` 开头？
+- [ ] 项目型正文已走 memory LOAD/PERSIST？（仅一次性短文声明可豁免）所有落盘路径都以 `<project_root>/` 开头？
 - [ ] 改写类任务给足原文→改写→理由？
 
 未通过内部重写；重写 2 轮仍不通过 → 交付时连问题一起明示。
@@ -230,7 +233,7 @@ xt-webnovel-writing/                    ← skill 根（= baseDir）
         └── write-protocol.md
 ```
 
-## 11. 项目目录契约（用户的长篇项目，必守）
+## 11. 项目目录契约（用户项目，必守）
 
 ### 11.1 project_root 决策规则
 

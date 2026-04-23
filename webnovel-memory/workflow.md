@@ -1,18 +1,18 @@
 ---
 name: webnovel-memory
-description: 长篇网文的持久化记忆系统。当总字数 ≥ 100 万字、章数 ≥ 200、单章 ≥ 4000 字的长篇项目在连续生成过程中需要跨上下文窗口的人物状态、伏笔表、爽点日志、作者指纹、世界观词典和章节倒排索引时触发。通过标准化磁盘目录（Markdown + YAML）为其他子 skill 提供 READ / WRITE 协议，解决 AI 写长篇的失忆、设定漂移、伏笔遗忘、爽点重复、人物修为前后矛盾等问题；同时内建 used-patterns 监控面板（主语分布、段长熵、非理性噪声、质量方差、反派反应套餐、爽点打断类型），把反 AI 味的硬阈值落成跨章驱动力。触发词：记忆、项目、续写、接着写、上次写到、长篇、500 万字、6000 字、人物卡、伏笔、设定管理、世界观一致、memory、project、long novel。
+description: 小说/连载写作的持久化记忆系统。默认用于任何需要跨上下文窗口保持人物状态、伏笔表、爽点日志、作者指纹、世界观词典和章节倒排索引的项目型写作（仅用户明确声明一次性短文且不留记忆时可跳过）。通过标准化磁盘目录（Markdown + YAML）为其他子 skill 提供 READ / WRITE 协议，解决 AI 写连载时的失忆、设定漂移、伏笔遗忘、爽点重复、人物修为前后矛盾等问题；同时内建 used-patterns 监控面板（主语分布、段长熵、非理性噪声、质量方差、反派反应套餐、爽点打断类型），把反 AI 味的硬阈值落成跨章驱动力。触发词：记忆、项目、续写、接着写、上次写到、连载、人物卡、伏笔、设定管理、世界观一致、memory、project、long novel。
 metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
 ---
 
-# 长篇网文记忆系统
+# 项目持久化记忆系统
 
 > 写 500 万字的书，上下文窗口永远装不下。本 skill 用"磁盘即记忆"的方式，让 agent 每一章都能拉齐最小必要的历史上下文，并在生成后把新状态固化下来。
 
 ## When to Use
 
-- 用户在一个具体 `project_root` 目录下持续写长篇（≥ 100 万字目标），需要跨会话保持状态。
+- 用户在一个具体 `project_root` 目录下持续写小说（无论长短篇），需要跨会话保持状态。
 - 用户说"接着上次写的第 X 章往下写"、"别忘了之前 Y 伏笔"、"帮我看看这个人物现在什么修为"。
-- 其他子 skill 进入**正文生成模式**（`webnovel-plot-design` 的 `draft_prose` / `webnovel-excitement-and-craft` 的改写）之前，必须先调用本 skill 拉上下文。
+- 其他子 skill 进入**正文生成模式**（`webnovel-plot-design` 的 `draft_prose` / `webnovel-excitement-and-craft` 的改写）之前，默认必须先调用本 skill 拉上下文；仅用户明确声明"一次性短文，不建项目、不留记忆"时可跳过。
 
 ### Avoid when
 
@@ -45,7 +45,7 @@ metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
    4. 若什么都缺 → 退出并要求用户补齐
 
    `project_root` 一旦确定 → 立即锁定写入 `book.yaml.project_root`，本次会话不得更改。
-2. 询问：长篇预估规模（总字数 / 单章字数 / 章数估计），填入 `book.yaml.target_length` 和 `estimated_chapter_length`
+2. 询问：作品预估规模（总字数 / 单章字数 / 章数估计），填入 `book.yaml.target_length` 和 `estimated_chapter_length`
 3. 按 `directory-schema.md` 创建全部空壳目录和空文件（**必须一次性建全 §11 定义的全部子目录**，包括 `state/anti-trope-log.md` 这类新文件）
 4. 若用户已有 `webnovel-story-blueprint` 的立书档案 → 直接把字段灌入 `book.yaml` 和 `fingerprint.md`
 5. 若没有 → 路由到 `webnovel-story-blueprint` 先跑立书，再回到本 skill 固化

@@ -1,4 +1,4 @@
-# OpenClaw / 虾魂 / 全局规则：强制两阶段 + 长篇 PERSIST
+# OpenClaw / 虾魂 / 全局规则：强制两阶段 + 项目 PERSIST
 
 本文件供 **OpenClaw 虾魂（SOUL）**、**工作区全局规则**或 **用户固定开场**整段复制；与根目录 `SKILL.md` 公理 12、§7、§9 及 `webnovel-memory/references/write-protocol.md` 一致。
 
@@ -16,7 +16,7 @@
 
 ## 2. 强制顺序（同一轮回复内不得跳步）
 
-### 阶段 0 · 长篇前置（缺一不得进入阶段 1）
+### 阶段 0 · 项目前置（缺一不得进入阶段 1）
 
 1. 已锁定 `project_root`；若无项目目录 → 先执行 `webnovel-memory` · **INIT**。
 2. 写本章正文前 → 必须执行 `webnovel-memory` · **LOAD(project_root, target_chapter)**，把记忆快照（含 `used-patterns`、`soul_fields` 必现清单等）并入上下文。
@@ -34,12 +34,14 @@
 
 1. **自检表**：对 `SKILL.md` §9 勾选逻辑逐项给出 `PASS / WARN / FAIL`；对任一 **回滚级 FAIL** 须标出退回的 workflow（见 `write-protocol` 回滚路径表）。
 2. **反 AI 味 Part B**：按 `webnovel-pitfalls/workflow.md` 对**本章正文**走一遍判定思路，输出「条款 → 判定 → 量化证据（含关键 `stats` 字段）」表或等价结构。
-3. **完整 `chapter_meta.stats`**：字段集合与阈值以 `webnovel-memory/references/write-protocol.md`「一致性检查」为准；数值须与正文可核对。
-4. **闭环**：
+3. **E-扩展4 风控面板（必填）**：必须单独给出 `romance_target_ratio / erotic_tension_target_ratio / explicitness_target_ratio / suggestive_erotic_risk_hits / explicit_sexual_content_hits / high_risk_relationship_hits / chapter1_tension_hook_present`。缺任一字段视为 **FAIL**，不得进入阶段 3。
+4. **完整 `chapter_meta.stats`**：字段集合与阈值以 `webnovel-memory/references/write-protocol.md`「一致性检查」为准；数值须与正文可核对。
+5. **闭环**：
    - 若存在任一 **FAIL** 或 **回滚级 FAIL**：**不得**进入阶段 3；须在同一回复内**改写正文**（或明确说明退回 `webnovel-plot-design` / `webnovel-story-blueprint` 重做哪一步），然后**重新执行阶段 2**。
+   - 若命中 E-扩展4（露骨性描写 / 高风险关系 / 占比未确认 / 风控面板缺字段）：只能“降级改写后重跑阶段 2”，**禁止**跳过改写直接声称“已过审”。
    - 全章重写循环 **≤ 2 轮**；仍 FAIL → 使用 `webnovel-pitfalls` 的**拒交付模板**，不得输出虚假 PASS。
 
-### 阶段 3 · 仅当阶段 2 全 PASS（长篇）
+### 阶段 3 · 仅当阶段 2 全 PASS（项目正文）
 
 - 执行 `webnovel-memory` · **PERSIST**（`write-protocol.md` 八步 + STEP 0 路径契约）。
 - **仅当** PERSIST 成功完成后，方可向用户报告「本章已落盘 / 已写入 project」。
@@ -50,8 +52,9 @@
 
 ```
 【网文 xt-webnovel-writing · 强制两阶段 + PERSIST】
-凡写连载/新书/第N章正文：先 memory·LOAD（无项目则 INIT），再写稿。
+凡项目正文任务（连载/新书/第 N 章）：先 memory·LOAD（无项目则 INIT），再写稿。
 写稿后禁止用「定稿」收束。必须立刻输出：§9自检表 PASS/WARN/FAIL + pitfalls式 Part B 表 + 完整 chapter_meta.stats；
+必须单独输出 E-扩展4 风控面板（占比 + 风险命中）。少字段=FAIL，不得落盘。
 有 FAIL 或回滚级 FAIL 则同轮内改写并重跑自检，最多2轮；仍失败则拒交付说明。
 仅当全 PASS 后才允许 memory·PERSIST；PERSIST 成功后才可说「已落盘」。
 写入项目的 .md 文档默认中文（路径/字段键/代号除外）。
