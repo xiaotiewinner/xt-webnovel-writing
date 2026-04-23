@@ -33,7 +33,9 @@ metadata: {"openclaw":{"emoji":"✍️","os":["darwin","linux","win32"]}}
 10. **说明书句法硬门（反 R · 与 K-补充 联动）**：禁止生活流里的「不是…不是…是/而是/只剩」双否定目录句；同一情绪节拍、无对白无心理时，纯动作微步**单段 ≤ 3**，第 4 步起必须并句或插入走神/环境/他人声；禁止「又/再」串动作后接两个 ≤ 8 字的纯状态验收短句。显著时间跳变（≥ 30 分钟）或换建筑级空间时，正文须**空一行**起新段（反 K-补充 黏段）。统计写入 `chapter_meta.stats`（`exclusion_enum_hits` / `tutorial_microstep_chain_max` / `catalog_afterthought_pairs` / `k_scene_block_violations`）。违反 → 回 plot-design。
 11. **项目目录契约（必守）**：长篇项目所有产物**只能**落在 `project_root` 下的固定子目录（见 §11）。子 workflow **禁止**自行选择"顺手的目录"。每次落盘前必须校验路径以 `<project_root>/` 开头。违反 → memory PERSIST 拒收。
 12. **新书与连载默认走 memory**：凡是"开新书 / 续写 / 写第 N 章 / 计划连载"的正文任务，生成前必须调用 `webnovel-memory/workflow.md` · LOAD（若无项目则先 INIT），**自检全 PASS 后**必须调用 PERSIST 落盘；仅在用户明确说明"一次性短文，不建项目、不留记忆"时可跳过 LOAD/PERSIST。**顺序**以 `references/openclaw-enforcement-two-phase.md` 为准（先 VERIFY 再 PERSIST，禁止未自检即声称落盘）。
-13. **短句 + 画面感 + 共鸣** 是文笔基线；辞藻华丽不是目标。
+13. **感情/色情张力占比先问后写**：凡是"开新书 / 设计章节 / 续写正文"，必须先向用户确认本书目标占比：`romance_target_ratio`（感情）/ `erotic_tension_target_ratio`（色情张力）/ `explicitness_target_ratio`（露骨强度）。未确认前不得进入正文生成；默认值仅在用户拒绝回答时使用（`20% / 8% / 0%`）。
+14. **首章吸引力优先**：chapter 1 除通用钩子外，若 `romance_target_ratio + erotic_tension_target_ratio > 0`，前 800 字必须至少落 1 处“关系高压触点”（靠近-误读-克制/反噬），禁止为了“过审”把感情张力清空。
+15. **短句 + 画面感 + 共鸣** 是文笔基线；辞藻华丽不是目标。
 
 ## 3. 内部模块清单
 
@@ -85,6 +87,9 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
 - 主角一句话身份
 - 故事一句话梗概
 - 本次任务类型（新写 / 改写 / 拆解 / 诊断 / 续写）
+- **感情线目标占比** `romance_target_ratio`（0~100%）
+- **色情张力目标占比** `erotic_tension_target_ratio`（0~100%）
+- **露骨强度目标占比** `explicitness_target_ratio`（0~100%，但受过审硬门约束）
 - **（长篇必填）** project_root 路径
 
 **输出**：
@@ -185,6 +190,8 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
 - [ ] **K-补充**：跨 30 分钟或换地点是否空行分段？`k_scene_block_violations` ≤ 2？
 - [ ] **O-在场**：全文无「上一章/下一章/读者/作者/弹幕」等元叙事？`meta_language_hits` = 0？
 - [ ] **A-补充**：章首有刺点钉子？`opening_hook_spike`；好奇缝隙达标？`curiosity_gap_markers`；纯氛围连段峰 ≤ 5？
+- [ ] 已先询问并记录占比：`romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio`？
+- [ ] 若为首章且感情/色情目标占比 > 0：前 800 字是否已有至少 1 处“关系高压触点”？
 - [ ] **G-补充**：系统提示模板命中 ≤ 2？技术术语密度 ≤ 8/千字？技术长说明段 ≤ 1？
 - [ ] **P-补充**：巧合链条 ≤ 3？强导向 `forced_detour_hits` ≤ 1（推荐 0）？
 - [ ] **P-补充2**：`cultural_shorthand_clash_hits` ≥ 1？`withhold_beat_present` = true？

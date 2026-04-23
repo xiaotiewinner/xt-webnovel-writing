@@ -131,6 +131,26 @@ chapter_meta:
     maxim_style_summary_hits: 0              # 反 N-补充 · 格言体总结句命中（>=2 FAIL）
     contrastive_negation_hits: 0             # 反 R-补充 · 「不是A，是B」对照句命中（>=2 FAIL）
     keyzone_contrastive_negation_hits: 0     # 反 R-补充 · 章首/章尾/高潮区命中（>=1 FAIL）
+    suggestive_erotic_risk_hits: 0           # 反 E-扩展4 · 隐晦情色风险命中（>=2 FAIL）
+    explicit_sexual_content_hits: 0          # 反 E-扩展4 · 露骨性描写命中（>0 回滚级）
+    high_risk_relationship_hits: 0           # 反 E-扩展4 · 高风险关系命中（>0 回滚级）
+    romance_target_ratio: 20                 # 用户目标占比（%）：感情线
+    erotic_tension_target_ratio: 8           # 用户目标占比（%）：色情张力
+    explicitness_target_ratio: 0             # 用户目标占比（%）：露骨强度（受过审硬门约束）
+    chapter1_tension_hook_present: false     # 首章前800字是否落了关系高压触点
+    romance_functional_scene_ratio: 1.0      # 感情段功能位覆盖率（推进关系/制造代价/反转认知/加深人设）
+    desire_gradient_coverage: 3              # 欲望梯度覆盖级数（目光/距离/触碰/气味呼吸/后果）
+    desire_gradient_jump_hits: 0             # 欲望梯度跨级跳跃命中（同章 1->5 直跳等）
+    ambiguity_scene_template_compliance: 0.8 # 暧昧场景四步模板达标率（触发->失控->收束->余波）
+    emotional_unpredictability_hits: 2       # 感情不可控噪声命中（误读/嘴硬/回避/延迟回复/说反话后补救）
+    affection_flow_reversal_count: 1         # 关系回摆次数（靠近后后撤/承诺后迟疑）
+    emotion_response_variance_score: 0.4     # 同类刺激反应方差（0~1）
+    relationship_tacit_band: mid             # 关系默契档位：low / mid / high（由 state/relationships.md 判定）
+    bilateral_dialogue_technique_hits: 1     # 全章“双方高完成度互相接住”次数（需 >=1，且受 tacit 档位上限约束）
+    contrast_hook_enabled: false             # 反 P-补充6 · 是否启用反差钩子（默认 false）
+    contrast_hook_frequency_10ch: 1          # 反 P-补充6 · 近10章反差钩子启用次数（需 ≤ 2）
+    contrast_hook_chapter_gap: 4             # 反 P-补充6 · 距上次启用章节间隔（需 ≥ 3）
+    contrast_hook_misuse_hits: 0             # 反 P-补充6 · 反差钩子滥用命中（需 = 0）
   antagonist_reactions:                     # 反 E-扩展
     - name: 柳长风
       template_hits: 2                      # 标准套餐（脸色/冷汗/胸口/沉默/"不可能"）命中数
@@ -257,8 +277,11 @@ chapter_meta:
    - **系统面板面板（反 G-补充3）**：写入 `system_option_matrix_hits` / `bracket_system_block_count`；超阈值则标记"下一章系统信息必须碎片化"
    - **跨题材缝合面板（反 P-补充4）**：写入 `multi_genre_graft_count` / `graft_overload_hits`；首章若超阈值标记"回滚级重写开局节拍"
    - **伏笔装载面板（反 P-补充5）**：写入 `foreshadow_pack_density_per_1k` / `high_priority_foreshadow_count`；超阈值标记"下一章降伏笔装载密度"
+   - **反差钩子面板（反 P-补充6）**：写入 `contrast_hook_enabled` / `contrast_hook_frequency_10ch` / `contrast_hook_chapter_gap` / `contrast_hook_misuse_hits`；超阈值标记"下一章禁用反差钩子并回归常规推进"
    - **金句收束面板（反 N-补充）**：写入 `golden_closing_line_hits` / `maxim_style_summary_hits`；章尾命中则标记"下章改用动作后果收束"
    - **对照句面板（反 R-补充）**：写入 `contrastive_negation_hits` / `keyzone_contrastive_negation_hits`；关键段命中则标记"下章关键段禁用不是X是Y"
+   - **过审风控面板（反 E-扩展4）**：写入 `suggestive_erotic_risk_hits` / `explicit_sexual_content_hits` / `high_risk_relationship_hits` / `explicitness_target_ratio`；命中则标记"下章改为可过审强张力写法（保留关系推进，不写露骨步骤）"
+   - **感情功能面板**：写入 `romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio` / `chapter1_tension_hook_present` / `romance_functional_scene_ratio` / `desire_gradient_coverage` / `desire_gradient_jump_hits` / `ambiguity_scene_template_compliance` / `emotional_unpredictability_hits` / `affection_flow_reversal_count` / `emotion_response_variance_score` / `relationship_tacit_band` / `bilateral_dialogue_technique_hits`；不足阈值则标记"下章先补不可控噪声与关系回摆，并重配接住/错频分布再写"
    - **标志动作面板（反 E-扩展3）**：写入 `signature_tick_overuse_hits` / `chapter_edge_tick_reuse`；`tick_overuse >= 1` → 标记"下一章更换角色标志动作表达"
 6. `state/anti-trope-log.md`：按章追加一条：
    ```markdown
@@ -350,6 +373,20 @@ chapter_meta:
    - `stats.hyper_precision_detail_hits ≤ 1`，**>= 3 → FAIL**（反 B-补充4）
    - `stats.noninstrumental_numeric_density_per_1k ≤ 6`，**> 10 → FAIL**（反 B-补充4）
    - `stats.signature_tick_overuse_hits == 0`（反 E-扩展3）
+   - 若 `stats.explicitness_target_ratio == 0`，则 `stats.suggestive_erotic_risk_hits < 2`
+   - 若 `0 < stats.explicitness_target_ratio <= 10`，则 `stats.suggestive_erotic_risk_hits <= 2`
+   - 若 `10 < stats.explicitness_target_ratio <= 20`，则 `stats.suggestive_erotic_risk_hits <= 3`
+   - `stats.explicit_sexual_content_hits == 0`，**> 0 → 回滚级 FAIL**（反 E-扩展4）
+   - `stats.high_risk_relationship_hits == 0`，**> 0 → 回滚级 FAIL**（反 E-扩展4）
+   - `stats.romance_target_ratio` / `stats.erotic_tension_target_ratio` / `stats.explicitness_target_ratio` 必须存在（开写前已询问）
+   - 若 `chapter_number == 1` 且 `stats.romance_target_ratio + stats.erotic_tension_target_ratio > 0`，则 `stats.chapter1_tension_hook_present == true`
+   - `stats.romance_functional_scene_ratio ≥ 0.8`（感情功能位覆盖）
+   - `stats.desire_gradient_jump_hits == 0` 且 `stats.desire_gradient_coverage ≥ 3`（欲望梯度递进）
+   - `stats.ambiguity_scene_template_compliance ≥ 0.7`（暧昧场景模板完整度）
+   - `stats.emotional_unpredictability_hits ≥ 2` 且 `stats.emotion_response_variance_score ≥ 0.3`（感情不可控噪声）
+   - `stats.affection_flow_reversal_count ≥ 1`（关系回摆）
+   - `stats.bilateral_dialogue_technique_hits >= 1`（全章至少一次双向接住）
+   - 上限随 `stats.relationship_tacit_band`：`low ≤ 1`、`mid ≤ 2`、`high ≤ 3`（超上限视为沟通假）
    - `stats.system_option_matrix_hits ≤ 1`，**>= 2 → FAIL**（反 G-补充3）
    - `stats.bracket_system_block_count ≤ 4`，**>= 7 → FAIL**（反 G-补充3）
 
@@ -382,6 +419,8 @@ chapter_meta:
    - `stats.graft_overload_hits == 0`，**>= 1 → FAIL**（反 P-补充4；chapter 1 命中按回滚级）
    - `stats.foreshadow_pack_density_per_1k ≤ 3`，**> 5 → FAIL**（反 P-补充5）
    - `stats.high_priority_foreshadow_count ≤ 2`，**>= 4 → FAIL**（反 P-补充5）
+   - `stats.contrast_hook_misuse_hits == 0`（反 P-补充6）
+   - 若 `stats.contrast_hook_enabled == true`：`stats.contrast_hook_frequency_10ch ≤ 2` 且 `stats.contrast_hook_chapter_gap ≥ 3`（反 P-补充6）
    - `stats.coincidence_chain_hits ≤ 3`，**≥ 6 → 回滚级 FAIL**（反 P-补充 · 巧合闭环过快）
    - `stats.forced_detour_hits ≤ 1`，**≥ 2 → 回滚级 FAIL**（反 P-补充 · 强导向）
 
@@ -418,6 +457,7 @@ chapter_meta:
 | C（单句段） / K（长段） | plot-design |
 | D-1 / D-2 / D-3 | plot-design |
 | E（情感独段 / 粗体） / N-细 / G-细 | plot-design |
+| **E-扩展4**（露骨性描写 / 高风险关系） | plot-design（降级为关系后果表达） |
 | G+1（定义体） / M（爽点链条） / N（质量方差） | plot-design |
 | P-3 / P-4 / Q | plot-design |
 | **R（说明书句法）** / **K-补充（场景块）** | plot-design |

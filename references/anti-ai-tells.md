@@ -359,6 +359,57 @@
 - `signature_tick_overuse_hits >= 1` 判 FAIL。
 - `chapter_edge_tick_reuse == true` 且近 3 章重复同一 tick 判 FAIL。
 
+### E-扩展4 · 感情/隐晦情色过审风险（并入 E，不增加 25 项计数）
+
+**症状**：为提升“暧昧张力”而滑向露骨表达或高风险关系表达，文本可读但平台审核风险高。
+
+**改写方向**：
+- 感情描写默认走“关系后果模式”：写边界、误读、克制、情绪余波，不写器官细节和具体性行为步骤。
+- 隐晦情色只允许“动作前后反应”，禁止“教程式动作链”与体液/器官明示词。
+- 任何高风险关系（未成年人、强迫/胁迫、权力滥用、血缘乱伦）一律降级为冲突事实，不得写成感官快感段。
+
+**检测信号**：
+- `suggestive_erotic_risk_hits`：隐晦情色风险命中（过密暗示/教程式性动作链）
+- `explicit_sexual_content_hits`：露骨性描写命中（器官/体液/行为步骤）
+- `high_risk_relationship_hits`：高风险关系命中（未成年人/强迫/权力滥用/血缘）
+- `romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio`：用户目标占比（开写前必问）
+
+**生成期规则**：
+- `explicit_sexual_content_hits > 0` → 回滚级 FAIL。
+- `high_risk_relationship_hits > 0` → 回滚级 FAIL。
+- `suggestive_erotic_risk_hits` 采用“占比驱动上限”：
+  - `explicitness_target_ratio == 0`：`suggestive_erotic_risk_hits < 2`
+  - `0 < explicitness_target_ratio ≤ 10%`：`suggestive_erotic_risk_hits ≤ 2`
+  - `10% < explicitness_target_ratio ≤ 20%`：`suggestive_erotic_risk_hits ≤ 3`
+- 禁止“过审清空”写法：若 `romance_target_ratio + erotic_tension_target_ratio > 0`，章节内必须出现至少 1 个关系张力触点（靠近/误读/克制反噬任一）。
+
+### E-扩展5 · 感情不可控噪声缺位（并入 E，不增加 25 项计数）
+
+**症状**：感情推进完全按“功能位正确答案”执行，角色反应稳定、可预测、无误判、无回摆，看起来像流程图。
+
+**改写方向**：
+- 每个关键感情场景必须加入至少一种“不可控噪声”：误读、嘴硬、反常回避、延迟回复、说反话后补救。
+- 关系线必须允许短期回摆（靠近后后撤、承诺后迟疑），避免线性上升。
+- 同一角色在同种刺激下应有轻微方差，不可永远同一反应脚本。
+
+**检测信号**：
+- `emotional_unpredictability_hits`：不可控噪声命中次数
+- `affection_flow_reversal_count`：关系回摆次数（靠近->后撤）
+- `emotion_response_variance_score`：同类刺激反应方差（0~1）
+- `bilateral_dialogue_technique_hits`：全章“双方高完成度互相接住”次数（正确表达 + 正确接球 + 正确修复）
+- `relationship_tacit_band`：关系默契档位（`low` / `mid` / `high`）
+
+**生成期规则**：
+- `emotional_unpredictability_hits >= 2`（单章至少两处噪声）。
+- `affection_flow_reversal_count >= 1`（连续两章至少一处回摆）。
+- `emotion_response_variance_score >= 0.3`，过低判 FAIL。
+- 允许出现“完美接住”，但不得单极化：
+  - `bilateral_dialogue_technique_hits >= 1`（全章至少 1 次，避免全程错频假噪声）。
+  - `relationship_tacit_band = low` 时 `bilateral_dialogue_technique_hits ≤ 1`；
+    `mid` 时 ≤ 2；`high` 时 ≤ 3。
+  - 同时保留噪声与回摆约束：`emotional_unpredictability_hits >= 2`、`affection_flow_reversal_count >= 1`。
+- 违反任一项即 FAIL（本项目标是“有接住也有不在同频”，而非单向禁用）。
+
 ---
 
 ## F. 能力 / 修为清单化
@@ -1032,6 +1083,26 @@
 - `foreshadow_pack_density_per_1k ≤ 3`，`> 5` 判 FAIL。
 - `high_priority_foreshadow_count ≤ 2`，`>= 4` 判 FAIL。
 
+### P-补充6 · 反差吊胃口（低频可选机制，并入 P，不增加 25 项计数）
+
+**定位**：这是“可选钩子”，不是默认模板。用于少数章节制造“认知翻面”张力（如敌意角色短时反常协助、冷硬角色露出不合设定软肋），但必须低频、可解释、可回收。
+
+**启用前提**：
+- 本章存在“关系单线化”风险（冲突太直、情绪太平）时才可启用。
+- `contrast_hook_frequency_10ch ≤ 2` 且 `contrast_hook_chapter_gap ≥ 3`（10 章内最多 2 次，且至少隔 3 章）。
+- 若上一章已启用反差钩子，本章默认禁用（冷却）。
+
+**检测信号**：
+- `contrast_hook_enabled`：是否启用本机制（bool）
+- `contrast_hook_frequency_10ch`：近 10 章启用次数
+- `contrast_hook_chapter_gap`：距上次启用章距
+- `contrast_hook_misuse_hits`：滥用命中（无前置动因/无后果/无回收）
+
+**生成期规则**：
+- 默认 `contrast_hook_enabled == false`；未满足前提不得开启。
+- 开启时必须同时给出：`触发动因` + `反差动作` + `关系余波` 三件套；缺任一计 `contrast_hook_misuse_hits += 1`。
+- `contrast_hook_misuse_hits >= 1` 判 FAIL；`contrast_hook_frequency_10ch > 2` 判 FAIL。
+
 ---
 
 ## Q. 转场机械 / 黏滞转场（回滚级）
@@ -1196,7 +1267,7 @@
 | M | 爽点链条过完整 | — |
 | N | 质量曲线过稳定 | **N-细化** 粗体主题句点题 |
 | O | 角色灵魂缺位 / 功能性存在（回滚级） | 关键角色首次登场即生效 · 出场 ≥ 2 次即生效 · **O-在场** 元叙事禁入 |
-| **P** | 剧情算法化 / 想象力贫血（**回滚级**） | **P-1** 怪异预算 · **P-2** 废选项/反直觉 · **P-3** 延迟兑付 · **P-4** 反套路检查 · **P-补充** 巧合闭环过快 · **P-补充2** 文化 shorthand 贴脸对抗 + 收束节拍 |
+| **P** | 剧情算法化 / 想象力贫血（**回滚级**） | **P-1** 怪异预算 · **P-2** 废选项/反直觉 · **P-3** 延迟兑付 · **P-4** 反套路检查 · **P-补充** 巧合闭环过快 · **P-补充2** 文化 shorthand 贴脸对抗 + 收束节拍 · **P-补充6** 反差钩子低频机制 |
 | **Q** | 转场机械 / 黏滞转场（**回滚级**） | **Q-1** 感官桥 · **Q-2** 物件桥 · **Q-3** 对话打断桥 · **Q-4** 摩擦点桥 · **Q-5** 情绪错位桥 |
 | **R** | 说明书式排除枚举 + 教程体微动作链（**回滚级**） | **R-1** 双否定目录句 · **R-2** 教程体链 · **R-3** 验收式对句 |
 
