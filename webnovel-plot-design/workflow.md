@@ -1,6 +1,6 @@
 ---
 name: webnovel-plot-design
-description: 生成网文剧情结构：开头章节骨架、矛盾驱动的剧情段、八步事件法节奏、章节正文草案。触发于用户要求"写开头 / 前几章 / 切入点 / 第一章怎么写 / 剧情怎么推 / 节奏 / 高潮铺垫 / 分剧情 / 这段剧情不顺 / 写正文 / 续写第 X 章"等。强制遵循"矛盾 → 剧情 → 爽点"顺序，并在生成前把反 AI 味 18 主条款 + 7 子条款 · 共 25 项嵌入 prompt 作为硬约束（含 D：世界自主生活 + 配角自主议题 + 废选项戏剧化；含 O：关键角色首次登场即须灵魂渗透；含 P：怪异预算 + 延迟兑付 + 反套路 5-清单预声明；含 Q：5 类转场桥 + 禁用转场词 + 摩擦点必填；含 **R：说明书式排除枚举 + 教程体微动作链 + 验收式对句**；含 **K-补充：显著时空跳变必须 Markdown 空行分段**；含 G-扩展 1 九种定义体模板禁用；含 E / N-细化 情绪词与主题句禁粗体；含 G-细化 角色 PPT 直讲禁令）；项目正文任务默认必须先调用 webnovel-memory · LOAD 拉上下文，生成完调用 PERSIST 落盘（仅一次性短文可跳过）。所有产物严格遵守 SKILL.md §11 项目目录契约（chapters/ / characters/ / arcs/ / state/ / bible/ / index/），不允许在契约外落盘。触发词：开头、前几章、第一章、剧情、节奏、八步、切入点、续写、接着写、写第 X 章、写正文、outline、draft prose。
+description: 生成网文剧情结构：开头章节骨架、矛盾驱动的剧情段、八步事件法节奏、章节正文草案。触发于用户要求"写开头 / 前几章 / 切入点 / 第一章怎么写 / 剧情怎么推 / 节奏 / 高潮铺垫 / 分剧情 / 这段剧情不顺 / 写正文 / 续写第 X 章"等。强制遵循"矛盾 → 剧情 → 爽点"顺序，并在生成前把反 AI 味 18 主条款 + 7 子条款 · 共 25 项嵌入 prompt 作为硬约束（含 D：世界自主生活 + 配角自主议题 + 废选项戏剧化 + **D-4 句法缀笔（反剪辑体）**；含 O：关键角色首次登场即须灵魂渗透；含 P：怪异预算 + 延迟兑付 + 反套路 5-清单预声明；含 Q：5 类转场桥 + 禁用转场词 + 摩擦点必填；含 **R：说明书式排除枚举 + 教程体微动作链 + 验收式对句**；含 **K-补充：显著时空跳变必须 Markdown 空行分段**；含 G-扩展 1 九种定义体模板禁用；含 E / N-细化 情绪词与主题句禁粗体；含 G-细化 角色 PPT 直讲禁令）；项目正文任务默认必须先调用 webnovel-memory · LOAD 拉上下文，生成完调用 PERSIST 落盘（仅一次性短文可跳过）。所有产物严格遵守 SKILL.md §11 项目目录契约（chapters/ / characters/ / arcs/ / state/ / bible/ / index/），不允许在契约外落盘。触发词：开头、前几章、第一章、剧情、节奏、八步、切入点、续写、接着写、写第 X 章、写正文、outline、draft prose。
 metadata: {"openclaw":{"emoji":"🎬","os":["darwin","linux","win32"]}}
 ---
 
@@ -234,7 +234,7 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 
 ### 写正文前的加载
 1. 加载 `author_fingerprint`（偏好动词 / 物象 / 口头禅 / 断句偏好 / 章末钩子偏好）。
-2. 加载 `../references/anti-ai-tells.md` 的 18 主条款（A–R）+ 7 子条款（B+ / C / D-1 / D-2 / D-3 / E+1 / E+2 / G+1 / G+2 / G-细 / H+ / N-细 / P-1 / P-3 / P-4 / **P-补充2** / Q-1..Q-5 / **R-1..R-3** / **K-补充**）全部规则。**注：I-补充 / P-补充2 等并入扩展为主条款内细化信号，不额外增加 25 项计数。**
+2. 加载 `../references/anti-ai-tells.md` 的 18 主条款（A–R）+ 7 子条款（B+ / C / D-1 / D-2 / D-3 / **D-4** / E+1 / E+2 / G+1 / G+2 / G-细 / H+ / N-细 / P-1 / P-3 / P-4 / **P-补充2** / Q-1..Q-5 / **R-1..R-3** / **K-补充**）全部规则。**注：I-补充 / P-补充2 等并入扩展为主条款内细化信号，不额外增加 25 项计数。**
 3. **默认必须**调用 `webnovel-memory` · LOAD(project_root, target_chapter) 获取记忆快照，把"必须承接钩子 / 禁用句式 / 禁用爽点类型 / 活跃角色当前状态 + soul_fields / 动物独立反应坐标轴 / live 伏笔（top 3） / 上一章'纯功能性角色名单'与'动物纯工具化名单' / 上一章 used-patterns 命中项（definition_style_hits / bold_theme_hits / emotion_token_solo_paragraphs / emotion_token_bold / single_sentence_run_max / long_paras_over_80 / long_paras_over_120 / signature_明牌超限名单 / setting_reveal_overload_hits / system_prompt_template_hits / coincidence_chain_hits / forced_detour_hits / **cultural_shorthand_clash_hits / withhold_beat_present / dialogue_subtext_misalignment_hits / fully_matched_qa_chain_max / weirdness_seed_type / chapter_pacing_matrix（relation_tension / mc_info_delta / chapter_mood / ending_hook_type） / romance_arc_step / friendship_arc_step / romance_step_delta_from_prev / friendship_step_delta_from_prev / relationship_progression_beats / relationship_jump_without_cause_hits / relationship_jump_with_cause_hits / post_jump_emotional_turbulence_hits**）"全部并入 prompt；仅用户明确声明"一次性短文，不建项目、不留记忆"时可跳过。
 4. **反 O 必现清单**：下列任一角色的 `soul_fields` 至少 1 条必须作为**本章必现项**写进 prompt：
    - 本章出场 ≥ 2 次的每个有名角色
@@ -313,6 +313,7 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 
 #### 世界自主生活层（反 D · 回滚级）
 7a. **闲笔密度硬门（反 D-1）**：每 300 字至少 1 句"剧情层面删掉也不影响"的非功能描写；全章非功能描写片段 ≥ 5 处 / 6000 字，其中 ≥ 2 处 **5 章内不得被剧情回收**（写作时明确标记）。闲笔 < 3 处 / 章或所有闲笔都被"剧情化回收" → **回滚级 FAIL，退回本 workflow 的人设与场景阶段**。
+7a′. **句法缀笔硬门（反 D-4，与 D-1 不同层）**：限知/第一人称下，禁止「分镜体」连拍——短句推进 + 比喻金句对仗、零迟疑；每 ≈1000 字须有加 **迟疑/从句/而则** 等人类缀笔（**禁止** R「不是…是…」）。成稿时填报 `narration_buffer_marks` / `clip_style_chain_max`；`clip_style_chain_max ≥ 3` 或缀笔未达 `write-protocol` 地板 → **回滚级 FAIL**（可转 `webnovel-excitement-and-craft` 整段加缀笔）。
 7b. **配角自主议题（反 D-2）**：动笔前为 ≥ 1 位非主角配角预定义"独立议题"（自己的家事 / 八卦 / 烦恼 / 与主角无关的八卦）；在场景中落地 ≥ 80 字或 ≥ 5 轮对话，该议题不得与主角主线挂钩。全章所有配角台词 100% 围绕主角 → **回滚级 FAIL**。
 7c. **废选项戏剧化（反 D-3）**：若本章含选择 / 系统 / 抽奖 / 分支机制且触发 ≥ 3 次，至少 1 次主角主动选最差 / 最无意义 / 最反直觉的选项，并用该选择带出性格或世界观细节；3 次以上全选最优 → **回滚级 FAIL**。
 
@@ -502,7 +503,7 @@ PASS 通过后，调用 `webnovel-memory` · PERSIST 执行 8 步落盘（含 ST
 - [ ] （正文模式）本章所有出场 ≥ 2 次的有名角色 + 首次登场的关键角色都拿到"可删除不影响剧情"的灵魂渗透段？动物 / 灵兽 / 反派的专项规则都达标？
 - [ ] （正文模式）`state/anti-trope-log.md` 本章 P-4 5-清单已落盘？真实接续命中第几名（必须 ≥ 4）？
 - [ ] （正文模式）本章转场每次都已声明桥类型与锚点？禁用转场词 = 0？瞬移切换 = 0？
-- [ ] （正文模式）闲笔 ≥ 5 处且剧情无关 ≥ 2？配角自主议题 ≥ 80 字 ≥ 1 位？
+- [ ] （正文模式）闲笔 ≥ 5 处且剧情无关 ≥ 2？配角自主议题 ≥ 80 字 ≥ 1 位？**D-4** 缀笔计数与 `clip_style_chain_max` 达标？
 - [ ] （正文模式）怪异预算 ≥ 1 + 延迟兑付 ≥ 1？
 - [ ] （正文模式）**P-补充2**：`cultural_shorthand_clash_hits` ≥ 1 且 `withhold_beat_present` = true？
 - [ ] （首章模式）前 500 字 `series_opening_strike_count ≥ 2` 且 `opening_question_debt_present = true`？

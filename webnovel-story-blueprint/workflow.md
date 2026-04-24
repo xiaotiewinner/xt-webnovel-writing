@@ -363,5 +363,5 @@ STEP 6 作者指纹（下游生成正文时必须按此固化风格）
 ## 底本
 
 - `../references/foxsan-webnovel-manual.md` §4.1–4.5。
-- `../references/anti-ai-tells.md` § L（作者指纹缺位）、§ O（角色灵魂缺位 / 功能性存在）、§ P-1（怪异预算）、§ D-2（配角自主议题）。
+- `../references/anti-ai-tells.md` § L（作者指纹缺位）、§ O（角色灵魂缺位 / 功能性存在）、§ P-1（怪异预算）、§ D-2（配角自主议题）、**§ D-4**（句法缀笔 / 反剪辑体，正文阶段由 `write-protocol` 统计硬门落地）。
 - SKILL.md §11 项目目录契约（落盘路径必守）。

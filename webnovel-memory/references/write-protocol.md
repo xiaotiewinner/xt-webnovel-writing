@@ -85,6 +85,10 @@ chapter_meta:
     transition_bridge_declared: true        # 每次切换都显式声明了桥类型与锚点
     forbidden_transition_words_hits: 0      # 反 Q · 禁用转场词命中次数（需 = 0，≥ 2 → 回滚级 FAIL）
     teleport_transitions: 0                 # 反 Q · "瞬移切换"次数（无任何桥）（需 = 0，≥ 1 → 回滚级 FAIL）
+    # —— D-4 人类缀笔 / 反剪辑体（与 D-1 闲笔不同层；见 anti-ai-tells.md） ——
+    narration_buffer_marks: 4              # 迟疑/从句套层/而则缀笔等可计意群数（第一/三人称限知为主）
+    clip_style_chain_max: 2                 # 比喻或判断短句无顺接连词、句号硬接的连打峰值（需 ≤ 2；≥ 3 → 回滚级 FAIL）
+    d4_pov: limited                          # `first` | `limited` | `omniscient` — 全知时 D-4 计数量地板减半
     # —— R / K-补充（2026-04 第 7 轮） ——
     exclusion_enum_hits: 0                  # 反 R-1 · 「不是…不是…是/而是/只剩」生活流双否定目录（需 = 0；≥ 2 → 回滚；=1 且同段 G+1>0 → 回滚）
     tutorial_microstep_chain_max: 3         # 反 R-2 · 单段或无对白 200 字窗内纯动作微步峰值（需 ≤ 4；≥ 5 → 回滚）
@@ -279,10 +283,11 @@ chapter_meta:
    - **反派套餐面板**：写入 `antagonist_reactions[*].template_hits / signature_hits`；`template_hits > 2` 或 `signature_hits < 2` → 标记 "下一章该反派场景强制替换 ≥ 2 项为 signature"
    - **灵魂渗透面板（反 O）**：写入 `soul_bleed[*]`；对所有 `appearances_in_chapter ≥ 3` 的角色，若 `bleed_count == 0` → 加入"纯功能性角色名单"并标记 "下一章强制为该角色安排 ≥ 1 处非功能性灵魂渗透"；连续 2 章纯功能 → 升级为硬门（下一章不达标则不允许落盘）
    - **动物独立反应面板（反 O · species != 人）**：写入 `animal_independence[*]`；若 `independent_actions / appearances_in_chapter < 0.5` → 标记 "下一章该动物 / 灵兽必须有 ≥ 1 处与主角指令无关的独立行动"
-   - **世界自主生活面板（反 D）**：写入 `filler_count` / `filler_unresolved_count` / `side_char_autonomous_agenda_count` / `choice_mechanism_waste_count`；
+   - **世界自主生活面板（反 D）**：写入 `filler_count` / `filler_unresolved_count` / `side_char_autonomous_agenda_count` / `choice_mechanism_waste_count`；以及 **D-4** `narration_buffer_marks` / `clip_style_chain_max` / `d4_pov`；
      - `filler_count < 5` 或 `filler_unresolved_count < 2` → 标记 "下一章强制补 ≥ 3 处剧情无关闲笔"
      - `side_char_autonomous_agenda_count == 0` → 标记 "下一章强制为 ≥ 1 位配角安排 ≥ 80 字自主议题"（即"与主角剧情无关的事"）
      - 若本章含选择/系统机制（`choice_mechanism_trigger_count ≥ 1`）且 `choice_mechanism_waste_count == 0` → 标记 "下一章此类机制必须 ≥ 1 次选废选项"
+     - **D-4**：`clip_style_chain_max >= 3` → 标记 "本章已触回滚阈值须整体加缀笔/并句"；`narration_buffer_marks` 未达与 `d4_pov` 联动地板 → 标记 "下一章限知叙述每 ≈1000 字至少 1 处迟疑或从句套层"
    - **想象力面板（反 P）**：写入 `weirdness_budget_count` / `deferred_setup_count` / `anti_trope_actual_rank`；
      - `weirdness_budget_count == 0` → 标记 "下一章必须 ≥ 1 处怪异预算" + **回滚级硬门**（本章已违反）
      - `anti_trope_actual_rank ≤ 3` → 标记"下一章必须跳出本次 5-清单前 3 名"
@@ -454,6 +459,9 @@ chapter_meta:
    - `stats.filler_unresolved_count ≥ 2`（反 D-1 · 剧情无关闲笔必须 ≥ 2 处）
    - `stats.side_char_autonomous_agenda_count ≥ 1`，**= 0 → 回滚级 FAIL**（反 D-2 · 退回 plot-design 补配角议题）
    - 若 `stats.choice_mechanism_trigger_count ≥ 3`：`stats.choice_mechanism_waste_count ≥ 1`（反 D-3）；**全最优（waste=0）→ 回滚级 FAIL**
+   - **D-4**（反剪辑体 / 句法级人类缀笔）：`stats.clip_style_chain_max ≤ 2`，**≥ 3 → 回滚级 FAIL**（退回 `webnovel-excitement-and-craft` 或 `webnovel-plot-design` 整段加缀笔）。设 `W = stats.chapter_word_count`。`narration_buffer_marks` 与 `d4_buffer_floor`（`d4_pov` 联动，见下）：当 `W` **不足 1200 字**（短章）时，**仅**强制本项之 `clip_style_chain_max`；`narration_buffer_marks` 不单独触发回滚。若 `W ≥ 1200`：当 `d4_pov == 'omniscient'` 时 `d4_buffer_floor = max(1, W // 3000)`，否则 `d4_buffer_floor = max(2, W // 1500)`；`narration_buffer_marks < d4_buffer_floor` 且 `W ≥ 2000` **→ 回滚级 FAIL**（与 L / N 叠加时从严）；`W` 在 1200–2000 间且未达地板 → 普通 **FAIL 或**同轮加缀笔，不自动抬回滚级。
+     - `stats.d4_pov` 缺省按叙事实际补填；**禁止**为降地板滥用 `omniscient`。
+   - 若 `stats.d4_pov` 字段缺失 / 未在 `first`/`limited`/`omniscient` 中取值 → 对 D-4 计数字段按 **FAIL（拒绝 PERSIST，要求补全 stats）** 处理
 
    **F. 想象力硬门**（反 P · 回滚级）
    - `stats.anti_trope_top5_declared == true`（动笔前必须已落盘 5-清单）
@@ -505,7 +513,7 @@ chapter_meta:
 | 回滚级 FAIL 来源 | 退回 workflow |
 |---|---|
 | C（单句段） / K（长段） | plot-design |
-| D-1 / D-2 / D-3 | plot-design |
+| D-1 / D-2 / D-3 / **D-4**（人类缀笔 / 剪辑体） | plot-design；**D-4 偏文笔层时** 可先 `webnovel-excitement-and-craft` 加缀笔再 PERSIST |
 | E（情感独段 / 粗体） / N-细 / G-细 | plot-design |
 | **E-扩展4**（露骨性描写 / 高风险关系） | plot-design（降级为关系后果表达） |
 | G+1（定义体） / M（爽点链条） / N（质量方差） | plot-design |
