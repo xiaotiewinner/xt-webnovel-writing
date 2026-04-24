@@ -13,7 +13,7 @@ metadata: {"openclaw":{"emoji":"🎬","os":["darwin","linux","win32"]}}
 3. **每段剧情必须能用八步事件法至少对上 4 步**，否则打回自己重写。
 4. **反 AI 味必读**：启动生成前加载 `../references/anti-ai-tells.md`，把 A–R 主条款 + B / E / G / H / N / D / P 的 7 个子条款（共 18 主 + 7 子 = 25 项）全部嵌入 prompt 作为硬约束，生成后逐项自查。其中 **D（世界无自主生活 · 回滚级）**、**M（爽点链条过完整）**、**N（质量曲线过稳定）+ N-细化（粗体主题句）**、**O（角色灵魂缺位）**、**P（剧情算法化 · 回滚级）**、**Q（转场机械 · 回滚级）**、**R（说明书句法 · 回滚级）**、**K-补充（场景块空行 · 回滚级）**、**G-扩展 1（9 种定义体模板）**、**E-情感标签独段 / 粗体**、**G-细化（角色 PPT 直讲）** 是元层级 / 回滚级硬门，单独 FAIL 即视为整体失败并按相应等级回滚。
 5. **正文默认走 memory（新书也适用）**：当 `output_mode == draft_prose` 时，生成前必须先调 `webnovel-memory`（有 `project_root` 则 LOAD；无则先 INIT 再 LOAD），生成后必须调 PERSIST 落盘。仅用户明确声明"一次性短文，不建项目、不留记忆"时可跳过。
-6. **项目目录契约**：所有产物按 SKILL.md §11 的固定子目录落盘（`chapters/chNNNN.md` / `characters/<name>.md` / `arcs/arc-<NN>-<slug>.md` / `state/...` / `bible/...` / `index/...`）；禁止在 `project_root` 之外或契约外子目录写文件。违反者 PERSIST 直接拒收。
+6. **项目目录契约**：所有产物按 SKILL.md §11 的固定子目录落盘（`chapters/chNNNN_短标题.md` / `state/chapter_meta/chNNNN.yaml` / `characters/<name>.md` / `arcs/arc-<NN>-<slug>.md` / `state/...` / `bible/...` / `index/...`）；禁止在 `project_root` 之外或契约外子目录写文件。违反者 PERSIST 直接拒收。
 7. **P-4 反套路预声明**（draft_prose 必跑）：动笔前将"当前场景最常见 5 种接续 + 真实要写的接续（必须 ≠ 前 3 名）"写入 `state/anti-trope-log.md`，未落盘不得进入正文生成。
 8. **Q 转场桥预声明**（draft_prose 必跑）：每一次场景 / 时间切换必须在章纲阶段标记使用哪类桥（Q-1 感官 / Q-2 物件 / Q-3 对话打断 / Q-4 摩擦点 / Q-5 情绪错位）及其锚点，未声明不得下场。
 
@@ -234,8 +234,8 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 
 ### 写正文前的加载
 1. 加载 `author_fingerprint`（偏好动词 / 物象 / 口头禅 / 断句偏好 / 章末钩子偏好）。
-2. 加载 `../references/anti-ai-tells.md` 的 18 主条款（A–R）+ 7 子条款（B+ / C / D-1 / D-2 / D-3 / E+1 / E+2 / G+1 / G+2 / G-细 / H+ / N-细 / P-1 / P-3 / P-4 / **P-补充2** / Q-1..Q-5 / **R-1..R-3** / **K-补充**）全部规则。
-3. **默认必须**调用 `webnovel-memory` · LOAD(project_root, target_chapter) 获取记忆快照，把"必须承接钩子 / 禁用句式 / 禁用爽点类型 / 活跃角色当前状态 + soul_fields / 动物独立反应坐标轴 / live 伏笔（top 3） / 上一章'纯功能性角色名单'与'动物纯工具化名单' / 上一章 used-patterns 命中项（definition_style_hits / bold_theme_hits / emotion_token_hits / single_sentence_run_max / long_paragraph_count / signature_明牌超限名单 / setting_reveal_overload_hits / system_prompt_template_hits / coincidence_chain_hits / forced_detour_hits / **cultural_shorthand_clash_hits / withhold_beat_present**）"全部并入 prompt；仅用户明确声明"一次性短文，不建项目、不留记忆"时可跳过。
+2. 加载 `../references/anti-ai-tells.md` 的 18 主条款（A–R）+ 7 子条款（B+ / C / D-1 / D-2 / D-3 / E+1 / E+2 / G+1 / G+2 / G-细 / H+ / N-细 / P-1 / P-3 / P-4 / **P-补充2** / Q-1..Q-5 / **R-1..R-3** / **K-补充**）全部规则。**注：I-补充 / P-补充2 等并入扩展为主条款内细化信号，不额外增加 25 项计数。**
+3. **默认必须**调用 `webnovel-memory` · LOAD(project_root, target_chapter) 获取记忆快照，把"必须承接钩子 / 禁用句式 / 禁用爽点类型 / 活跃角色当前状态 + soul_fields / 动物独立反应坐标轴 / live 伏笔（top 3） / 上一章'纯功能性角色名单'与'动物纯工具化名单' / 上一章 used-patterns 命中项（definition_style_hits / bold_theme_hits / emotion_token_solo_paragraphs / emotion_token_bold / single_sentence_run_max / long_paras_over_80 / long_paras_over_120 / signature_明牌超限名单 / setting_reveal_overload_hits / system_prompt_template_hits / coincidence_chain_hits / forced_detour_hits / **cultural_shorthand_clash_hits / withhold_beat_present / dialogue_subtext_misalignment_hits / fully_matched_qa_chain_max / weirdness_seed_type / chapter_pacing_matrix（relation_tension / mc_info_delta / chapter_mood / ending_hook_type） / romance_arc_step / friendship_arc_step / romance_step_delta_from_prev / friendship_step_delta_from_prev / relationship_progression_beats / relationship_jump_without_cause_hits / relationship_jump_with_cause_hits / post_jump_emotional_turbulence_hits**）"全部并入 prompt；仅用户明确声明"一次性短文，不建项目、不留记忆"时可跳过。
 4. **反 O 必现清单**：下列任一角色的 `soul_fields` 至少 1 条必须作为**本章必现项**写进 prompt：
    - 本章出场 ≥ 2 次的每个有名角色
    - **本章首次登场的关键角色（主角 / POV / top 5 配角 / 核心反派 / 女主男主）——无论出场几次**
@@ -248,8 +248,23 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
    - 设定专有名词首次出现禁止在同一对话 / 叙述段内携带 ≥ 2 项结构性信息（规模 / 性质 / 运作 / 历史任选其二）
    - 上一章 used-patterns 命中项转为本章禁用词：上一章 `definition_style_hits ≥ 2` 则本章该结构全部禁；上一章 `bold_theme_hits ≥ 1` 则本章全章禁粗体；上一章 signature 明牌 ≥ 2 则本章该 signature 只许现象级出现
 
+### 章节类型骨架（先定生长方向，再过闸门）
+
+先判本章主类型（可 1 主 1 副，不可 2 主并列）：
+
+| 章节类型 | 主目标 | 必须抖动点 | 禁止模板化 |
+|---|---|---|---|
+| 关系推进章 | 关系状态发生可感变化（靠近/后撤/误读/重估） | 至少 1 次“台词与内心错位” + 至少 1 次“动作后悔/补救” | 靠近→触碰→异能触发→中断→撤退 的镜像复用 |
+| 伏笔埋设章 | 只埋不兑付，推进疑问债 | 至少 1 处“可见异常但不解释” + 1 处“拒展示收束” | 当章解释完新设定、章末明牌提示“这是伏笔” |
+| 战斗/对抗章 | 决策与代价，不是纯结果 | 至少 1 次非最优选择 + 1 次节奏打断（delay/denied/cost） | 四步算法链（观察→判断→调整→成功）整段直出 |
+| 世界展开章 | 增加世界自主生活密度 | 至少 1 位配角自主议题（≥80字） + 至少 2 处剧情无关闲笔 | 设定打包讲解/PPT 化陈述 |
+
+**反镜像硬门（生成驱动）**：
+- 若与上一章主类型相同，必须在“冲突触发点”或“收束方式”至少变更 1 项，并在草稿注释写出：`variation_point`。
+- 若近 2 章出现同一“场景骨架序列”（如靠近→触碰→能力触发→撤退），本章必须改为“错位对话先行”或“外部事件先行”，不得复用镜像节拍。
+
 ### 写正文前的十八项闸门（未通过不得开写）
-0. **占比确认闸门（新书/设计/续写必问）**：开写前必须先确认并记录 `romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio`。若用户未给值，先追问；仅在用户明确拒答时可落默认 `20% / 8% / 0%`。
+0. **占比确认闸门（新书/设计/续写必问）**：开写前必须先确认并记录 `romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio` / `combat_target_ratio`。若用户未给值，先追问；仅在用户明确拒答时可落默认 `20% / 8% / 0% / 15%`。若用户不回复占比细节，必须按题材给出“基础刺激提案”并在本章执行（关系高压触点或有效打戏至少一项）。
 1. **词簇闸门**：`lexeme_cluster_repeat_hits` 近 3 章均值 < 4 且 `abstract_aura_token_density_per_1k` 近 3 章均值 ≤ 10；否则先做“抽象词→具象细节”替换再开写。
 2. **模板闸门**：`system_prompt_template_hits` 近 3 章均值 < 3；否则先重写本章系统提示策略（残片化+去同构）。
 3. **巧合闸门**：本章章纲 `coincidence_chain_hits` 预估 ≤ 3 且 `forced_detour_hits` 预估 = 0；否则先补主动决策代价节点。
@@ -264,11 +279,11 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 12. **跨题材缝合闸门（反 P-补充4）**：首章强曝光题材轨道 ≤ 2；若已出现职场+系统+修真+悬疑四线并行，必须降到“两强一弱”后再开写。
 13. **伏笔装载闸门（反 P-补充5）**：章纲 `foreshadow_pack_density_per_1k` 预估 ≤ 3，`high_priority_foreshadow_count` 预估 ≤ 2；超阈值先删减伏笔再开写。
 14. **金句收束闸门（反 N-补充）**：章尾不得预置“总结真理句”；结尾必须优先落在动作后果/未完成动作上。
-15. **对照句闸门（反 R-补充）**：章首500字、章尾200字、高潮区默认禁用“不是X，是Y/而是Y”句型；若出现必须改写。
+15. **对照句闸门（反 R-补充）**：**全章零容忍**禁用「不是…是…」「不是…、是…」「不是…，也不是…，是…」「不是…——是…」等否定对照收束（与 `anti-ai-tells.md` · R-补充 / G-扩展 1 同禁）；**任意位置出现即本章不得开写/不得过检**，必须改写完再进入正文或 PERSIST。
 16. **感情过审闸门（反 E-扩展4）**：感情/暧昧段允许按用户占比提升强度，但必须是“可过审表达”：禁露骨器官/体液/步骤化性动作；若存在高风险关系元素（未成年人/强迫/权力滥用/血缘），本章禁止进入正文生成。不得以“过审”为由把用户要求的感情/色情张力清零。**本闸门未通过时不得进入草稿写作，不得以“先写后改”绕过。**
 17. **反差钩子闸门（反 P-补充6，可选低频）**：默认关闭；仅当本章存在“关系单线化”风险且 `contrast_hook_frequency_10ch ≤ 2`、`contrast_hook_chapter_gap ≥ 3` 时可开启。未满足条件不得启用反差桥段。
 
-### 感情线构思硬约束（题材自适应）
+### 关系线构思硬约束（爱情 + 友情，题材自适应）
 1. **先定感情功能位**：每段感情戏必须标注功能：`推进关系` / `制造代价` / `反转认知` / `加深人设` 四选一（可复合）；未标注不得写入正文。
 2. **欲望梯度五级递进**：按 `目光层 -> 距离层 -> 触碰层 -> 气味/呼吸层 -> 后果层` 推进，禁止同章从 1 级直接跳 5 级。
 3. **隐晦表达范式**：写“反应与控制失败”而非“部位清单”；优先写喉结/指尖/呼吸/步伐、停顿半秒、环境共振、事后痕迹。
@@ -279,6 +294,11 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 8. **关系回摆机制**：连续两章至少 1 次“靠近后后撤”或“承诺后迟疑”，防止线性甜化。
 9. **双向接住改为“分布约束”**：全章必须同时存在“接住”和“错频”。`bilateral_dialogue_technique_hits` 至少 1 次；但上限跟 `relationship_tacit_band` 走：`low ≤ 1`、`mid ≤ 2`、`high ≤ 3`。禁止全程完美接住，也禁止全程不接住。
 10. **反差钩子低频配额**：反差桥段属于“低频可选味精”，10 章内最多 2 次，且启用章节间隔 ≥ 3；禁止把“由恨转爱/敌对转护”当默认主流程。
+11. **双轨递进阶梯（反 E-扩展6）**：爱情与友情都按“阶段阶梯”推进，支持负值到正值：爱情 `仇恨→厌恶→戒备→陌生→注意→试探→共担→承诺边缘→稳定亲密`；友情 `死敌→敌对→不信任→陌生→同阵营→互信试用→共担风险→主动维护→生死托付`。默认每章最多前进 1 级；允许短期回摆；允许“恨极转爱/骤然顿悟/友情突变”等非线性跃迁，但必须有触发事件与后果余波，禁止无因跨级。
+12. **递进动作落地（反 E-扩展6）**：当章有爱情或核心友情场景时，必须落 ≥1 个“关系递进动作”（承担代价/共享秘密/公开站队/主动维护边界）；仅用台词表态不计入递进。
+13. **跃迁三件套（反 E-扩展6）**：若本章关系阶段跃迁 `+2` 及以上，必须同章落地三件套：`触发事件`（可复核）+ `代价后果`（行为/关系成本）+ `情绪余波`（失控/躲闪/嘴硬/反复确认），缺一不得通过。
+14. **主角去同质化（反 E-扩展7）**：主角必须预置 ≥3 条“非通用人格特征”（如执拗/黑色幽默/好胜/冒险/嘴硬等），且本章至少 1 处“非纯谨慎”行为（冲动、反讽、主动挑衅、越界尝试之一）；禁止整章只剩“沉默+谨慎+被动观察”。
+15. **刺激要素主动触发（反 E-扩展7）**：即使用户未点名，也需在不过审前提下主动落地至少一类刺激要素：`关系高压触点` 或 `有效打戏/对抗（有目标+阻力+代价）`；不得全部回避为“平稳对话”。
 
 ### 写正文时的硬手法（全部是反 AI 味 A–R 的落地）
 
@@ -288,7 +308,7 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 3. **主语轮替**：同一主语"他 / 她"连续开头段不得 ≥ 3；第 3 段起必须省略主语 / 换视角主语 / 用介词/副词起头。章内 top-1 主语段落占比 ≤ 40%。（反 B-扩展）
 4. **句长轮替**：连续 ≥ 4 段的段长标准差必须 ≥ 8 字；每 5 段至少 1 段 > 80 字或含 ≥ 2 分句的复合句。（反 B-扩展 + K）
 5. **默认以段落组织文本**：默认一段 2–5 句；单句成段必须有显式理由（情绪顶点 / 打断 / 转场锚点 / 对话重击）。连续 3 次想按 Enter 换行都是短句时，**第 3 次必须并段**。（反 C 强化）
-6. **禁止**"第二剑。第三剑。第四剑。"式递增单句成段；需要同动作重复时换维度（角度 / 代价 / 对手反应）。**连续单句成段上限 2 段**（2026-04 收紧），全章 ≥ 3 段丛数 ≤ 2，单句段占比 ≤ 30%。（反 C）
+6. **禁止**"第二剑。第三剑。第四剑。"式递增单句成段；需要同动作重复时换维度（角度 / 代价 / 对手反应）。**连续单句成段上限 2 段**（2026-04 收紧）；仅在“情绪顶点/高密对话区”可临时放宽到 3 段，但必须在后续 100 字内补 ≥ 50 字复合段作为呼吸回补；全章 ≥ 3 段丛数 ≤ 2，单句段占比 ≤ 30%。（反 C）
 7. **段长硬门**：全章 > 80 字长段 ≥ 3（其中 ≥ 1 段 > 120 字）；单句成段（≤ 15 字）占比 ≤ 30%（2026-04 收紧）。不达标禁止交付。（反 K 硬门）
 
 #### 世界自主生活层（反 D · 回滚级）
@@ -337,7 +357,7 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 7ae. **跨题材缝合限额（P-补充4）**：`multi_genre_graft_count ≤ 2` 且 `graft_overload_hits == 0`；首章缝合过载命中按 **回滚级 FAIL**。
 7af. **伏笔装载限额（P-补充5）**：`foreshadow_pack_density_per_1k ≤ 3` 且 `high_priority_foreshadow_count ≤ 2`；超阈值 → **FAIL**（先降线索密度再写）。
 7ag. **金句收束限额（N-补充）**：`golden_closing_line_hits ≤ 1` 且 `maxim_style_summary_hits ≤ 1`；格言体总结句 ≥2 → **FAIL**。
-7ah. **对照句关键区限额（R-补充）**：`contrastive_negation_hits ≤ 1` 且 `keyzone_contrastive_negation_hits == 0`；关键区命中直接 **FAIL**，首章命中按回滚级。
+7ah. **对照句全章硬门（R-补充）**：`contrastive_negation_hits == 0` 且 `keyzone_contrastive_negation_hits == 0`；**任一 ≥1 → 回滚级 FAIL**（全文检索清零「不是…是…」系骨架后再检）。
 7ai. **感情过审硬门（E-扩展4）**：`explicit_sexual_content_hits == 0` 且 `high_risk_relationship_hits == 0`；`suggestive_erotic_risk_hits` 采用占比驱动上限：`explicitness_target_ratio == 0` 时 `< 2`，`0 < explicitness_target_ratio ≤ 10%` 时 `≤ 2`，`explicitness_target_ratio > 10%` 时 `≤ 3`。`explicitness_target_ratio` 不封顶，但不得突破过审阈值。命中露骨性描写或高风险关系 → **回滚级 FAIL**。**若占比字段缺失或 E-扩展4 面板缺字段，同样按 FAIL 处理且禁止 PERSIST。**
 7aj. **感情功能位硬门**：`romance_functional_scene_ratio >= 0.8`（感情段中有明确功能位的占比）；不足 → **FAIL**。
 7ak. **欲望梯度硬门**：`desire_gradient_jump_hits == 0` 且 `desire_gradient_coverage >= 3`（同章至少覆盖 3 级）；违规 → **FAIL**。
@@ -346,6 +366,10 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 7an. **关系回摆硬门（E-扩展5）**：`affection_flow_reversal_count >= 1`（按章或两章滑窗）；不足 → **FAIL**。
 7ao. **双向对话术硬门（E-扩展5，全章分布）**：`bilateral_dialogue_technique_hits >= 1` 且按 `relationship_tacit_band` 满足上限（`low ≤ 1`、`mid ≤ 2`、`high ≤ 3`）；任一违例 → **FAIL**。
 7ap. **反差钩子配额硬门（P-补充6）**：`contrast_hook_misuse_hits == 0` 且（若启用）`contrast_hook_frequency_10ch ≤ 2`、`contrast_hook_chapter_gap ≥ 3`；违规 → **FAIL**。
+7aq. **关系递进硬门（E-扩展6）**：当章存在爱情或核心友情场景时，`relationship_progression_beats >= 1`；不足 → **FAIL**。
+7ar. **关系跳级硬门（E-扩展6）**：`relationship_jump_without_cause_hits == 0`；若 `romance_step_delta_from_prev` 或 `friendship_step_delta_from_prev` 出现 `+2` 及以上，必须满足 `relationship_jump_with_cause_hits >= 1` 且 `post_jump_emotional_turbulence_hits >= 1`，否则 **FAIL**。
+7as. **主角去同质化硬门（E-扩展7）**：`protagonist_distinctive_traits_count >= 3`、`protagonist_initiative_conflict_hits >= 1`、`protagonist_impulse_or_humor_hits >= 1` 且 `protagonist_template_similarity_hits == 0`；任一不满足 → **FAIL**。
+7at. **主动刺激要素硬门（E-扩展7）**：`combat_target_ratio > 0` 时 `combat_presence_hits >= 1`；若未显式给占比，也必须满足“关系高压触点 >= 1 或 combat_presence_hits >= 1”二选一，未命中 → **FAIL**。
 
 #### 情绪与反应层
 8. 情绪表达每用一次形容词必须紧跟一个具体动作或生理反应作为证据。（反 E）
@@ -387,21 +411,21 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 - 单句成段（≤ 15 字）占比 ≤ 30%
 - 连续单句成段 ≤ 2 段；全章 ≥ 3 连续段丛数 ≤ 2
 - 全章无任何 > 80 字段落 → 回滚级 FAIL
-- 单句段占比 > 55% → 回滚级 FAIL
+- 单句段占比 > 50% → 回滚级 FAIL
 
 ### 正文输出前自检
 生成后，agent 内部对反 AI 味**25 项基础计数体系（18 主 + 7 子）及并入扩展硬门**逐项自打 PASS/WARN/FAIL/回滚级 FAIL，命中任一 FAIL 则重写当章，命中回滚级 FAIL 则退回对应 workflow。重写 2 轮仍未通过 → 交付时把命中项与原因一起告知用户。
 
 另外必跑下列统计项（**全部**必须 PASS 才能 PERSIST）：
-- `subject_top1_ratio` ≤ 40%（top-1 主语段落占比）
-- `paragraph_length_stdev` ≥ 8 字（连续 5 段）
+- `top_subject_ratio` ≤ 40%（top-1 主语段落占比）
+- `para_length_std` ≥ 8 字（连续 5 段）
 - `excitement_interruption`：本章每条爽点至少标注一种 `delay` / `denied` / `cost`
 - `definition_style_hits` ≤ 2（9 种定义体模板单章合计命中次数；≥ 3 立即重写）
 - `bold_theme_hits` = 0（粗体主题 / 情绪句；≥ 1 立即重写）
-- `emotion_token_hits` = 0（情绪词独段 / 粗体；≥ 1 立即重写）
+- `emotion_token_solo_paragraphs` ≤ 1 且 `emotion_token_bold` = 0（情绪词独段 / 粗体；`emotion_token_bold ≥ 1` 立即重写）
 - `single_sentence_run_max` ≤ 2（全章最长连续单句成段段数；≥ 3 立即重写该段；≥ 6 回滚级）
-- `single_sentence_ratio` ≤ 0.3（单句段占比；> 0.5 回滚级）
-- `long_paragraph_count` ≥ 3（> 80 字段落数；其中 ≥ 1 段 > 120 字）
+- `single_sentence_para_ratio` ≤ 0.3（单句段占比；> 0.5 回滚级）
+- `long_paras_over_80` ≥ 3 且 `long_paras_over_120` ≥ 1（> 80 字段落数；其中 ≥ 1 段 > 120 字）
 - `signature_明牌次数`：每个 signature 反应 ≤ 1 次/章；超出立即去指认改为现象级
 - `setting_reveal_overload_hits` = 0（设定专有名词首次出现携带 ≥ 2 项结构性信息；≥ 1 立即拆句）
 - `filler_count` ≥ 5 且 `filler_plot_unrelated` ≥ 2（反 D-1；< 3 回滚级）
@@ -442,7 +466,7 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 - `multi_genre_graft_count` ≤ 2 且 `graft_overload_hits` = 0（反 P-补充4）
 - `foreshadow_pack_density_per_1k` ≤ 3 且 `high_priority_foreshadow_count` ≤ 2（反 P-补充5）
 - `golden_closing_line_hits` ≤ 1 且 `maxim_style_summary_hits` ≤ 1（反 N-补充）
-- `contrastive_negation_hits` ≤ 1 且 `keyzone_contrastive_negation_hits` = 0（反 R-补充）
+- `contrastive_negation_hits` = 0 且 `keyzone_contrastive_negation_hits` = 0（反 R-补充 · 全章零容忍）
 - `explicit_sexual_content_hits = 0` 且 `high_risk_relationship_hits = 0`，并按 `explicitness_target_ratio` 控制 `suggestive_erotic_risk_hits`（0%: <2；1-10%: ≤2；>10%: ≤3；占比不封顶）（反 E-扩展4）
 - `romance_functional_scene_ratio` ≥ 0.8（感情段功能位覆盖）
 - `desire_gradient_jump_hits` = 0 且 `desire_gradient_coverage` ≥ 3（欲望梯度递进）
@@ -450,6 +474,10 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 - `emotional_unpredictability_hits` ≥ 2 且 `emotion_response_variance_score` ≥ 0.3（感情不可控噪声）
 - `affection_flow_reversal_count` ≥ 1（关系回摆）
 - `bilateral_dialogue_technique_hits` 满足分布约束：至少 1 次且不超过默契档位上限（`low ≤ 1`、`mid ≤ 2`、`high ≤ 3`）
+- `relationship_progression_beats` ≥ 1（存在爱情或核心友情场景时必须有递进动作，反 E-扩展6）
+- `relationship_jump_without_cause_hits` = 0；若出现 `romance_step_delta_from_prev` / `friendship_step_delta_from_prev` ≥ +2，则 `relationship_jump_with_cause_hits` ≥ 1 且 `post_jump_emotional_turbulence_hits` ≥ 1（反 E-扩展6）
+- `protagonist_distinctive_traits_count` ≥ 3，`protagonist_initiative_conflict_hits` ≥ 1，`protagonist_impulse_or_humor_hits` ≥ 1，`protagonist_template_similarity_hits` = 0（反 E-扩展7）
+- `combat_target_ratio > 0` 时 `combat_presence_hits` ≥ 1；未显式给占比时“关系高压触点 >=1 或 combat_presence_hits >=1”至少满足一项（反 E-扩展7）
 - `contrast_hook_misuse_hits` = 0，且（启用时）`contrast_hook_frequency_10ch ≤ 2`、`contrast_hook_chapter_gap ≥ 3`（反差钩子低频）
 
 **反 O 专项必跑**（回滚级）：
@@ -483,7 +511,7 @@ PASS 通过后，调用 `webnovel-memory` · PERSIST 执行 8 步落盘（含 ST
 - [ ] （正文模式）**B-补充3 / E-扩展3**：比喻密度同构与标志动作复用均未超阈？
 - [ ] （正文模式）**B-补充4 / G-补充3 / P-补充4**：数值化感知、系统面板模板化、跨题材缝合均未超阈？
 - [ ] （正文模式）**E-扩展4**：感情段已做过审降级（无露骨性描写/无高风险关系）？
-- [ ] （正文模式）E-扩展4 风控面板字段齐全？（`romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio` / `suggestive_erotic_risk_hits` / `explicit_sexual_content_hits` / `high_risk_relationship_hits` / `chapter1_tension_hook_present`）
+- [ ] （正文模式）E-扩展4 风控面板字段齐全？（`romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio` / `combat_target_ratio` / `suggestive_erotic_risk_hits` / `explicit_sexual_content_hits` / `high_risk_relationship_hits` / `chapter1_tension_hook_present`）
 - [ ] （正文模式）若 E-扩展4 任一项 FAIL：已在本轮重写并重跑验证，且未宣称“已落盘/已通过”？
 - [ ] （正文模式）上述统计清单**全部** PASS？（含 R 四项 + K-补充 + **O-在场 meta_language** + **A-补充 钩子/缝隙/纯氛围峰** + **P-补充2**）
 - [ ] （正文模式）作者指纹字段在文本中可被识别到至少 2 条？

@@ -258,7 +258,7 @@ STEP 5  给出对照改写（含 L4 改动理由标注）
 - [ ] 改动理由全部落到 L1/L2/L3/L4 某一层
 - [ ] L4 无 FAIL 项；尤其 D / P / Q / **R** / **K-补充** / O **+ O-在场** / A **+ A-补充** / M / N / N-细 / E 独段 / G+1 无回滚级 FAIL
 - [ ] 若存在爽点结构问题或 D / P / Q 回滚级 FAIL，已标出并回退 `webnovel-plot-design` / `webnovel-story-blueprint`
-- [ ] （项目改写）若涉及落盘，所有写入路径严格按 SKILL.md §11 契约（`<project_root>/chapters/chNNNN.md` 等），不允许新建契约外目录
+- [ ] （项目改写）若涉及落盘，所有写入路径严格按 SKILL.md §11 契约（`<project_root>/chapters/chNNNN_短标题.md`、`state/chapter_meta/chNNNN.yaml` 等），不允许新建契约外目录
 
 ## 底本
 

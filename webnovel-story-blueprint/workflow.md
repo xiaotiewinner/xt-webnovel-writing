@@ -342,7 +342,7 @@ STEP 6 作者指纹（下游生成正文时必须按此固化风格）
 当用户目标是长篇（`target_length == 长篇` 或明确说"500 万字 / 写系列"等）：
 
 1. 按 SKILL.md §11 确认 / 锁定 `project_root`（用户显式指定 > `book.yaml.project_root` > 用户给的短名在当前工作目录建目录）。
-2. 调用 `webnovel-memory` · INIT 初始化**全部固定子目录**（`book.yaml` / `fingerprint.md` / `bible/` / `characters/` / `arcs/` / `chapters/` / `state/`（含 `anti-trope-log.md`）/ `index/` / `.webnovel-memory/`）。
+2. 调用 `webnovel-memory` · INIT 初始化**全部固定子目录**（`book.yaml` / `fingerprint.md` / `bible/` / `characters/` / `arcs/` / `chapters/` / `state/`（含 `chapter_meta/` 与 `anti-trope-log.md` 等）/ `index/` / `.webnovel-memory/`）。
 3. 把本 skill 的输出字段一对一灌入（**所有写入路径严格按 SKILL.md §11 契约**，禁止在 `project_root` 外或契约外子目录写文件）：
    - STEP 1 主线 → `<project_root>/book.yaml.main_axis` + `book.yaml.l1_conflict`；同时写入 `book.yaml.project_root`（绝对 / 相对一致）锁定
    - STEP 2 人设 → 每个角色一个 `<project_root>/characters/<name>.md`，主角标 `role: 主角`；**灵魂字段**一对一落入 `characters/<name>.md` 的 `## 灵魂字段（soul_fields）` 段。按分层硬门校验：

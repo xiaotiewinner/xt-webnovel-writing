@@ -46,7 +46,7 @@ metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
 
    `project_root` 一旦确定 → 立即锁定写入 `book.yaml.project_root`，本次会话不得更改。
 2. 询问：作品预估规模（总字数 / 单章字数 / 章数估计），填入 `book.yaml.target_length` 和 `estimated_chapter_length`
-3. 按 `directory-schema.md` 创建全部空壳目录和空文件（**必须一次性建全 §11 定义的全部子目录**，包括 `state/anti-trope-log.md` 这类新文件）
+3. 按 `directory-schema.md` 创建全部空壳目录和空文件（**必须一次性建全 §11 定义的全部子目录**，包括 `state/chapter_meta/` 与 `state/anti-trope-log.md` 等）
 4. 若用户已有 `webnovel-story-blueprint` 的立书档案 → 直接把字段灌入 `book.yaml` 和 `fingerprint.md`
 5. 若没有 → 路由到 `webnovel-story-blueprint` 先跑立书，再回到本 skill 固化
 6. **输出给上游**：锁定后的绝对 / 相对 `project_root` 路径 + 固定子目录清单。后续所有子 skill 写文件时**必须**以此为前缀，否则 PERSIST 拒收。
@@ -82,7 +82,7 @@ metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
 
 触发：用户每写完 10 章、或主动要求"帮我检查一下前面有没有坑"。
 
-1. 扫描所有 `chapters/ch*.md` 的 frontmatter
+1. 扫描 `state/chapter_meta/ch*.yaml`（章元与 stats）；并与 `chapters/ch*_*.md` 章号交叉核对
 2. 重建 `index/volume_<VOLUME_NO>_index.md`（可丢弃原文件）
 3. 交叉验证：
    - 每个 `live` 伏笔埋点章 ≤ 当前章 - 100 → 标记 `expired`
@@ -129,7 +129,7 @@ metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
 | live 伏笔（top 3–5） | ≤ 600 | 只取与本章 arc 相关的 |
 | 活跃角色状态 + signature_reactions | ≤ 900 | 每人不超过 220 字 |
 | 禁用清单（句式/爽点/套餐词） | ≤ 300 | — |
-| 反 AI 味监控面板摘要 | ≤ 900 | 主语 / 段长 / 噪声 / 方差 / 打断 / **definition_style_hits / bold_theme_hits / emotion_token_hits / single_sentence_run_max / single_sentence_para_ratio / long_paragraph_count / signature_明牌超限名单 / setting_reveal_overload_hits / transition_types 分布 / filler_density / side_char_autonomous_agenda 名单 / waste_option_ratio** |
+| 反 AI 味监控面板摘要 | ≤ 900 | 主语 / 段长 / 噪声 / 方差 / 打断 / **definition_style_hits / bold_theme_hits / emotion_token_solo_paragraphs / emotion_token_bold / single_sentence_run_max / single_sentence_para_ratio / long_paras_over_80 / long_paras_over_120 / signature_明牌超限名单 / setting_reveal_overload_hits / transition_types 分布 / filler_density / side_char_autonomous_agenda 名单 / waste_option_ratio / contrastive_negation_hits / keyzone_contrastive_negation_hits / dialogue_subtext_misalignment_hits / fully_matched_qa_chain_max / weirdness_seed_type / chapter_pacing_matrix（relation_tension / mc_info_delta / chapter_mood / ending_hook_type） / romance_arc_step / friendship_arc_step / romance_step_delta_from_prev / friendship_step_delta_from_prev / relationship_progression_beats / relationship_jump_without_cause_hits / relationship_jump_with_cause_hits / post_jump_emotional_turbulence_hits / combat_target_ratio / combat_presence_hits / protagonist_distinctive_traits_count / protagonist_initiative_conflict_hits / protagonist_impulse_or_humor_hits / protagonist_template_similarity_hits** |
 | 本章首登关键角色 soul_fields（≥ 2 条） | ≤ 300 | 回滚级硬门准备 |
 | 上一章 anti-trope 5-清单 + 怪异预算 + 延迟兑付清单 | ≤ 300 | P-4 防重复 |
 | **合计** | **≤ 4800** | 硬上限 5500 |
@@ -156,7 +156,7 @@ metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
 | 权限不足写入 | 提示检查，不继续 |
 | YAML 解析失败 | 备份坏文件到 `.webnovel-memory/corrupt/`，降级为空结构继续 |
 | 写入一致性检查失败 | 自动回滚；把未通过项报告给上游，让 agent 重写章节 |
-| 索引与章节 frontmatter 不一致 | 触发 AUDIT 模式全量重建 |
+| 索引与 `state/chapter_meta` 或章节正文对不上 | 触发 AUDIT 模式全量重建 |
 
 ## 最小集成示例
 

@@ -23,7 +23,7 @@
 
 ### 阶段 1 · 仅出稿（DRAFT）
 
-- 允许输出：本章正文、`chapters/ch<NNNN>.md` 所需 frontmatter 要点、**内部用** `chapter_meta` 草稿（可放在折叠块或注释说明中）。
+- 允许输出：本章正文、**落盘用** 完整 `chapter_meta`（将写入 `state/chapter_meta/ch<NNNN>.yaml`，**不**写入 `chapters/*.md`）。阶段 1 中可用折叠块/单独段落列出元数据要点供自检；**不得**在终稿 `chapters/ch*_*.md` 内留 YAML、注释或除 H1+正文外的任何块。
 - **禁止**：用「定稿 / 可发 / 本章已完美收工 / 已写入磁盘」等语收束本轮任务。
 - **禁止**：声称已完成 **PERSIST**（除非阶段 3 已真实执行完 8 步）。
 - 写入项目的 `*.md` 文档默认中文；仅路径、字段键、代号（如 `REV`）可保留英文。
@@ -34,11 +34,16 @@
 
 1. **自检表**：对 `SKILL.md` §9 勾选逻辑逐项给出 `PASS / WARN / FAIL`；对任一 **回滚级 FAIL** 须标出退回的 workflow（见 `write-protocol` 回滚路径表）。
 2. **反 AI 味 Part B**：按 `webnovel-pitfalls/workflow.md` 对**本章正文**走一遍判定思路，输出「条款 → 判定 → 量化证据（含关键 `stats` 字段）」表或等价结构。
-3. **E-扩展4 风控面板（必填）**：必须单独给出 `romance_target_ratio / erotic_tension_target_ratio / explicitness_target_ratio / suggestive_erotic_risk_hits / explicit_sexual_content_hits / high_risk_relationship_hits / chapter1_tension_hook_present`。缺任一字段视为 **FAIL**，不得进入阶段 3。
-4. **完整 `chapter_meta.stats`**：字段集合与阈值以 `webnovel-memory/references/write-protocol.md`「一致性检查」为准；数值须与正文可核对。
-5. **闭环**：
+3. **E-扩展4 风控面板（必填）**：必须单独给出 `romance_target_ratio / erotic_tension_target_ratio / explicitness_target_ratio / combat_target_ratio / suggestive_erotic_risk_hits / explicit_sexual_content_hits / high_risk_relationship_hits / chapter1_tension_hook_present`。缺任一字段视为 **FAIL**，不得进入阶段 3。
+4. **E-扩展6 关系递增面板（必填）**：必须给出 `romance_arc_step / friendship_arc_step / relationship_progression_beats / relationship_jump_without_cause_hits / romance_step_delta_from_prev / friendship_step_delta_from_prev`；关系阶段允许负值到正值（如仇恨/敌对起步）。若任一 `*_step_delta_from_prev >= 2`，还必须给出 `relationship_jump_with_cause_hits / post_jump_emotional_turbulence_hits`。缺字段或无因跨级视为 **FAIL**。
+5. **E-扩展7 主角与刺激面板（必填）**：必须给出 `combat_target_ratio / combat_presence_hits / protagonist_distinctive_traits_count / protagonist_initiative_conflict_hits / protagonist_impulse_or_humor_hits / protagonist_template_similarity_hits`。缺字段、主角模板化、或刺激要素缺席视为 **FAIL**。
+6. **完整 `chapter_meta.stats`**：字段集合与阈值以 `webnovel-memory/references/write-protocol.md`「一致性检查」为准；数值须与正文可核对。**其中 R-补充（「不是…是…」系）须满足 `contrastive_negation_hits == 0` 且 `keyzone_contrastive_negation_hits == 0`（全章零容忍；缺字段视为 FAIL）。**
+7. **闭环**：
    - 若存在任一 **FAIL** 或 **回滚级 FAIL**：**不得**进入阶段 3；须在同一回复内**改写正文**（或明确说明退回 `webnovel-plot-design` / `webnovel-story-blueprint` 重做哪一步），然后**重新执行阶段 2**。
    - 若命中 E-扩展4（露骨性描写 / 高风险关系 / 占比未确认 / 风控面板缺字段）：只能“降级改写后重跑阶段 2”，**禁止**跳过改写直接声称“已过审”。
+   - 若命中 E-扩展6（无因跨级跃迁 / 跃迁缺触发或余波字段）：必须补“触发事件 + 代价后果 + 情绪余波”后重跑阶段 2。
+   - 若命中 E-扩展7（主角模板化 / 主动刺激要素缺席 / 设定了打戏占比但未落地）：必须补主角主动冲突与非纯谨慎反应，并补“关系高压触点或有效打戏”后重跑阶段 2。
+   - 若命中 **R-补充**（`contrastive_negation_hits ≥ 1` 或 `keyzone_contrastive_negation_hits ≥ 1`，即「不是…，是… / 不是…、是… / 不是…也不是…是…」等）：必须全文检索清零该系骨架后重跑阶段 2。
    - 全章重写循环 **≤ 2 轮**；仍 FAIL → 使用 `webnovel-pitfalls` 的**拒交付模板**，不得输出虚假 PASS。
 
 ### 阶段 3 · 仅当阶段 2 全 PASS（项目正文）
@@ -54,7 +59,10 @@
 【网文 xt-webnovel-writing · 强制两阶段 + PERSIST】
 凡项目正文任务（连载/新书/第 N 章）：先 memory·LOAD（无项目则 INIT），再写稿。
 写稿后禁止用「定稿」收束。必须立刻输出：§9自检表 PASS/WARN/FAIL + pitfalls式 Part B 表 + 完整 chapter_meta.stats；
-必须单独输出 E-扩展4 风控面板（占比 + 风险命中）。少字段=FAIL，不得落盘。
+必须单独输出 E-扩展4 风控面板（含感情/色情张力/露骨/打戏占比 + 风险命中）。少字段=FAIL，不得落盘。
+必须输出 E-扩展6 关系递增面板；默认禁止无因跨级。若跃迁 ≥ +2，必须有 `relationship_jump_with_cause_hits` + `post_jump_emotional_turbulence_hits`。
+必须输出 E-扩展7 主角与刺激面板；主角模板化或刺激要素缺席一律 FAIL。
+`chapter_meta.stats` 中 `contrastive_negation_hits` 与 `keyzone_contrastive_negation_hits` 须均为 0（R-补充「不是…是…」系全章零容忍）；任一非 0 则 FAIL，不得落盘。
 有 FAIL 或回滚级 FAIL 则同轮内改写并重跑自检，最多2轮；仍失败则拒交付说明。
 仅当全 PASS 后才允许 memory·PERSIST；PERSIST 成功后才可说「已落盘」。
 写入项目的 .md 文档默认中文（路径/字段键/代号除外）。
@@ -66,7 +74,7 @@
 ## 4. 与宿主能力的关系
 
 - 本文件**不依赖** Cursor / OpenClaw **hooks**；靠虾魂或全局规则把上述顺序钉进模型行为。
-- 若宿主支持 hook，可在「写入 `chapters/ch*.md` 之后」追加提醒：未完成阶段 2 全 PASS 不得结束会话（可选）。
+- 若宿主支持 hook，可在「写入 `chapters/ch*_*.md` 与 `state/chapter_meta/chNNNN.yaml` 之后」追加提醒：未完成阶段 2 全 PASS 不得结束会话（可选）。
 
 ---
 

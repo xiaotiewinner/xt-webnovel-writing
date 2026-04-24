@@ -1,6 +1,6 @@
 ---
 name: xt-webnovel-writing
-description: 中文网络小说写作 agent 的总入口。处理网文构思、写开头、设计主线、起书名、写大纲、写简介、设计剧情、加爽点、改文笔、拆解参考文本、自检错误、续写连载等任何中文网文生成类任务。内部路由到 6 个模块：text-analysis / story-blueprint / plot-design / excitement-and-craft / pitfalls / memory。内置反 AI 味硬约束（18 主条款 + 7 子条款 · 共 25 项：节拍器 **+ A-补充 章首刺点与好奇缝隙** / 句式复用 / 主语熵 / **单句段连续 ≤ 2 且占比 ≤ 0.3** / 信息密度与世界自主生活（含闲笔密度 / 配角自主议题 / 废选项戏剧化 · 回滚级）/ 情感标签含独段与粗体 / 反应套餐 / signature 明牌化 / 设定说明书 / 9 种定义体模板 / 角色 PPT 直讲 / 算法思维链 / 爽点链条过完整 / 质量曲线过稳定含粗体主题句点题 / 角色灵魂缺位含首登即生效 **+ O-在场 禁元叙事（上一章/读者等）** / **剧情算法化/想象力贫血（含怪异预算/废选项/延迟兑付/反套路检查 · 回滚级）** / **转场机械/黏滞转场（含 5 类桥/禁用转场词/摩擦点必填 · 回滚级）** / **说明书式排除枚举+教程体微动作链（R-1/R-2/R-3 · 回滚级）**），其中 D / M / N / N-细 / O / P / Q / **R** / G+1 / E（独段+粗体）/ K（0 长段 **或 K-补充 场景块违规 ≥ 5**）/ C（≥ 6 连续单句段或占比 > 0.5）/ **A-补充（opening_hook / curiosity_gap / flat_atmosphere）** / **O-在场（meta_language_hits ≥ 1）** 为**回滚级硬门**，任一命中强制整章退回指定 workflow 重写；每个有名出场 ≥ 2 次角色（含动物 / 灵兽 / 反派）和本章首登的关键角色都必须带独立内部状态并在当章非功能性地"被偶然看见"（deletion_verified）；项目型写作默认走 memory 持久化流程（仅一次性短文可豁免），所有文件严格落在 **project_root** 下的固定子目录（book.yaml / fingerprint.md / bible / characters / arcs / chapters / state / index / .webnovel-memory），禁止散落。触发词：写网文、写网络小说、构思小说、写玄幻、写仙侠、起书名、大纲、人设、爽点、开头、签到流、系统流、重生、打脸、装逼、改文笔、AI 味、续写、接着写、第 X 章、连载、webnovel、web novel。
+description: 中文网络小说写作 agent 的总入口。处理网文构思、写开头、设计主线、起书名、写大纲、写简介、设计剧情、加爽点、改文笔、拆解参考文本、自检错误、续写连载等任何中文网文生成类任务。内部路由到 6 个模块：text-analysis / story-blueprint / plot-design / excitement-and-craft / pitfalls / memory。内置反 AI 味硬约束（18 主条款 + 7 子条款 · 共 25 项：节拍器 **+ A-补充 章首刺点与好奇缝隙** / 句式复用 / 主语熵 / **单句段连续 ≤ 2 且占比 ≤ 0.3** / 信息密度与世界自主生活（含闲笔密度 / 配角自主议题 / 废选项戏剧化 · 回滚级）/ 情感标签含独段与粗体 / 反应套餐 / signature 明牌化 / 设定说明书 / 9 种定义体模板 / 角色 PPT 直讲 / 算法思维链 / 爽点链条过完整 / 质量曲线过稳定含粗体主题句点题 / 角色灵魂缺位含首登即生效 **+ O-在场 禁元叙事（上一章/读者等）** / **剧情算法化/想象力贫血（含怪异预算/废选项/延迟兑付/反套路检查 · 回滚级）** / **转场机械/黏滞转场（含 5 类桥/禁用转场词/摩擦点必填 · 回滚级）** / **说明书式排除枚举+教程体微动作链（R-1/R-2/R-3 · 回滚级）**），其中 D / M / N / N-细 / O / P / Q / **R** / G+1 / E（独段+粗体）/ K（0 长段 **或 K-补充 场景块违规 ≥ 5**）/ C（≥ 6 连续单句段或占比 > 0.5）/ **A-补充（opening_hook / curiosity_gap / flat_atmosphere）** / **O-在场（meta_language_hits ≥ 1）** 为**回滚级硬门**，任一命中强制整章退回指定 workflow 重写；每个有名出场 ≥ 2 次角色（含动物 / 灵兽 / 反派）和本章首登的关键角色都必须带独立内部状态并在当章非功能性地"被偶然看见"（deletion_verified）；项目型写作默认走 memory 持久化流程（仅一次性短文可豁免），所有文件严格落在 **project_root** 下的固定子目录（book.yaml / fingerprint.md / bible / characters / arcs / chapters（`chNNNN_短标题.md` 仅 H1+正文）/ state（含 `chapter_meta/chNNNN.yaml` 章元）/ index / .webnovel-memory），禁止散落。触发词：写网文、写网络小说、构思小说、写玄幻、写仙侠、起书名、大纲、人设、爽点、开头、签到流、系统流、重生、打脸、装逼、改文笔、AI 味、续写、接着写、第 X 章、连载、webnovel、web novel。
 metadata: {"openclaw":{"emoji":"✍️","os":["darwin","linux","win32"]}}
 ---
 
@@ -19,7 +19,7 @@ metadata: {"openclaw":{"emoji":"✍️","os":["darwin","linux","win32"]}}
 3. **主角必有明显且持续生效的缺点**。人设无缺点字段 → 无效。
 4. **书名必须映射到一个具体的第一个爽点**。说不出爽点 → 换名。
 5. **反 AI 味**：所有生成文本必须通过 `{baseDir}/references/anti-ai-tells.md` 的 **18 主条款 + 7 子条款（共 25 项）** 检测。任一 FAIL → 内部重写；任一"回滚级 FAIL" → 整章退回指定 workflow 重写，不允许局部修补。
-   - **元层级回滚级硬门**：**D（信息密度过干净 / 世界无自主生活，含 D-1 闲笔密度 < 3 / D-2 配角议题全围绕主角 / D-3 选择机制 ≥ 3 次全最优）**、M（爽点链条过完整）、N（质量曲线过稳定）、**N-细（粗体主题句点题）**、**O（角色灵魂缺位 · 尤其是关键角色首次登场章；含 O-在场 元叙事禁入 · meta_language_hits ≥ 1）**、**P（剧情算法化 / 想象力贫血 · 无怪异预算 / P-4 反套路检查落在前三常见中）**、**Q（转场机械 / 黏滞转场 · 禁用转场词 ≥ 2 次或瞬移切换）**、**R（说明书式排除枚举 / 教程体微动作链 / 验收式对句 · 见 anti-ai-tells §R）**、**G+1（9 种定义体模板 ≥ 5 次）**、**E（情绪词独段 + 粗体）**、**K（全章 0 长段；或 K-补充 场景块空行违规 ≥ 5）**、**C（最长连续单句段 ≥ 6 或占比 > 0.5）**、**A-补充（章首无 opening_hook_spike / 好奇缝隙不足 / 纯氛围连段峰 ≥ 6）**。命中直接判"极高 AI 味"。
+   - **元层级回滚级硬门**：**D（信息密度过干净 / 世界无自主生活，含 D-1 闲笔密度 < 3 / D-2 配角议题全围绕主角 / D-3 选择机制 ≥ 3 次全最优）**、M（爽点链条过完整）、N（质量曲线过稳定）、**N-细（粗体主题句点题）**、**O（角色灵魂缺位 · 尤其是关键角色首次登场章；含 O-在场 元叙事禁入 · meta_language_hits ≥ 1）**、**P（剧情算法化 / 想象力贫血 · 无怪异预算 / P-4 反套路检查落在前三常见中）**、**Q（转场机械 / 黏滞转场 · 禁用转场词 ≥ 2 次或瞬移切换）**、**R（说明书式排除枚举 / 教程体微动作链 / 验收式对句 · 见 anti-ai-tells §R）**、**R-补充（「不是…是… / 不是…、是… / 不是…也不是…是…」等对照句 · `contrastive_negation_hits ≥ 1` 或 `keyzone_contrastive_negation_hits ≥ 1`）**、**G+1（9 种定义体模板 ≥ 5 次）**、**E（情绪词独段 + 粗体）**、**K（全章 0 长段；或 K-补充 场景块空行违规 ≥ 5）**、**C（最长连续单句段 ≥ 6 或占比 > 0.5）**、**A-补充（章首无 opening_hook_spike / 好奇缝隙不足 / 纯氛围连段峰 ≥ 6）**。命中直接判"极高 AI 味"。
 6. **角色灵魂硬门（反 O · 分层）**：小说里所有有名字角色（含主角、配角、反派、路人、**动物 / 灵兽 / 法宝拟人**）都必须有"灵魂字段 soul_fields"：
    - **关键角色**（主角 / POV / 女男主 / 核心反派 / 固定配角 top 5）：`soul_fields ≥ 2` 条，**首次登场章必须有 ≥ 1 处灵魂渗透**（回滚级硬门）
    - **重要有名角色**（出场 ≥ 2 次）：`soul_fields ≥ 1` 条，每次出场至少 1 处灵魂渗透
@@ -30,12 +30,12 @@ metadata: {"openclaw":{"emoji":"✍️","os":["darwin","linux","win32"]}}
 7. **世界自主生活硬门（反 D）**：每章必须满足 (a) 闲笔 ≥ 5 处（其中 ≥ 2 处与剧情完全无关）(b) ≥ 1 位非主角配角有 ≥ 80 字的"与主角无关的自主议题" (c) 含选择 / 系统 / 抽奖机制的章节每 3 次触发内 ≥ 1 次主动选"废选项"。违反 → 回 plot-design 重写。
 8. **想象力硬门（反 P）**：动笔前必须在 `state/anti-trope-log.md` 落盘本章"最常见 5 种接续清单"，真实写的那一步必须 **≠ 前 3 名**；本章必须含 ≥ 1 处"怪异预算"（剧情无法吸收的细节）+ ≥ 1 处"延迟兑付"（5 章内不回收的伏笔 / 设定）。违反 → 回 plot-design；无怪异预算 → 回 story-blueprint 补世界观与场景。
 9. **转场硬门（反 Q）**：每次场景切换必须显式落入 5 类桥之一（感官 / 物件 / 对话打断 / 摩擦点 / 情绪错位）并在草稿注释里声明桥类型与锚点；禁用转场词（"就在这时 / 然后 / 第二天 / 三天后 / 转眼间" 等）零容忍。违反 → 回 plot-design 重写转场。
-10. **说明书句法硬门（反 R · 与 K-补充 联动）**：禁止生活流里的「不是…不是…是/而是/只剩」双否定目录句；同一情绪节拍、无对白无心理时，纯动作微步**单段 ≤ 3**，第 4 步起必须并句或插入走神/环境/他人声；禁止「又/再」串动作后接两个 ≤ 8 字的纯状态验收短句。显著时间跳变（≥ 30 分钟）或换建筑级空间时，正文须**空一行**起新段（反 K-补充 黏段）。统计写入 `chapter_meta.stats`（`exclusion_enum_hits` / `tutorial_microstep_chain_max` / `catalog_afterthought_pairs` / `k_scene_block_violations`）。违反 → 回 plot-design。
+10. **说明书句法硬门（反 R · 与 K-补充 联动）**：禁止生活流里的「不是…不是…是/而是/只剩」双否定目录句；**另全章零容忍**禁止「不是…，是…」「不是…、是…」「不是…，也不是…，是…」等**否定对照收束**（并入 **R-补充**，与 `anti-ai-tells.md` · G-扩展 1 同禁，统计见 `contrastive_negation_hits` / `keyzone_contrastive_negation_hits`）。同一情绪节拍、无对白无心理时，纯动作微步**单段 ≤ 3**，第 4 步起必须并句或插入走神/环境/他人声；禁止「又/再」串动作后接两个 ≤ 8 字的纯状态验收短句。显著时间跳变（≥ 30 分钟）或换建筑级空间时，正文须**空一行**起新段（反 K-补充 黏段）。统计写入 `chapter_meta.stats`（`exclusion_enum_hits` / `tutorial_microstep_chain_max` / `catalog_afterthought_pairs` / `k_scene_block_violations` / **`contrastive_negation_hits` / `keyzone_contrastive_negation_hits`**）。违反 → 回 plot-design。
 11. **项目目录契约（必守）**：项目型写作所有产物**只能**落在 `project_root` 下的固定子目录（见 §11）。子 workflow **禁止**自行选择"顺手的目录"。每次落盘前必须校验路径以 `<project_root>/` 开头。违反 → memory PERSIST 拒收。
 12. **新书与连载默认走 memory**：凡是"开新书 / 续写 / 写第 N 章 / 计划连载"的正文任务，生成前必须调用 `webnovel-memory/workflow.md` · LOAD（若无项目则先 INIT），**自检全 PASS 后**必须调用 PERSIST 落盘；仅在用户明确说明"一次性短文，不建项目、不留记忆"时可跳过 LOAD/PERSIST。**顺序**以 `references/openclaw-enforcement-two-phase.md` 为准（先 VERIFY 再 PERSIST，禁止未自检即声称落盘）。
-13. **感情/色情张力占比先问后写**：凡是"开新书 / 设计章节 / 续写正文"，必须先向用户确认本书目标占比：`romance_target_ratio`（感情）/ `erotic_tension_target_ratio`（色情张力）/ `explicitness_target_ratio`（露骨强度）。未确认前不得进入正文生成；默认值仅在用户拒绝回答时使用（`20% / 8% / 0%`）。
+13. **感情/色情张力/打戏占比先问后写**：凡是"开新书 / 设计章节 / 续写正文"，必须先向用户确认本书目标占比：`romance_target_ratio`（感情）/ `erotic_tension_target_ratio`（色情张力）/ `explicitness_target_ratio`（露骨强度）/ `combat_target_ratio`（打戏对抗）。未确认前不得进入正文生成；默认值仅在用户拒绝回答时使用（`20% / 8% / 0% / 15%`）。
 14. **首章吸引力优先**：chapter 1 除通用钩子外，若 `romance_target_ratio + erotic_tension_target_ratio > 0`，前 800 字必须至少落 1 处“关系高压触点”（靠近-误读-克制/反噬），禁止为了“过审”把感情张力清空。
-15. **E-扩展4 严格执行硬门**：每次 VERIFY 必须输出 E-扩展4 风控面板（`romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio` / `suggestive_erotic_risk_hits` / `explicit_sexual_content_hits` / `high_risk_relationship_hits` / `chapter1_tension_hook_present`）。缺字段、露骨命中或高风险关系命中，均视为 FAIL/回滚级 FAIL，**禁止 PERSIST**。
+15. **E-扩展4 严格执行硬门**：每次 VERIFY 必须输出 E-扩展4 风控面板（`romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio` / `combat_target_ratio` / `suggestive_erotic_risk_hits` / `explicit_sexual_content_hits` / `high_risk_relationship_hits` / `chapter1_tension_hook_present`）。缺字段、露骨命中或高风险关系命中，均视为 FAIL/回滚级 FAIL，**禁止 PERSIST**。
 16. **短句 + 画面感 + 共鸣** 是文笔基线；辞藻华丽不是目标。
 
 ## 3. 内部模块清单
@@ -121,6 +121,12 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
 
 ## 8. 生成期硬约束
 
+**【两阶段强制执行·内嵌版（不依赖外部 hook）】**
+- 阶段 1（DRAFT）结束时，输出末尾必须附加分隔线：`---[草稿完成，进入自检]---`
+- 分隔线出现后，必须立即执行阶段 2 自检（§9 + `chapter_meta.stats` + E-扩展4 风控面板）。
+- 未全 PASS 前，禁止删除该分隔线，禁止声称“已落盘/已完成”。
+- 若重写进入第 2 轮，保留并更新分隔线，不得跳过验证直接交付。
+
 进入任何正文生成任务前，先加载：
 
 - `{baseDir}/references/anti-ai-tells.md`（反 AI 味 18 主条款 + 7 子条款 · 共 25 项）
@@ -129,7 +135,7 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
   - 本章首次登场的关键角色 soul_fields（≥ 2 条，回滚级硬门准备）
   - 动物 / 灵兽独立反应坐标轴
   - 上一章"纯功能性角色名单"
-  - 近 3 章 `definition_style_hits` / `bold_theme_hits` / `emotion_token_solo_paragraphs` / `single_sentence_run_max` / `long_paras_over_80` / `signature_明牌超限名单` / `setting_reveal_overload_hits` / `transition_types` 分布 / `anti_trope_recent_choices` / **`exclusion_enum_hits` / `tutorial_microstep_chain_max` / `catalog_afterthought_pairs` / `k_scene_block_violations`（反 R + K-补充）** / **`meta_language_hits` / `opening_hook_spike` / `curiosity_gap_markers` / `flat_atmosphere_streak_max`（反 O-在场 + A-补充）** / **`system_prompt_template_hits` / `coincidence_chain_hits` / `forced_detour_hits` / `tech_jargon_density_per_1k` / `tech_exposition_block_over_120` / `tech_mechanism_closure_hits` / `lexeme_cluster_repeat_hits` / `abstract_aura_token_density_per_1k` / `cultural_shorthand_clash_hits` / `withhold_beat_present`（反 B/G/P 补充 + P-补充2）**）
+  - 近 3 章 `definition_style_hits` / `bold_theme_hits` / `emotion_token_solo_paragraphs` / `emotion_token_bold` / `single_sentence_run_max` / `long_paras_over_80` / `long_paras_over_120` / `signature_明牌超限名单` / `setting_reveal_overload_hits` / `transition_types` 分布 / `anti_trope_recent_choices` / **`exclusion_enum_hits` / `tutorial_microstep_chain_max` / `catalog_afterthought_pairs` / `k_scene_block_violations` / `contrastive_negation_hits` / `keyzone_contrastive_negation_hits`（反 R + R-补充 + K-补充）** / **`meta_language_hits` / `opening_hook_spike` / `curiosity_gap_markers` / `flat_atmosphere_streak_max`（反 O-在场 + A-补充）** / **`system_prompt_template_hits` / `coincidence_chain_hits` / `forced_detour_hits` / `tech_jargon_density_per_1k` / `tech_exposition_block_over_120` / `tech_mechanism_closure_hits` / `lexeme_cluster_repeat_hits` / `abstract_aura_token_density_per_1k` / `cultural_shorthand_clash_hits` / `withhold_beat_present`（反 B/G/P 补充 + P-补充2）** / **`dialogue_subtext_misalignment_hits` / `fully_matched_qa_chain_max`（反 I-补充）** / **`weirdness_seed_type`（反 P-1 题材化）** / **`chapter_pacing_matrix`（`relation_tension` / `mc_info_delta` / `chapter_mood` / `ending_hook_type`）** / **`romance_arc_step` / `friendship_arc_step` / `romance_step_delta_from_prev` / `friendship_step_delta_from_prev` / `relationship_progression_beats` / `relationship_jump_without_cause_hits` / `relationship_jump_with_cause_hits` / `post_jump_emotional_turbulence_hits`（反 E-扩展6）** / **`combat_target_ratio` / `combat_presence_hits` / `protagonist_distinctive_traits_count` / `protagonist_initiative_conflict_hits` / `protagonist_impulse_or_humor_hits` / `protagonist_template_similarity_hits`（反 E-扩展7）**）
   - 本章配角自主议题候选（D-2）
 - 相关模块的输出 schema
 
@@ -160,6 +166,7 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
 | **P-4** | 动笔前必须落盘 5-清单到 `<project_root>/state/anti-trope-log.md`；真实写的接续 ≠ 前 3 名 | 违反 → 回 plot-design 重做 anti-trope 预声明 |
 | **Q** | 每次场景切换必须声明使用 5 类桥（感官 / 物件 / 对话打断 / 摩擦点 / 情绪错位）之一 + 锚点；禁用转场词清单零容忍 | ≥ 2 次禁用词 / 任一"瞬移切换" → 回 plot-design 重写转场 |
 | **R** | `exclusion_enum_hits` = 0；`tutorial_microstep_chain_max` ≤ 4；`catalog_afterthought_pairs` = 0 | **R-1**：排除式枚举 ≥ 2，或 1 次且与同段 G+1 叠加 → 回滚；**R-2**：微步链 ≥ 5 → 回滚；**R-3**：验收式对句命中 ≥ 1 组且无心理插入 → 回滚 |
+| **R-补充** | `contrastive_negation_hits` = 0 且 `keyzone_contrastive_negation_hits` = 0 | **任一 ≥1** → 回滚（全文清零「不是…是…」系骨架，见 `anti-ai-tells.md` · R-补充） |
 | **K-补充** | 显著时空跳变须 Markdown 空行分段；`k_scene_block_violations` ≤ 2 | **≥ 5** → 回滚（与 Q 瞬移叠加从严） |
 
 **段落默认构成铁律（反 C 强化）**：
@@ -179,7 +186,7 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
 - [ ] 违反 §2 公理？
 - [ ] 矛盾先于剧情？主角主动？第一个爽点可指？
 - [ ] 反 AI 味 **18 主条款 + 7 子条款（25 项）** 全部 PASS？
-- [ ] 无任何"回滚级 FAIL"？（D-1 / D-2 / D-3 / M / N / N-细 / O / **O-在场 meta_language** / **A-补充 钩子·缝隙·纯氛围峰** / P-1 / P-3 / P-4 / **P-补充2 cultural = 0** / Q 禁用词 / Q 瞬移切换 / **R 排除枚举 / R 教程体链 / R 验收对** / G+1 ≥ 5 / E 独段+粗体 / K 全 0 长段 / **K-补充 场景块违规 ≥ 5** / C ≥ 6 连续或占比 > 0.5）
+- [ ] 无任何"回滚级 FAIL"？（D-1 / D-2 / D-3 / M / N / N-细 / O / **O-在场 meta_language** / **A-补充 钩子·缝隙·纯氛围峰** / P-1 / P-3 / P-4 / **P-补充2 cultural = 0** / Q 禁用词 / Q 瞬移切换 / **R 排除枚举 / R 教程体链 / R 验收对** / **R-补充「不是…是…」系 ≥1** / G+1 ≥ 5 / E 独段+粗体 / K 全 0 长段 / **K-补充 场景块违规 ≥ 5** / C ≥ 6 连续或占比 > 0.5）
 - [ ] 关键角色首登章 ≥ 1 处灵魂渗透？出场 ≥ 2 次有名角色每次 ≥ 1 处？反派有第三维度？动物独立反应占比 ≥ 50%？渗透句通过"删除验证"？
 - [ ] 9 种定义体模板命中 ≤ 2？全章粗体 ≤ 1 且仅用于物理文本？
 - [ ] 长段（> 80 字）≥ 3 段（含 ≥ 1 段 > 120 字）？单句段占比 ≤ 30%？连续单句段 ≤ 2？
@@ -187,13 +194,13 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
 - [ ] 本章含 ≥ 1 处"怪异预算"（剧情无法回收）+ ≥ 1 处"延迟兑付"（≥ 5 章不兑付）？
 - [ ] `<project_root>/state/anti-trope-log.md` 是否已落盘本章 5-清单？真实接续 ≠ 前 3 名？
 - [ ] 每次场景切换是否声明了桥类型（Q-1~Q-5）与锚点？禁用转场词出现 ≤ 0 次？
-- [ ] **R**：无「不是…不是…是」生活流目录？单段纯微动作 ≤ 3？无验收式双短句？`exclusion_enum_hits` / `tutorial_microstep_chain_max` / `catalog_afterthought_pairs` 达标？
+- [ ] **R**：无「不是…不是…是」生活流目录？**无「不是…，是… / 不是…、是… / 不是…也不是…是…」等 R-补充 对照句**（`contrastive_negation_hits` = 0 且 `keyzone_contrastive_negation_hits` = 0）？单段纯微动作 ≤ 3？无验收式双短句？`exclusion_enum_hits` / `tutorial_microstep_chain_max` / `catalog_afterthought_pairs` 达标？
 - [ ] **K-补充**：跨 30 分钟或换地点是否空行分段？`k_scene_block_violations` ≤ 2？
 - [ ] **O-在场**：全文无「上一章/下一章/读者/作者/弹幕」等元叙事？`meta_language_hits` = 0？
 - [ ] **A-补充**：章首有刺点钉子？`opening_hook_spike`；好奇缝隙达标？`curiosity_gap_markers`；纯氛围连段峰 ≤ 5？
-- [ ] 已先询问并记录占比：`romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio`？
+- [ ] 已先询问并记录占比：`romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio` / `combat_target_ratio`？
 - [ ] 若为首章且感情/色情目标占比 > 0：前 800 字是否已有至少 1 处“关系高压触点”？
-- [ ] 已输出 E-扩展4 风控面板且字段完整？（`romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio` / `suggestive_erotic_risk_hits` / `explicit_sexual_content_hits` / `high_risk_relationship_hits` / `chapter1_tension_hook_present`）
+- [ ] 已输出 E-扩展4 风控面板且字段完整？（`romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio` / `combat_target_ratio` / `suggestive_erotic_risk_hits` / `explicit_sexual_content_hits` / `high_risk_relationship_hits` / `chapter1_tension_hook_present`）
 - [ ] **E-扩展4** 是否严格 PASS？（`explicit_sexual_content_hits == 0`、`high_risk_relationship_hits == 0`、`suggestive_erotic_risk_hits` 未超占比档位上限）
 - [ ] **G-补充**：系统提示模板命中 ≤ 2？技术术语密度 ≤ 8/千字？技术长说明段 ≤ 1？
 - [ ] **P-补充**：巧合链条 ≤ 3？强导向 `forced_detour_hits` ≤ 1（推荐 0）？
@@ -259,9 +266,10 @@ xt-webnovel-writing/                    ← skill 根（= baseDir）
 ├── arcs/                                ← 剧情弧
 │   ├── _index.md
 │   └── arc-<NN>-<slug>.md
-├── chapters/                            ← 正文章节（SFNC：chNNNN.md）
-│   └── ch0001.md, ch0002.md, …
+├── chapters/                            ← 正文章节（SFNC：chNNNN_短标题.md，仅 H1+正文）
+│   └── ch0001_xxx.md, ch0002_xxx.md, …
 ├── state/                               ← 动态状态（每章更新）
+│   ├── chapter_meta/                    ← 每章 chNNNN.yaml（与正文分离）
 │   ├── timeline.md
 │   ├── relationships.md
 │   ├── foreshadow.md
@@ -286,7 +294,8 @@ xt-webnovel-writing/                    ← skill 根（= baseDir）
 | 世界观设定 | `<project_root>/bible/<...>.md` |
 | 人物卡 | `<project_root>/characters/<name>.md` |
 | 剧情弧 | `<project_root>/arcs/arc-<NN>-<slug>.md` |
-| 章节正文 | `<project_root>/chapters/ch<NNNN>.md`（4 位数字零填充，SFNC） |
+| 章节正文 | `<project_root>/chapters/ch<NNNN>_<短标题>.md`（4 位零填充 + 短标题，SFNC；文件内仅 H1+正文） |
+| 章元数据 | `<project_root>/state/chapter_meta/ch<NNNN>.yaml`（`chapter_meta` 全量，含 stats） |
 | 动态状态 | `<project_root>/state/<...>.md` |
 | 反套路日志（P-4） | `<project_root>/state/anti-trope-log.md` |
 | 索引 | `<project_root>/index/<...>.md` |

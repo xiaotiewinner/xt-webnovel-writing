@@ -42,7 +42,7 @@ chapter_meta:
       evidence: 剑骨内伤、剑气消耗殆尽
     - type: ID
       interruption: delay
-      evidence: 中卷到手但未立即翻开
+      evidence: 中卷到手了，但没有立即翻开
     - type: PWR
       interruption: cost
       evidence: 三天闭关体力透支
@@ -52,9 +52,9 @@ chapter_meta:
     para_length_std: 14                     # 段长标准差
     long_paras_over_80: 4                   # > 80 字长段数（反 K）
     long_paras_over_120: 1                  # > 120 字长段数（反 K · 其中 ≥ 1 段）
-    single_sentence_para_ratio: 0.32        # 单句成段占比（反 C / K · 需 ≤ 0.4）
-    single_sentence_run_max: 2              # 最长连续单句成段段数（反 C · 需 ≤ 3）
-    single_sentence_run_clusters: 0         # 全章 ≥ 3 段的单句段丛数（反 C · 需 ≤ 3）
+    single_sentence_para_ratio: 0.28        # 单句成段占比（反 C / K · 需 ≤ 0.3）
+    single_sentence_run_max: 2              # 最长连续单句成段段数（反 C · 需 ≤ 2）
+    single_sentence_run_clusters: 0         # 全章 ≥ 3 段的单句段丛数（反 C · 需 ≤ 2）
     thought_blocks: 2                       # ≥ 300 字主角思考段数
     thought_blocks_with_irrational_noise: 2 # 其中含非理性噪声的段数
     concreteness_variance: 1.5              # 段落具象度方差
@@ -129,8 +129,8 @@ chapter_meta:
     high_priority_foreshadow_count: 2        # 反 P-补充5 · 高优先伏笔数（>=4 FAIL）
     golden_closing_line_hits: 0              # 反 N-补充 · 金句式收束命中（章尾命中权重更高）
     maxim_style_summary_hits: 0              # 反 N-补充 · 格言体总结句命中（>=2 FAIL）
-    contrastive_negation_hits: 0             # 反 R-补充 · 「不是A，是B」对照句命中（>=2 FAIL）
-    keyzone_contrastive_negation_hits: 0     # 反 R-补充 · 章首/章尾/高潮区命中（>=1 FAIL）
+    contrastive_negation_hits: 0             # 反 R-补充 ·「不是…是…/不是…、是…/不是…也不是…是…」等对照句全章命中（需 = 0；>=1 回滚级 FAIL）
+    keyzone_contrastive_negation_hits: 0     # 反 R-补充 · 上类命中落在章首/章尾/高潮区的子集（需 = 0；>=1 回滚级 FAIL）
     suggestive_erotic_risk_hits: 0           # 反 E-扩展4 · 隐晦情色风险命中（按 explicitness_target_ratio 分档）
     explicit_sexual_content_hits: 0          # 反 E-扩展4 · 露骨性描写命中（>0 回滚级）
     high_risk_relationship_hits: 0           # 反 E-扩展4 · 高风险关系命中（>0 回滚级）
@@ -147,10 +147,32 @@ chapter_meta:
     emotion_response_variance_score: 0.4     # 同类刺激反应方差（0~1）
     relationship_tacit_band: mid             # 关系默契档位：low / mid / high（由 state/relationships.md 判定）
     bilateral_dialogue_technique_hits: 1     # 全章“双方高完成度互相接住”次数（需 >=1，且受 tacit 档位上限约束）
+    romance_arc_step: 1                      # 反 E-扩展6 · 爱情阶段（-3~+5：仇恨/厌恶/戒备/陌生/注意/试探/共担/承诺边缘/稳定亲密）
+    friendship_arc_step: 2                   # 反 E-扩展6 · 友情阶段（-3~+5：死敌/敌对/不信任/陌生/同阵营/互信试用/共担风险/主动维护/生死托付）
+    romance_step_delta_from_prev: 1          # 反 E-扩展6 · 爱情相对上一章阶段变化（默认 ≤ +1）
+    friendship_step_delta_from_prev: 0       # 反 E-扩展6 · 友情相对上一章阶段变化（默认 ≤ +1）
+    relationship_progression_beats: 2        # 反 E-扩展6 · 关系递进动作命中（承担代价/共享秘密/公开站队/主动维护边界）
+    relationship_jump_without_cause_hits: 0  # 反 E-扩展6 · 无充分事件支撑的关系跳级命中（需 = 0）
+    relationship_jump_with_cause_hits: 0     # 反 E-扩展6 · 有触发事件支撑的跨级跃迁命中（+2 及以上时需 ≥ 1）
+    post_jump_emotional_turbulence_hits: 1   # 反 E-扩展6 · 跃迁后情绪余波命中（失控/躲闪/嘴硬/反复确认）
+    combat_target_ratio: 15                  # 反 E-扩展7 · 打戏/对抗目标占比（%）
+    combat_presence_hits: 1                  # 反 E-扩展7 · 有效打戏/对抗命中（有目标+阻力+代价）
+    protagonist_distinctive_traits_count: 3  # 反 E-扩展7 · 主角非通用人格特征数
+    protagonist_initiative_conflict_hits: 1  # 反 E-扩展7 · 主角主动制造/接管冲突命中
+    protagonist_impulse_or_humor_hits: 1     # 反 E-扩展7 · 主角非纯谨慎反应命中（冲动/反讽/玩笑/嘴硬）
+    protagonist_template_similarity_hits: 0  # 反 E-扩展7 · 与“沉默谨慎模板”相似命中（需 = 0）
     contrast_hook_enabled: false             # 反 P-补充6 · 是否启用反差钩子（默认 false）
     contrast_hook_frequency_10ch: 1          # 反 P-补充6 · 近10章反差钩子启用次数（需 ≤ 2）
     contrast_hook_chapter_gap: 4             # 反 P-补充6 · 距上次启用章节间隔（需 ≥ 3）
     contrast_hook_misuse_hits: 0             # 反 P-补充6 · 反差钩子滥用命中（需 = 0）
+    weirdness_seed_type: xuanhuan_rule_glitch # 反 P-1 · 怪异预算种子类型（题材化：如 xuanhuan_side_effect / urban_light_mismatch）
+    dialogue_subtext_misalignment_hits: 1     # 反 I-补充 · 高张力场景台词-内心/动作错位命中（需 ≥ 1）
+    fully_matched_qa_chain_max: 2             # 反 I-补充 · 一问一答完全匹配连续轮次峰值（需 ≤ 3）
+    chapter_pacing_matrix:                    # 章际对比矩阵（近3章）
+      relation_tension: mid                   # low / mid / high
+      mc_info_delta: gain                     # gain / loss / flat
+      chapter_mood: suspended                 #压抑 / 舒展 / 悬置
+      ending_hook_type: info_hook             # action_hook / info_hook / emotion_hook / no_hook
   antagonist_reactions:                     # 反 E-扩展
     - name: 柳长风
       template_hits: 2                      # 标准套餐（脸色/冷汗/胸口/沉默/"不可能"）命中数
@@ -170,7 +192,7 @@ chapter_meta:
       is_first_appearance: false
       bleed_count: 1
       bleed_fields: [third_dimension]
-      bleed_evidence: ["动手前揉了揉右手腕，是从未提起过的旧伤"]
+      bleed_evidence: ["动手前揉了揉右手腕，这是从未向别人提起过的旧伤"]
       deletion_verified: true
   character_interchangeability_check:       # 反 O · 路人 / 次要角色互换度抽查
     swapped_line_breaks_plot: false         # 将本章任意两个同类角色台词对调后剧情是否破坏
@@ -188,20 +210,31 @@ chapter_meta:
 
 在写任何文件之前，对 `files_to_write` 列表执行：
 
-1. 每条路径必须以 `<project_root>/` 开头（绝对或相对一致）；否则立即 **PERSIST 拒收**。
-2. 路径的第一层子目录必须 ∈ `{book.yaml, fingerprint.md, bible/, characters/, arcs/, chapters/, state/, index/, .webnovel-memory/}`；否则立即 **PERSIST 拒收**。
-3. 章节文件名必须形如 `chapters/ch\d{4}\.md`（如 `chapters/ch0001.md`）；否则拒收。
-4. 禁止章节终稿使用碎片化命名（如 `part1` / `part2` / `expanded_beats` / `draft` / `tmp` 等）；命中即拒收并要求合并为单一 `chNNNN.md`。
-5. 人物卡必须落在 `characters/<name>.md`；arc 文件必须落在 `arcs/arc-<NN>-<slug>.md`；否则拒收。
-6. 禁止新建契约以外的目录（如 `drafts/` `output/` `tmp/` `generated/`）——一经发现，整轮 PERSIST 失败并回滚。
+1. 每条路径必须以 `<project_root>/` 开始（绝对或相对一致展开后）；否则立即 **PERSIST 拒收**。
+2. 路径中**第一层**项必须落在 `{book.yaml, fingerprint.md, bible/, characters/, arcs/, chapters/, state/, index/, .webnovel-memory/}` 之一；否则立即 **PERSIST 拒收**。
+3. 章节**正文**文件必须（且该章仅允许这一份正文）落在 `chapters/`，**命名 SFNC**：`ch<4位零填充>_<短标题>.md`（如 `chapters/ch0001_一剑破阵.md`）。`短标题` 与首行 H1 标题一致（为文件名可替换非法路径字符为 `_`，见下）。必须匹配正则 `^ch\d{4}_[^/\\:\*\?"<>\|]+\.md$`；否则拒收。同一 `NNNN` 在 `chapters/` 下**只能有一个**以 `chNNNN_` 开头的终稿文件。
+4. 禁止章节终稿使用碎片化命名（如 `part1` / `part2` / `expanded_beats` / `draft` / `tmp` 等）；命中即拒收；不得只写 `ch0001.md` 而无 `_短标题`。
+5. 章**元数据**（原写在章节 frontmatter 的 arc/pov/统计等）**仅**可写在 `state/chapter_meta/ch<NNNN>.yaml`；不得写回正文章节文件。该路径必须匹配 `^state/chapter_meta/ch\d{4}\.yaml$`。
+6. 章节 **`.md` 正文文件**内**仅允许**一行一级标题（`# …`）与小说正文；禁止 YAML frontmatter、`---` 分隔线、HTML/XML 注释、`` ``` `` 代码围栏、除该 H1 外的任何 Markdown 结构；正文段内规则仍按根 `SKILL.md` 与 OpenClaw「纯叙事」约束执行。
+7. 人物卡必须落在 `characters/<name>.md`；arc 文件必须落在 `arcs/arc-<NN>-<slug>.md`；否则拒收。
+8. 禁止新建契约以外的目录（如 `drafts/` `output/` `tmp/` `generated/`）——一经发现，整轮 PERSIST 失败并回滚。
+
+**`短标题` 与非法字符**（与首行 H1 对齐）：`chapter_file_slug` 可随 `chapter_body` 一并传入 PERSIST；若缺省，则取 `chapter_title` / H1 文本，**去除** Windows 保留字符 `\ / : * ? " < > |` 后作为文件名用短标题，空格可保留；若结果为空用 `untitled`。
 
 拒收返回值必须包含：具体违规路径 + 正确目标路径建议。
 
-### STEP 1 · 写章节本体
+### STEP 1 · 写章节正文 + 章元数据
 
-1. 写 `chapters/ch<NNNN>.md`（每章且仅一份终稿正文）
-2. YAML header 按 [directory-schema.md §章节模板] 填充
-3. 正文即 `chapter_body`
+1. 计算终稿相对路径 `chapters/ch<NNNN>_<短标题>.md`（`短标题` 见 STEP 0；与正文首行 H1 一致）。
+2. 写章节正文文件，**有且仅有**下述结构（行序固定）：
+
+```markdown
+# <与 chapter_title 一致>
+
+<chapter_body 即纯小说正文，已剔除任何 Markdown 装饰/元数据>
+```
+
+3. 将**完整** `chapter_meta`（与上方输入示例结构一致，含 `stats` 等）序列化为 `state/chapter_meta/ch<NNNN>.yaml`；**不得**在 `.md` 中重复。若与 `read-protocol` 衔接，上一章的 `hooks_planted` 等自本文件读取，而非自 `.md`。
 
 ### STEP 2 · 追加章节摘要
 
@@ -240,7 +273,7 @@ chapter_meta:
 5. `state/used-patterns.md`：用 `chapter_meta.stats` + 本章正文扫描结果同时写入下列面板（反 B / B-扩展 / H-扩展 / N）：
    - **句式面板**：扫 `chapter_body` 统计高频句式/动词，追加近 10 章滑窗；超阈值句式标记 "下一章禁用"
    - **主语分布面板**：写入 `top_subject_ratio` / `subject_top1` / 省略主语段占比；top-1 > 40% → 标记 "下一章 top-1 主语段占比必须 ≤ 30%"
-   - **段长熵面板**：写入 `para_length_std` / `long_paras_over_80` / `long_paras_over_120` / `single_sentence_para_ratio` / `single_sentence_run_max` / `single_sentence_run_clusters`；std < 8 或长段 < 3 或 > 120 段 < 1 → 标记 "下一章强制补 ≥ 3 段长段（含 ≥ 1 段 > 120 字）"；单句段占比 > 0.4 或连续 ≥ 4 或丛数 ≥ 4 → 标记 "下一章强制打散单句段"
+   - **段长熵面板**：写入 `para_length_std` / `long_paras_over_80` / `long_paras_over_120` / `single_sentence_para_ratio` / `single_sentence_run_max` / `single_sentence_run_clusters`；std < 8 或长段 < 3 或 > 120 段 < 1 → 标记 "下一章强制补 ≥ 3 段长段（含 ≥ 1 段 > 120 字）"；单句段占比 > 0.3 或连续 > 2 或丛数 > 2 → 标记 "下一章强制打散单句段"
    - **非理性噪声面板**：`thought_blocks_with_irrational_noise / thought_blocks` < 100% → 标记 "下一章所有 ≥ 300 字思考段必须含非理性噪声"
    - **质量方差面板**：写入 `concreteness_variance` / `bright_lines` / `rough_lines`；方差 < 0.8 或亮句/粗糙句缺失 → 标记 "下一章成稿后强制挑 1 段亮化 + 1 段回退粗化"
    - **反派套餐面板**：写入 `antagonist_reactions[*].template_hits / signature_hits`；`template_hits > 2` 或 `signature_hits < 2` → 标记 "下一章该反派场景强制替换 ≥ 2 项为 signature"
@@ -278,10 +311,13 @@ chapter_meta:
    - **跨题材缝合面板（反 P-补充4）**：写入 `multi_genre_graft_count` / `graft_overload_hits`；首章若超阈值标记"回滚级重写开局节拍"
    - **伏笔装载面板（反 P-补充5）**：写入 `foreshadow_pack_density_per_1k` / `high_priority_foreshadow_count`；超阈值标记"下一章降伏笔装载密度"
    - **反差钩子面板（反 P-补充6）**：写入 `contrast_hook_enabled` / `contrast_hook_frequency_10ch` / `contrast_hook_chapter_gap` / `contrast_hook_misuse_hits`；超阈值标记"下一章禁用反差钩子并回归常规推进"
+   - **对话次文本面板（反 I-补充）**：写入 `dialogue_subtext_misalignment_hits` / `fully_matched_qa_chain_max`；若高张力场景中 `misalignment == 0` 或 `matched_chain > 3`，标记"下一章强制增加问答错位与非功能停顿"
+   - **章际对比矩阵（反节奏均匀化）**：写入 `chapter_pacing_matrix.relation_tension` / `mc_info_delta` / `chapter_mood` / `ending_hook_type`；若任一维度连续 3 章相同，标记"第4章该维度强制变向"
    - **金句收束面板（反 N-补充）**：写入 `golden_closing_line_hits` / `maxim_style_summary_hits`；章尾命中则标记"下章改用动作后果收束"
-   - **对照句面板（反 R-补充）**：写入 `contrastive_negation_hits` / `keyzone_contrastive_negation_hits`；关键段命中则标记"下章关键段禁用不是X是Y"
+   - **对照句面板（反 R-补充）**：写入 `contrastive_negation_hits` / `keyzone_contrastive_negation_hits`；**全章零容忍**：任一 >0 则本章拒收并重写；仅当连续多章为 0 时可标记"维持禁用不是…是…系骨架"
    - **过审风控面板（反 E-扩展4）**：写入 `suggestive_erotic_risk_hits` / `explicit_sexual_content_hits` / `high_risk_relationship_hits` / `explicitness_target_ratio`；命中则标记"下章改为可过审强张力写法（保留关系推进，不写露骨步骤）"
-   - **感情功能面板**：写入 `romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio` / `chapter1_tension_hook_present` / `romance_functional_scene_ratio` / `desire_gradient_coverage` / `desire_gradient_jump_hits` / `ambiguity_scene_template_compliance` / `emotional_unpredictability_hits` / `affection_flow_reversal_count` / `emotion_response_variance_score` / `relationship_tacit_band` / `bilateral_dialogue_technique_hits`；不足阈值则标记"下章先补不可控噪声与关系回摆，并重配接住/错频分布再写"
+  - **感情功能面板**：写入 `romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio` / `chapter1_tension_hook_present` / `romance_functional_scene_ratio` / `desire_gradient_coverage` / `desire_gradient_jump_hits` / `ambiguity_scene_template_compliance` / `emotional_unpredictability_hits` / `affection_flow_reversal_count` / `emotion_response_variance_score` / `relationship_tacit_band` / `bilateral_dialogue_technique_hits` / `romance_arc_step` / `friendship_arc_step` / `romance_step_delta_from_prev` / `friendship_step_delta_from_prev` / `relationship_progression_beats` / `relationship_jump_without_cause_hits` / `relationship_jump_with_cause_hits` / `post_jump_emotional_turbulence_hits`；不足阈值则标记"下章先补递进动作；若要跨级跃迁，必须补触发事件+代价后果+情绪余波三件套"
+  - **主角与刺激面板（反 E-扩展7）**：写入 `combat_target_ratio` / `combat_presence_hits` / `protagonist_distinctive_traits_count` / `protagonist_initiative_conflict_hits` / `protagonist_impulse_or_humor_hits` / `protagonist_template_similarity_hits`；不足阈值则标记"下章强制补主角主动冲突与非纯谨慎反应，并补至少一处有效打戏或关系高压触点"
    - **标志动作面板（反 E-扩展3）**：写入 `signature_tick_overuse_hits` / `chapter_edge_tick_reuse`；`tick_overuse >= 1` → 标记"下一章更换角色标志动作表达"
 6. `state/anti-trope-log.md`：按章追加一条：
    ```markdown
@@ -388,8 +424,21 @@ chapter_meta:
    - `stats.affection_flow_reversal_count ≥ 1`（关系回摆）
    - `stats.bilateral_dialogue_technique_hits >= 1`（全章至少一次双向接住）
    - 上限随 `stats.relationship_tacit_band`：`low ≤ 1`、`mid ≤ 2`、`high ≤ 3`（超上限视为沟通假）
+  - `stats.romance_arc_step` / `stats.friendship_arc_step` 必须存在（反 E-扩展6）
+  - `stats.relationship_progression_beats ≥ 1`（当章存在爱情或核心友情场景时）
+  - `stats.relationship_jump_without_cause_hits == 0`（关系无因跳级）
+  - 默认 `stats.romance_step_delta_from_prev ≤ 1` 且 `stats.friendship_step_delta_from_prev ≤ 1`；若任一 ≥ 2，则 `stats.relationship_jump_with_cause_hits ≥ 1` 且 `stats.post_jump_emotional_turbulence_hits ≥ 1`
+  - `stats.protagonist_distinctive_traits_count ≥ 3`，`stats.protagonist_initiative_conflict_hits ≥ 1`，`stats.protagonist_impulse_or_humor_hits ≥ 1`，`stats.protagonist_template_similarity_hits == 0`（反 E-扩展7）
+  - `stats.combat_target_ratio` 必须存在；若 `stats.combat_target_ratio > 0` 则 `stats.combat_presence_hits ≥ 1`（反 E-扩展7）
    - `stats.system_option_matrix_hits ≤ 1`，**>= 2 → FAIL**（反 G-补充3）
    - `stats.bracket_system_block_count ≤ 4`，**>= 7 → FAIL**（反 G-补充3）
+   - `stats.dialogue_subtext_misalignment_hits ≥ 1`（高张力场景必过；反 I-补充）
+   - `stats.fully_matched_qa_chain_max ≤ 3`，**> 3 → FAIL**（反 I-补充）
+   - `stats.weirdness_seed_type` 必须存在（反 P-1 题材化种子）
+   - `stats.chapter_pacing_matrix` 四字段必须存在：`relation_tension` / `mc_info_delta` / `chapter_mood` / `ending_hook_type`
+
+   **节奏变向硬门（章际）**：
+   - 读取近 3 章 `chapter_pacing_matrix`，若任一维度连续 3 章同值，则本章对应维度不得继续同值；违反 → **FAIL（拒绝 PERSIST）**
 
    **D. 角色灵魂硬门**（反 O · 回滚级）
    - 每个 `soul_bleed` 条目（`appearances_in_chapter ≥ 2`）：`bleed_count ≥ 1` 且 `deletion_verified == true`
@@ -435,8 +484,8 @@ chapter_meta:
    - `stats.exclusion_enum_hits == 0`，**≥ 2 → 回滚级 FAIL**；**== 1 且 `stats.definition_style_hits ≥ 1` → 回滚级 FAIL**（R-1 与 G+1 同段叠加）
    - `stats.tutorial_microstep_chain_max ≤ 4`，**≥ 5 → 回滚级 FAIL**（反 R-2）
    - `stats.catalog_afterthought_pairs == 0`，**≥ 1 → 回滚级 FAIL**（反 R-3 · 验收式双短句）
-   - `stats.contrastive_negation_hits ≤ 1`，**>= 2 → FAIL**（反 R-补充）
-   - `stats.keyzone_contrastive_negation_hits == 0`，**>= 1 → FAIL**（反 R-补充；chapter 1 命中按回滚级）
+   - `stats.contrastive_negation_hits == 0`，**>= 1 → 回滚级 FAIL**（反 R-补充 ·「不是…是…」系全章零容忍）
+   - `stats.keyzone_contrastive_negation_hits == 0`，**>= 1 → 回滚级 FAIL**（反 R-补充 · 关键段命中加重；与全章硬门同时生效）
 
    **H-2. 收束腔调硬门**（反 N-补充）
    - `stats.golden_closing_line_hits ≤ 1`
@@ -461,7 +510,7 @@ chapter_meta:
 | **E-扩展4**（露骨性描写 / 高风险关系） | plot-design（降级为关系后果表达） |
 | G+1（定义体） / M（爽点链条） / N（质量方差） | plot-design |
 | P-3 / P-4 / Q | plot-design |
-| **R（说明书句法）** / **K-补充（场景块）** | plot-design |
+| **R（说明书句法）** / **R-补充（「不是…是…」系全章零容忍）** / **K-补充（场景块）** | plot-design |
 | **O-在场（元叙事）** / **A-补充（章首钩子·好奇缝隙）** | plot-design |
 | P-1（怪异预算） | story-blueprint（补世界观） → plot-design |
 | **P-补充2**（`cultural_shorthand_clash_hits == 0`） | plot-design（补文化 shorthand 贴脸对抗） |
@@ -489,6 +538,6 @@ chapter_meta:
 3. 从 `index/volume_<VOLUME_NO>_index.md` 删除该章摘要条目
 4. 在 `index/volume_<VOLUME_NO>_index.md` 中同步移除该章相关的角色/地点/物品命中锚点
 5. 从 `foreshadow.md` 撤销本章相关状态变更
-6. 删除 `chapters/ch<NNNN>.md`
+6. 删除该章终稿 `chapters/ch<NNNN>_<短标题>.md` 与对应该章号的 `state/chapter_meta/ch<NNNN>.yaml`（若存在其他同名 `ch<NNNN>_*.md` 碎片一并清理）
 
 这就要求 STEP 1–7 开始前**备份所有将改动的文件副本到 `.webnovel-memory/backup/<chapter>/`**。
