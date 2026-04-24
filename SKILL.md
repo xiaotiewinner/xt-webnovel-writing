@@ -156,7 +156,7 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
 | M | 每条爽点必带 delay / denied / cost 打断 | 缺失即 memory PERSIST 拒收 |
 | N | 段落具象度方差 ≥ 0.8；至少 1 亮句 + 1 粗糙句 | 成稿后挑 1 亮化 + 1 粗化 |
 | N-细 | 全章粗体 ≤ 1 且仅限物理文本 | 情绪 / 主题用 ≥ 1 即回滚 |
-| O | 关键角色首登章 ≥ 1 处灵魂渗透；出场 ≥ 2 次角色每次 ≥ 1 处；渗透必须非功能性（deletion_verified）；**O-在场**：`meta_language_hits` = 0（禁上一章/读者/作者/弹幕等元叙事） | 关键角色首登违反 → 回 story-blueprint 补 soul_fields → 回 plot-design 重写；**元叙事 ≥ 1** → 回 plot-design 全文检索清零 |
+| O | 关键角色首登章 ≥ 1 处灵魂渗透；出场 ≥ 2 次角色每次 ≥ 1 处；渗透必须非功能性（deletion_verified）；**O-补充**：人物镜头配重声明 + 关键角色重点镜头 + 对景写人；**O-在场**：`meta_language_hits` = 0（禁上一章/读者/作者/弹幕等元叙事） | 关键角色首登违反 → 回 story-blueprint 补 soul_fields → 回 plot-design 重写；镜头同质化（`equal_treatment_flatness_hits ≥ 1`）→ 回 excitement-and-craft 调整配重；**元叙事 ≥ 1** → 回 plot-design 全文检索清零 |
 | **A（含 A-补充）** | 节拍器外：章首 ≈200 字须有刺点钉子；`curiosity_gap_markers` ≥ max(2, chapter_word_count//1200)；`flat_atmosphere_streak_max` ≤ 5；`opening_hook_spike` = true | 任一违反 → 回 plot-design 重写章首或全章补缝隙 |
 | **G（补充）** | `system_prompt_template_hits` ≤ 2；`tech_jargon_density_per_1k` ≤ 8；`tech_exposition_block_over_120` ≤ 1 | 模板腔或技术白皮书化超阈值 → 回 plot-design 拆解与降密 |
 | **P（补充）** | `coincidence_chain_hits` ≤ 3；`forced_detour_hits` ≤ 1（推荐=0） | 巧合闭环过快或强导向超阈值 → 回 plot-design 加主动代价节点 |

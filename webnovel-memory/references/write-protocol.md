@@ -89,6 +89,14 @@ chapter_meta:
     narration_buffer_marks: 4              # 迟疑/从句套层/而则缀笔等可计意群数（第一/三人称限知为主）
     clip_style_chain_max: 2                 # 比喻或判断短句无顺接连词、句号硬接的连打峰值（需 ≤ 2；≥ 3 → 回滚级 FAIL）
     d4_pov: limited                          # `first` | `limited` | `omniscient` — 全知时 D-4 计数量地板减半
+    # —— O-补充 人物镜头分层 / 反“全员冷静同处理” ——
+    character_focus_plan_declared: true      # 是否在章纲中显式分层：关键重点写 / 重要正常写 / 次要轻写
+    key_characters_present_count: 2          # 本章关键角色出场人数
+    important_characters_present_count: 3    # 本章重要角色出场人数
+    key_character_portrayal_beats: 4         # 关键角色“人物性描写拍点”总数（动作/神态/语气/心理/对景映衬）
+    important_character_portrayal_beats: 3   # 重要角色人物性描写拍点总数
+    scenic_counterpoint_portrayal_hits: 2    # 以景/物/光声映衬人物状态的命中数（对景写人）
+    equal_treatment_flatness_hits: 0         # 全角色被同模板冷处理命中（如“都很冷静地……”同构复现）
     # —— R / K-补充（2026-04 第 7 轮） ——
     exclusion_enum_hits: 0                  # 反 R-1 · 「不是…不是…是/而是/只剩」生活流双否定目录（需 = 0；≥ 2 → 回滚；=1 且同段 G+1>0 → 回滚）
     tutorial_microstep_chain_max: 3         # 反 R-2 · 单段或无对白 200 字窗内纯动作微步峰值（需 ≤ 4；≥ 5 → 回滚）
@@ -282,6 +290,12 @@ chapter_meta:
    - **质量方差面板**：写入 `concreteness_variance` / `bright_lines` / `rough_lines`；方差 < 0.8 或亮句/粗糙句缺失 → 标记 "下一章成稿后强制挑 1 段亮化 + 1 段回退粗化"
    - **反派套餐面板**：写入 `antagonist_reactions[*].template_hits / signature_hits`；`template_hits > 2` 或 `signature_hits < 2` → 标记 "下一章该反派场景强制替换 ≥ 2 项为 signature"
    - **灵魂渗透面板（反 O）**：写入 `soul_bleed[*]`；对所有 `appearances_in_chapter ≥ 3` 的角色，若 `bleed_count == 0` → 加入"纯功能性角色名单"并标记 "下一章强制为该角色安排 ≥ 1 处非功能性灵魂渗透"；连续 2 章纯功能 → 升级为硬门（下一章不达标则不允许落盘）
+   - **人物镜头分层面板（反 O-补充）**：写入 `character_focus_plan_declared` / `*_characters_present_count` / `*_portrayal_beats` / `scenic_counterpoint_portrayal_hits` / `equal_treatment_flatness_hits`；
+     - 未声明分层（`character_focus_plan_declared == false`）→ 标记 "下一章先做角色镜头配重表（关键/重要/次要）"
+     - `equal_treatment_flatness_hits ≥ 1` → 标记 "本章疑似全员同模板冷处理，下一章强制拉开镜头层级"
+     - `key_characters_present_count ≥ 2` 且 `key_character_portrayal_beats < 2` → 标记 "下一章关键角色至少补 2 处人物性描写拍点"
+     - `important_characters_present_count ≥ 2` 且 `important_character_portrayal_beats == 0` → 标记 "下一章重要角色至少补 1 处人物性描写拍点"
+     - `scenic_counterpoint_portrayal_hits == 0` 且本章出现关键角色 ≥ 2 人 → 标记 "下一章至少 1 处对景写人"
    - **动物独立反应面板（反 O · species != 人）**：写入 `animal_independence[*]`；若 `independent_actions / appearances_in_chapter < 0.5` → 标记 "下一章该动物 / 灵兽必须有 ≥ 1 处与主角指令无关的独立行动"
    - **世界自主生活面板（反 D）**：写入 `filler_count` / `filler_unresolved_count` / `side_char_autonomous_agenda_count` / `choice_mechanism_waste_count`；以及 **D-4** `narration_buffer_marks` / `clip_style_chain_max` / `d4_pov`；
      - `filler_count < 5` 或 `filler_unresolved_count < 2` → 标记 "下一章强制补 ≥ 3 处剧情无关闲笔"
@@ -452,6 +466,11 @@ chapter_meta:
    - 每个 `animal_independence` 条目：`independent_actions / appearances_in_chapter ≥ 0.5`（反 O · species != 人）
    - `character_interchangeability_check.swapped_line_breaks_plot` 必须为 `false`
    - `character_interchangeability_check.unique_trait_per_named_character` 必须为 `true`
+   - `stats.character_focus_plan_declared == true`（章纲需有“关键/重要/次要”镜头配重声明）
+   - `stats.equal_treatment_flatness_hits == 0`，**≥ 1 → FAIL**（人物描写同质化，退回 `webnovel-excitement-and-craft` 调整镜头权重）
+   - 若 `stats.key_characters_present_count ≥ 2`：`stats.key_character_portrayal_beats ≥ 2`（关键角色必须有侧重点，不得全员冷处理）
+   - 若 `stats.important_characters_present_count ≥ 2`：`stats.important_character_portrayal_beats ≥ 1`（重要角色至少有可识别描写拍点）
+   - 若 `stats.key_characters_present_count ≥ 2`：`stats.scenic_counterpoint_portrayal_hits ≥ 1`（至少一处对景写人 / 以物映人）
    - **`stats.meta_language_hits == 0`**（反 **O-在场** · 禁「上一章 / 下一章 / 读者 / 作者 / 弹幕」等元叙事语），**≥ 1 → 回滚级 FAIL**（退回 plot-design 全文检索清零）
 
    **E. 世界自主生活硬门**（反 D · 回滚级）
