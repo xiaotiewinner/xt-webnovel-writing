@@ -1,7 +1,7 @@
 # OpenClaw Hooks Setup（two-phase-guard）
 
 本仓库提供一个项目级 OpenClaw hook：`hooks/two-phase-guard`。  
-作用：提醒章节写作遵循 `LOAD -> DRAFT -> VERIFY -> PERSIST`，并在疑似“未自检先定稿”时提示补检。
+作用：提醒章节写作遵循 `LOAD -> DRAFT -> VERIFY -> PERSIST`（VERIFY 含 `chapter_meta.stats` + 绿线字段），并在疑似“未自检先定稿”时提示补检。
 
 ## 1) 前提
 
@@ -52,6 +52,7 @@ hooks/two-phase-guard/handler.ts
 
 1. `references/openclaw-strict-rules.md` 粘到 SOUL/全局规则（强制“先走 skill、再两阶段、再 PERSIST”）。
 2. 启用本 hook（会话内持续提醒，减少漏检）。
-3. 项目正文任务务必让输出包含 `chapter_meta.stats` 并执行 `write-protocol` 的一致性硬门。
+3. 项目正文任务务必让输出包含 `chapter_meta.stats` 与绿线字段（`style_temperature_band` / `human_noise_hits` / `clean_closure_hits` / `exposition_density_band` / `dialogue_mismatch_ratio`），并执行 `write-protocol` 的一致性硬门（绿线偏离仅告警，不单独回滚）。
+4. 若启用新版“去模板化反制”，需确认 `chapter_meta.stats` 同步包含 `detail_density_std` / `detail_density_flat_run_max` / `emotion_temp_range` / `flat_affect_streak_max` / `modern_metaphor_unanchored_hits` / `decorative_crack_hits` / `symmetry_closure_hits` / `single_mode_streak_max` 等字段；这些字段按 `write-protocol` 硬门判定，不受绿线豁免。
 
 若第 1 层缺失，模型仍可能直接“写完就收尾”。

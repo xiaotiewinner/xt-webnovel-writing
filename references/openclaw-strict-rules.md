@@ -10,7 +10,7 @@
 2. 若请求是「新书 / 连载 / 写第 N 章 / 续写」，必须按顺序：
    - `memory INIT/LOAD`（无项目先 INIT）
    - `plot-design draft_prose`
-   - `§9 自检 + chapter_meta.stats`
+   - `§9 自检 + chapter_meta.stats`（含绿线字段：`style_temperature_band` / `human_noise_hits` / `clean_closure_hits` / `exposition_density_band` / `dialogue_mismatch_ratio`）
    - 全 PASS 后 `memory PERSIST`
 3. 任何一步失败，不得声称「定稿 / 已落盘 / 已完成」。
 
@@ -33,6 +33,8 @@
 13. 关系递增按 E-扩展6 执行：爱情/友情阶段允许负值到正值（可从仇恨/敌对起步）；存在爱情/核心友情场景时，`relationship_progression_beats ≥ 1` 且 `relationship_jump_without_cause_hits = 0`。若 `romance_step_delta_from_prev` 或 `friendship_step_delta_from_prev` ≥ +2，必须同时满足 `relationship_jump_with_cause_hits ≥ 1` 与 `post_jump_emotional_turbulence_hits ≥ 1`（触发事件 + 代价后果 + 情绪余波），否则判 FAIL 并禁止 PERSIST。
 14. 主角与刺激要素按 E-扩展7 执行：`protagonist_distinctive_traits_count ≥ 3`、`protagonist_initiative_conflict_hits ≥ 1`、`protagonist_impulse_or_humor_hits ≥ 1`、`protagonist_template_similarity_hits = 0`；且 `combat_target_ratio > 0` 时 `combat_presence_hits ≥ 1`。即使用户未点名，也必须在不过审前提下主动满足“关系高压触点或有效打戏”至少一项；否则判 FAIL 并禁止 PERSIST。
 15. **R-补充（「不是…是…」系）全章零容忍**：`contrastive_negation_hits` 与 `keyzone_contrastive_negation_hits` 须均为 **0**（禁止「不是…，是…」「不是…、是…」「不是…，也不是…，是…」等否定对照收束）。**任一 ≥1 → FAIL，禁止 PERSIST**（须退回 `webnovel-plot-design` 全文清零后再检）。
+16. **绿线分布（非阻断）**：必须输出并记录 `style_temperature_band` / `human_noise_hits` / `clean_closure_hits` / `exposition_density_band` / `dialogue_mismatch_ratio`，用于跨章偏离校准；缺字段视为流程不完整需补齐后再 PERSIST。绿线数值偏离只触发告警与下章纠偏，**不得单独判 FAIL 或回滚**。
+17. **去模板化扩展字段（随 write-protocol 硬门）**：`detail_density_std` / `detail_density_flat_run_max` / `ornament_overflow_hits` / `emotion_temp_range` / `flat_affect_streak_max` / `reaction_modality_variety` / `modern_metaphor_unanchored_hits` / `decorative_crack_hits` / `symmetry_closure_hits` / `single_mode_streak_max` 等字段，按 `write-protocol` 一致性检查执行；缺字段或阈值不合规按对应条款 FAIL 处理（非绿线豁免）。
 
 ---
 
@@ -52,7 +54,7 @@
 ```text
 【网文强制执行】
 网文请求必须先走 xt-webnovel-writing 路由，不得跳过 skill。
-项目正文任务（连载/新书/第 N 章）：必须 INIT/LOAD -> DRAFT -> VERIFY(§9自检+chapter_meta.stats) -> 全PASS后PERSIST。
+项目正文任务（连载/新书/第 N 章）：必须 INIT/LOAD -> DRAFT -> VERIFY(§9自检+chapter_meta.stats+绿线分布字段) -> 全PASS后PERSIST。
 未全PASS不得说“定稿/已落盘”。
 正文输出禁止 Markdown 装饰（#、列表、代码块），正文必须是纯叙事段落。
 所有写入项目的 .md 文档默认中文；仅文件名/字段键/代号可保留英文。
@@ -63,6 +65,8 @@
 主角不得默认“沉默谨慎模板”；必须有可见个性噪声和主动冲突证据。即使用户未点名，也要主动给出关系高压触点或有效打戏至少一项。
 在过审底线内尽量满足目标；禁止露骨步骤化描写与教程式动作链；命中露骨描写或高风险关系（未成年人/强迫/权力滥用/血缘乱伦）一律回滚拒收。
 正文禁止「不是…，是…」「不是…、是…」「不是…，也不是…，是…」等 R-补充 对照句；`contrastive_negation_hits` 与 `keyzone_contrastive_negation_hits` 须均为 0，任一非 0 不得落盘。
+绿线分布字段（style_temperature_band / human_noise_hits / clean_closure_hits / exposition_density_band / dialogue_mismatch_ratio）必须回填；缺字段不得落盘。绿线偏离仅告警，不得单独判 FAIL。
+去模板化扩展字段（detail_density_std / detail_density_flat_run_max / emotion_temp_range / flat_affect_streak_max / modern_metaphor_unanchored_hits / decorative_crack_hits / symmetry_closure_hits / single_mode_streak_max）按 write-protocol 回填与校验，不适用“绿线豁免”。
 所有写入必须在 <project_root>/ 固定目录契约内；越界路径一律拒收并返回纠正路径。
 ```
 

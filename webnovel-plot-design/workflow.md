@@ -263,7 +263,7 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 - 若与上一章主类型相同，必须在“冲突触发点”或“收束方式”至少变更 1 项，并在草稿注释写出：`variation_point`。
 - 若近 2 章出现同一“场景骨架序列”（如靠近→触碰→能力触发→撤退），本章必须改为“错位对话先行”或“外部事件先行”，不得复用镜像节拍。
 
-### 写正文前的十八项闸门（未通过不得开写）
+### 写正文前的十九项闸门（未通过不得开写）
 0. **占比确认闸门（新书/设计/续写必问）**：开写前必须先确认并记录 `romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio` / `combat_target_ratio`。若用户未给值，先追问；仅在用户明确拒答时可落默认 `20% / 8% / 0% / 15%`。若用户不回复占比细节，必须按题材给出“基础刺激提案”并在本章执行（关系高压触点或有效打戏至少一项）。
 1. **词簇闸门**：`lexeme_cluster_repeat_hits` 近 3 章均值 < 4 且 `abstract_aura_token_density_per_1k` 近 3 章均值 ≤ 10；否则先做“抽象词→具象细节”替换再开写。
 2. **模板闸门**：`system_prompt_template_hits` 近 3 章均值 < 3；否则先重写本章系统提示策略（残片化+去同构）。
@@ -272,6 +272,8 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 5. **想象力 shorthand 闸门（反 P-补充2）**：章纲内须预标 ≥1 处「读者共有文化/历史/典故/俗语符号 × 具体对抗动作」并置落点，且 ≥1 处「抬高预期 → 拒展示/留白收束」节拍落点；禁止纯【】标题式点名而无动作承载。近 2 章 `cultural_shorthand_clash_hits` 均为 0 时本章该闸门**强制通过档**（预标必须可验收）。
 6. **去重闸门（反 B-补充2）**：章纲草稿到正文前必须做段级去重扫描，要求 `near_duplicate_paragraph_pairs` 预估 = 0 且 `max_paragraph_similarity` 预估 < 0.88；若出现重复对话开场，必须提前写明“本次重复带来的新信息”。
 7. **模板链闸门（反 P-补充3）**：章纲 `trope_chain_hits` 预估 < 4，且不得形成 `trope_chain_max_run >= 3` 的直线链；若接近高风险，先补 1 个“非收益扰动节点”（误判/岔路/关系反转）再开写。
+7a. **首章模板链收紧（反 P-补充3 · chapter 1）**：若 `target_chapter == 1`，章纲必须满足 `trope_chain_hits < 3` 且不得形成 `trope_chain_max_run >= 2` 的直线链；否则不得开写。
+7b. **信息投放闸门（反 P-补充7）**：禁止“记忆涌入/脑海灌输”式单段背景打包。章纲必须先拆成“立即决策必要信息”与“后续触发揭示信息”两批；正文目标值：`background_dump_blocks_over_120 == 0`，且首章 `memory_infusion_exposition_hits == 0`。
 8. **修辞闸门（反 B-补充3 / E-扩展3）**：章纲预估 `simile_density_per_1k ≤ 10`、`simile_pattern_repeat_hits ≤ 2`，并限制单角色 `signature_tick_overuse_hits = 0`（同 tick 不得作为章首+章尾固定符号）。
 9. **首章开胃闸门（反 A-补充 · chapter 1 特判）**：若为新书首章，前 ≈500 字必须预标至少 2 个抓手并置（关系/动作声音/物件处境中任两类），并预埋 1 个“当章不完全兑付”的具体追问债；若 `romance_target_ratio + erotic_tension_target_ratio > 0`，前 800 字还必须预标 ≥1 处“关系高压触点”（靠近/越界边缘 + 误读或克制反噬）；未满足不得开写。
 10. **数值化感知闸门（反 B-补充4）**：无仪器场景下，高精度数字细节（角度/厘米/小数）预估命中不得超过 1；超过则先改为体感表达再开写。
@@ -282,6 +284,8 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 15. **对照句闸门（反 R-补充）**：**全章零容忍**禁用「不是…是…」「不是…、是…」「不是…，也不是…，是…」「不是…——是…」等否定对照收束（与 `anti-ai-tells.md` · R-补充 / G-扩展 1 同禁）；**任意位置出现即本章不得开写/不得过检**，必须改写完再进入正文或 PERSIST。
 16. **感情过审闸门（反 E-扩展4）**：感情/暧昧段允许按用户占比提升强度，但必须是“可过审表达”：禁露骨器官/体液/步骤化性动作；若存在高风险关系元素（未成年人/强迫/权力滥用/血缘），本章禁止进入正文生成。不得以“过审”为由把用户要求的感情/色情张力清零。**本闸门未通过时不得进入草稿写作，不得以“先写后改”绕过。**
 17. **反差钩子闸门（反 P-补充6，可选低频）**：默认关闭；仅当本章存在“关系单线化”风险且 `contrast_hook_frequency_10ch ≤ 2`、`contrast_hook_chapter_gap ≥ 3` 时可开启。未满足条件不得启用反差桥段。
+18. **绿线分布闸门（非阻断）**：开写前必须声明 `style_temperature_band`（`cold`/`rough`/`loose`/`wry` 选一），并给出本章目标区间：`human_noise_hits`（2~6）/ `clean_closure_hits`（0~1）/ `dialogue_mismatch_ratio`（0.15~0.45）/ `detail_density_std`（0.6~1.8）/ `detail_density_flat_run_max`（1~4）/ `emotion_temp_range`（0.25~0.7）/ `flat_affect_streak_max`（1~4）。若与近 3 章同档且同区间重复，标记“本章至少变更 1 项分布目标”。
+18a. **去模板化附加闸门（并入 B/E/G/O/N/C）**：章纲阶段必须预标以下“反工整动作”各 ≥ 1 项：`细节疏密切换点`、`情绪折返点`、`跨时代比喻锚点`（若使用跨时代比喻）、`角色破绽后效`、`反闭合噪声`、`段落功能切换点`。缺任一按对应条款 FAIL 重排章纲。
 
 ### 关系线构思硬约束（爱情 + 友情，题材自适应）
 1. **先定感情功能位**：每段感情戏必须标注功能：`推进关系` / `制造代价` / `反转认知` / `加深人设` 四选一（可复合）；未标注不得写入正文。
@@ -351,6 +355,10 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 7w. **文化 shorthand 贴脸对抗 + 收束节拍（P-补充2 · 回滚级 / 硬门）**：全章须 `cultural_shorthand_clash_hits ≥ 1`（共有符号与对抗动作同场并置，可不用【】；**≠ 旁白堆原创专名讲设定**，与 G-细不冲突）；须 `withhold_beat_present == true`（至少一处抬高预期后的拒展示/留白/一句挡回）。`cultural_shorthand_clash_hits == 0` → **回滚级 FAIL**；`withhold_beat_present == false` → **FAIL（补收束后才可 PERSIST）**。连续 2 章 `cultural == 0` → 下一章本项按回滚级硬门执行（见 `anti-ai-tells` P-补充2）。
 7x. **近重复段落硬门（B-补充2）**：全章 `near_duplicate_paragraph_pairs == 0` 且 `max_paragraph_similarity < 0.88`；`near_duplicate_paragraph_pairs >= 1` 或 `duplicate_dialogue_openers >= 1` → **FAIL**；`pairs >= 2` 或 `similarity >= 0.92` → **回滚级 FAIL**。
 7y. **模板剧情链限额（P-补充3）**：`trope_chain_hits < 4` 且 `predictability_score != high`；若 `trope_chain_max_run >= 3` 且 `weirdness_budget_count == 0` → **回滚级 FAIL**（必须重排节拍并插入非收益扰动节点）。
+7y1. **首章模板剧情链限额（P-补充3）**：`chapter == 1` 时，`trope_chain_hits < 3` 且 `trope_chain_max_run < 2`；否则 **FAIL**，并优先删除“公式直连节点”而非补修辞。
+7y2. **背景灌输限额（P-补充7）**：`background_dump_blocks_over_120 == 0`；`chapter == 1` 时 `memory_infusion_exposition_hits == 0`。任一违反 → **FAIL**（首章记忆灌输可升回滚级，按 `write-protocol`）。
+7y3. **微表情模板限额（E-补充8）**：`micro_emotion_template_repeat_hits <= 1`；`>= 2` → **FAIL**（改为角色分层证据：动作习惯/语气断裂/决策偏差）。
+7y4. **首章宣言收束限额（N-补充2）**：`chapter == 1` 时 `first_chapter_oath_closure_hits == 0`；命中 → **FAIL**（章尾改动作后果或未完成决策，不得口号闭合）。
 7z. **比喻密度与同构限额（B-补充3）**：`simile_density_per_1k ≤ 10`、`simile_cluster_max ≤ 3`、`simile_pattern_repeat_hits ≤ 2`；任一超阈值 → **FAIL**（改为动作/物件证据）。
 7aa. **标志动作去符号化（E-扩展3）**：`signature_tick_overuse_hits == 0`，且 `chapter_edge_tick_reuse` 不得连续章复用；同一 tick 单章出现 ≥ 3 次判 **FAIL**。
 7ac. **数值化感知限额（B-补充4）**：`hyper_precision_detail_hits ≤ 1` 且 `noninstrumental_numeric_density_per_1k ≤ 6`；无仪器高精度数字持续出现 → **FAIL**。
@@ -469,6 +477,12 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 - `foreshadow_pack_density_per_1k` ≤ 3 且 `high_priority_foreshadow_count` ≤ 2（反 P-补充5）
 - `golden_closing_line_hits` ≤ 1 且 `maxim_style_summary_hits` ≤ 1（反 N-补充）
 - `contrastive_negation_hits` = 0 且 `keyzone_contrastive_negation_hits` = 0（反 R-补充 · 全章零容忍）
+- `detail_density_flat_run_max` ≤ 4 且 `ornament_overflow_hits` ≤ 1（反 B-补充5）
+- `emotion_temp_range` ≥ 0.25、`flat_affect_streak_max` ≤ 4、`reaction_modality_variety` ≥ 3（反 E-补充9）
+- `modern_metaphor_unanchored_hits` = 0；若 `era_lexicon_collision_hits` ≥ 2 则 `cross_era_bridge_present` = true（反 G-补充4）
+- `decorative_crack_hits` = 0；若 `persona_crack_template_hits` ≥ 2 则 `crack_followup_payoff_hits` ≥ 1（反 O-补充2）
+- `symmetry_closure_hits` ≤ 1；若 `closure_neatness_score` > 0.75 则 `anti_closure_noise_present` = true（反 N-补充3）
+- `single_mode_streak_max` ≤ 4、`para_function_type_count` ≥ 4、`micro_closeup_ratio` ≤ 0.65（反 C-补充2）
 - `explicit_sexual_content_hits = 0` 且 `high_risk_relationship_hits = 0`，并按 `explicitness_target_ratio` 控制 `suggestive_erotic_risk_hits`（0%: <2；1-10%: ≤2；>10%: ≤3；占比不封顶）（反 E-扩展4）
 - `romance_functional_scene_ratio` ≥ 0.8（感情段功能位覆盖）
 - `desire_gradient_jump_hits` = 0 且 `desire_gradient_coverage` ≥ 3（欲望梯度递进）
@@ -481,6 +495,16 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 - `protagonist_distinctive_traits_count` ≥ 3，`protagonist_initiative_conflict_hits` ≥ 1，`protagonist_impulse_or_humor_hits` ≥ 1，`protagonist_template_similarity_hits` = 0（反 E-扩展7）
 - `combat_target_ratio > 0` 时 `combat_presence_hits` ≥ 1；未显式给占比时“关系高压触点 >=1 或 combat_presence_hits >=1”至少满足一项（反 E-扩展7）
 - `contrast_hook_misuse_hits` = 0，且（启用时）`contrast_hook_frequency_10ch ≤ 2`、`contrast_hook_chapter_gap ≥ 3`（反差钩子低频）
+
+**绿线分布校准（仅告警，不阻断 PERSIST）**：
+- `style_temperature_band` 必填（cold/rough/loose/wry）
+- `human_noise_hits` 目标区间 2~6；连续 3 章 <2 触发“补噪声”告警
+- `clean_closure_hits` 目标区间 0~1；连续 3 章 >1 触发“降闭合度”告警
+- `dialogue_mismatch_ratio` 目标区间 0.15~0.45；连续偏离触发“问答错拍校准”告警
+- `detail_density_std` 目标区间 0.6~1.8；连续偏低触发“细节密度去均匀化”告警
+- `detail_density_flat_run_max` 目标区间 1~4；连续 ≥5 触发“连续高密段拆分”告警
+- `emotion_temp_range` 目标区间 0.25~0.7；连续偏低触发“情绪折返补点”告警
+- `flat_affect_streak_max` 目标区间 1~4；连续偏高触发“恒温链打断”告警
 
 **反 O 专项必跑**（回滚级）：
 - **灵魂渗透计数**：本章出场 ≥ 2 次的每个有名角色 + 首次登场的关键角色都必须 ≥ 1 次灵魂渗透（可删除不影响剧情）；缺位 → 该角色进入"纯功能性名单"，当章整体判 FAIL，回滚 story-blueprint 补 soul_fields

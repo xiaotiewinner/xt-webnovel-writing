@@ -19,7 +19,7 @@ metadata: {"openclaw":{"emoji":"✍️","os":["darwin","linux","win32"]}}
 3. **主角必有明显且持续生效的缺点**。人设无缺点字段 → 无效。
 4. **书名必须映射到一个具体的第一个爽点**。说不出爽点 → 换名。
 5. **反 AI 味**：所有生成文本必须通过 `{baseDir}/references/anti-ai-tells.md` 的 **18 主条款 + 7 子条款（共 25 项）** 检测。任一 FAIL → 内部重写；任一"回滚级 FAIL" → 整章退回指定 workflow 重写，不允许局部修补。
-   - **元层级回滚级硬门**：**D（信息密度过干净 / 世界无自主生活，含 D-1 闲笔密度 < 3 / D-2 配角议题全围绕主角 / D-3 选择机制 ≥ 3 次全最优 / D-4 句法级剪辑体过简·人类缀笔不足）**、M（爽点链条过完整）、N（质量曲线过稳定）、**N-细（粗体主题句点题）**、**O（角色灵魂缺位 · 尤其是关键角色首次登场章；含 O-在场 元叙事禁入 · meta_language_hits ≥ 1）**、**P（剧情算法化 / 想象力贫血 · 无怪异预算 / P-4 反套路检查落在前三常见中）**、**Q（转场机械 / 黏滞转场 · 禁用转场词 ≥ 2 次或瞬移切换）**、**R（说明书式排除枚举 / 教程体微动作链 / 验收式对句 · 见 anti-ai-tells §R）**、**R-补充（「不是…是… / 不是…、是… / 不是…也不是…是…」等对照句 · `contrastive_negation_hits ≥ 1` 或 `keyzone_contrastive_negation_hits ≥ 1`）**、**G+1（9 种定义体模板 ≥ 5 次）**、**E（情绪词独段 + 粗体）**、**K（全章 0 长段；或 K-补充 场景块空行违规 ≥ 5）**、**C（最长连续单句段 ≥ 6 或占比 > 0.5）**、**A-补充（章首无 opening_hook_spike / 好奇缝隙不足 / 纯氛围连段峰 ≥ 6）**。命中直接判"极高 AI 味"。
+  - **元层级回滚级硬门**：**D（信息密度过干净 / 世界无自主生活，含 D-1 闲笔密度 < 3 / D-2 配角议题全围绕主角 / D-3 选择机制 ≥ 3 次全最优 / D-4 句法级剪辑体过简·人类缀笔不足）**、M（爽点链条过完整）、N（质量曲线过稳定）、**N-细（粗体主题句点题）**、**O（角色灵魂缺位 · 尤其是关键角色首次登场章；含 O-在场 元叙事禁入 · meta_language_hits ≥ 1）**、**P（剧情算法化 / 想象力贫血 · 无怪异预算 / P-4 反套路检查落在前三常见中）**、**Q（转场机械 / 黏滞转场 · 禁用转场词 ≥ 2 次或瞬移切换）**、**R（说明书式排除枚举 / 教程体微动作链 / 验收式对句 · 见 anti-ai-tells §R）**、**R-补充（「不是…是… / 不是…、是… / 不是…也不是…是…」等对照句 · `contrastive_negation_hits ≥ 1` 或 `keyzone_contrastive_negation_hits ≥ 1`）**、**P-补充7（背景灌输块/记忆涌入式投喂）**、**G+1（9 种定义体模板 ≥ 5 次）**、**E（情绪词独段 + 粗体）**、**E-补充8（微表情模板复用）**、**K（全章 0 长段；或 K-补充 场景块空行违规 ≥ 5）**、**C（最长连续单句段 ≥ 6 或占比 > 0.5）**、**A-补充（章首无 opening_hook_spike / 好奇缝隙不足 / 纯氛围连段峰 ≥ 6）**、**N-补充2（首章宣言式闭合过满）**。命中直接判"极高 AI 味"。
 6. **角色灵魂硬门（反 O · 分层）**：小说里所有有名字角色（含主角、配角、反派、路人、**动物 / 灵兽 / 法宝拟人**）都必须有"灵魂字段 soul_fields"：
    - **关键角色**（主角 / POV / 女男主 / 核心反派 / 固定配角 top 5）：`soul_fields ≥ 2` 条，**首次登场章必须有 ≥ 1 处灵魂渗透**（回滚级硬门）
    - **重要有名角色**（出场 ≥ 2 次）：`soul_fields ≥ 1` 条，每次出场至少 1 处灵魂渗透
@@ -37,6 +37,7 @@ metadata: {"openclaw":{"emoji":"✍️","os":["darwin","linux","win32"]}}
 14. **首章吸引力优先**：chapter 1 除通用钩子外，若 `romance_target_ratio + erotic_tension_target_ratio > 0`，前 800 字必须至少落 1 处“关系高压触点”（靠近-误读-克制/反噬），禁止为了“过审”把感情张力清空。
 15. **E-扩展4 严格执行硬门**：每次 VERIFY 必须输出 E-扩展4 风控面板（`romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio` / `combat_target_ratio` / `suggestive_erotic_risk_hits` / `explicit_sexual_content_hits` / `high_risk_relationship_hits` / `chapter1_tension_hook_present`）。缺字段、露骨命中或高风险关系命中，均视为 FAIL/回滚级 FAIL，**禁止 PERSIST**。
 16. **短句 + 画面感 + 共鸣** 是文笔基线；辞藻华丽不是目标。
+17. **软分布层（绿线）**：正文除硬门外，必须做“分布校准”而非“打卡达标”——在每章生成前声明 `style_temperature_band`（冷峻/粗粝/松弛/偏幽默），并在章后回填 `human_noise_hits` / `clean_closure_hits` / `exposition_density_band` / `dialogue_mismatch_ratio`。绿线只产生偏离告警与下章纠偏，不直接触发回滚；用于抑制“过稳、过齐、过像模板”。
 
 ## 3. 内部模块清单
 
@@ -135,8 +136,9 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
   - 本章首次登场的关键角色 soul_fields（≥ 2 条，回滚级硬门准备）
   - 动物 / 灵兽独立反应坐标轴
   - 上一章"纯功能性角色名单"
-  - 近 3 章 `definition_style_hits` / `bold_theme_hits` / `emotion_token_solo_paragraphs` / `emotion_token_bold` / `single_sentence_run_max` / `long_paras_over_80` / `long_paras_over_120` / `signature_明牌超限名单` / `setting_reveal_overload_hits` / `transition_types` 分布 / `anti_trope_recent_choices` / **`narration_buffer_marks` / `clip_style_chain_max` / `d4_pov`（反 D-4）** / **`exclusion_enum_hits` / `tutorial_microstep_chain_max` / `catalog_afterthought_pairs` / `k_scene_block_violations` / `contrastive_negation_hits` / `keyzone_contrastive_negation_hits`（反 R + R-补充 + K-补充）** / **`meta_language_hits` / `opening_hook_spike` / `curiosity_gap_markers` / `flat_atmosphere_streak_max`（反 O-在场 + A-补充）** / **`system_prompt_template_hits` / `coincidence_chain_hits` / `forced_detour_hits` / `tech_jargon_density_per_1k` / `tech_exposition_block_over_120` / `tech_mechanism_closure_hits` / `lexeme_cluster_repeat_hits` / `abstract_aura_token_density_per_1k` / `cultural_shorthand_clash_hits` / `withhold_beat_present`（反 B/G/P 补充 + P-补充2）** / **`dialogue_subtext_misalignment_hits` / `fully_matched_qa_chain_max`（反 I-补充）** / **`weirdness_seed_type`（反 P-1 题材化）** / **`chapter_pacing_matrix`（`relation_tension` / `mc_info_delta` / `chapter_mood` / `ending_hook_type`）** / **`romance_arc_step` / `friendship_arc_step` / `romance_step_delta_from_prev` / `friendship_step_delta_from_prev` / `relationship_progression_beats` / `relationship_jump_without_cause_hits` / `relationship_jump_with_cause_hits` / `post_jump_emotional_turbulence_hits`（反 E-扩展6）** / **`combat_target_ratio` / `combat_presence_hits` / `protagonist_distinctive_traits_count` / `protagonist_initiative_conflict_hits` / `protagonist_impulse_or_humor_hits` / `protagonist_template_similarity_hits`（反 E-扩展7）**）
+  - 近 3 章 `definition_style_hits` / `bold_theme_hits` / `emotion_token_solo_paragraphs` / `emotion_token_bold` / `single_sentence_run_max` / `long_paras_over_80` / `long_paras_over_120` / `signature_明牌超限名单` / `setting_reveal_overload_hits` / `transition_types` 分布 / `anti_trope_recent_choices` / **`narration_buffer_marks` / `clip_style_chain_max` / `d4_pov`（反 D-4）** / **`exclusion_enum_hits` / `tutorial_microstep_chain_max` / `catalog_afterthought_pairs` / `k_scene_block_violations` / `contrastive_negation_hits` / `keyzone_contrastive_negation_hits`（反 R + R-补充 + K-补充）** / **`meta_language_hits` / `opening_hook_spike` / `curiosity_gap_markers` / `flat_atmosphere_streak_max`（反 O-在场 + A-补充）** / **`system_prompt_template_hits` / `coincidence_chain_hits` / `forced_detour_hits` / `tech_jargon_density_per_1k` / `tech_exposition_block_over_120` / `tech_mechanism_closure_hits` / `lexeme_cluster_repeat_hits` / `abstract_aura_token_density_per_1k` / `cultural_shorthand_clash_hits` / `withhold_beat_present`（反 B/G/P 补充 + P-补充2）** / **`background_dump_blocks_over_120` / `memory_infusion_exposition_hits`（反 P-补充7）** / **`micro_emotion_template_repeat_hits`（反 E-补充8）** / **`first_chapter_oath_closure_hits`（反 N-补充2）** / **`detail_density_std` / `detail_density_flat_run_max` / `ornament_overflow_hits`（反 B-补充5）** / **`emotion_temp_range` / `flat_affect_streak_max` / `reaction_modality_variety`（反 E-补充9）** / **`era_lexicon_collision_hits` / `modern_metaphor_unanchored_hits` / `cross_era_bridge_present`（反 G-补充4）** / **`persona_crack_template_hits` / `decorative_crack_hits` / `crack_followup_payoff_hits`（反 O-补充2）** / **`symmetry_closure_hits` / `closure_neatness_score` / `anti_closure_noise_present`（反 N-补充3）** / **`single_mode_streak_max` / `para_function_type_count` / `micro_closeup_ratio`（反 C-补充2）** / **`dialogue_subtext_misalignment_hits` / `fully_matched_qa_chain_max`（反 I-补充）** / **`weirdness_seed_type`（反 P-1 题材化）** / **`chapter_pacing_matrix`（`relation_tension` / `mc_info_delta` / `chapter_mood` / `ending_hook_type`）** / **`romance_arc_step` / `friendship_arc_step` / `romance_step_delta_from_prev` / `friendship_step_delta_from_prev` / `relationship_progression_beats` / `relationship_jump_without_cause_hits` / `relationship_jump_with_cause_hits` / `post_jump_emotional_turbulence_hits`（反 E-扩展6）** / **`combat_target_ratio` / `combat_presence_hits` / `protagonist_distinctive_traits_count` / `protagonist_initiative_conflict_hits` / `protagonist_impulse_or_humor_hits` / `protagonist_template_similarity_hits`（反 E-扩展7）**）
   - 本章配角自主议题候选（D-2）
+  - 软分布层滑窗：`style_temperature_band` / `human_noise_hits` / `clean_closure_hits` / `exposition_density_band` / `dialogue_mismatch_ratio`（用于绿线偏离校准，不是回滚硬门）
 - 相关模块的输出 schema
 
 **生成期硬约束明文（必须嵌入内部 prompt）：**
@@ -161,6 +163,9 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
 | **G（补充）** | `system_prompt_template_hits` ≤ 2；`tech_jargon_density_per_1k` ≤ 8；`tech_exposition_block_over_120` ≤ 1 | 模板腔或技术白皮书化超阈值 → 回 plot-design 拆解与降密 |
 | **P（补充）** | `coincidence_chain_hits` ≤ 3；`forced_detour_hits` ≤ 1（推荐=0） | 巧合闭环过快或强导向超阈值 → 回 plot-design 加主动代价节点 |
 | **P-补充2** | `cultural_shorthand_clash_hits` ≥ 1；`withhold_beat_present` = true | cultural = 0 → 回 plot-design 补「共有符号×对抗动作」；withhold false → 补收束节拍后再 PERSIST |
+| **P-补充7** | `background_dump_blocks_over_120` = 0；首章 `memory_infusion_exposition_hits` = 0 | 背景灌输块命中 → 回 plot-design 做分批信息投放；首章记忆涌入式设定投喂 → 回滚级退回 |
+| **E-补充8** | `micro_emotion_template_repeat_hits` ≤ 1 | 同构微表情跨角色复用 ≥ 2 → 回 excitement-and-craft 做角色差异化 |
+| **N-补充2** | 首章 `first_chapter_oath_closure_hits` = 0 | 首章章尾宣言式闭合命中 → 回 plot-design 改为动作后果收束 |
 | **B（补充）** | `lexeme_cluster_repeat_hits` ≤ 3；`abstract_aura_token_density_per_1k` ≤ 10 | 词簇复读超阈值 → 回 plot-design 做抽象词去同构 |
 | **P-1** | 本章 ≥ 1 处"怪异预算"（剧情无法吸收的设定 / 场景 / 细节） | 缺失 → 回 story-blueprint 补世界观 |
 | **P-3** | 本章 ≥ 1 处"延迟兑付"伏笔（≥ 5 章内不回收；章末不得提示这是伏笔） | 缺失 → 回 plot-design |
@@ -182,12 +187,18 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
 
 生成后必须跑 plot-design 的正文输出前自检（25 条全检 + 转场桥声明 + **统计清单全 PASS，含 O-在场 / A-补充 四项**），通过后交给 `memory` · PERSIST 落盘。
 
+**绿线分布校准（不触发回滚）**：
+- 每章先声明 `style_temperature_band`：`cold` / `rough` / `loose` / `wry`。
+- 章后记录：`human_noise_hits`（人性噪声命中）/ `clean_closure_hits`（教科书式闭合命中）/ `exposition_density_band`（low/mid/high）/ `dialogue_mismatch_ratio`（问答错拍比例）。
+- 建议同步记录：`detail_density_std` / `detail_density_flat_run_max` / `emotion_temp_range` / `flat_affect_streak_max`（用于识别“过稳工整感”）。
+- 若同一指标连续 3 章偏离目标区间，只做“下一章纠偏动作”提示，不得把绿线当回滚借口。
+
 ## 9. 交付前自检
 
 - [ ] 违反 §2 公理？
 - [ ] 矛盾先于剧情？主角主动？第一个爽点可指？
 - [ ] 反 AI 味 **18 主条款 + 7 子条款（25 项）** 全部 PASS？
-- [ ] 无任何"回滚级 FAIL"？（D-1 / D-2 / D-3 / **D-4** / M / N / N-细 / O / **O-在场 meta_language** / **A-补充 钩子·缝隙·纯氛围峰** / P-1 / P-3 / P-4 / **P-补充2 cultural = 0** / Q 禁用词 / Q 瞬移切换 / **R 排除枚举 / R 教程体链 / R 验收对** / **R-补充「不是…是…」系 ≥1** / G+1 ≥ 5 / E 独段+粗体 / K 全 0 长段 / **K-补充 场景块违规 ≥ 5** / C ≥ 6 连续或占比 > 0.5）
+- [ ] 无任何"回滚级 FAIL"？（D-1 / D-2 / D-3 / **D-4** / M / N / N-细 / O / **O-在场 meta_language** / **A-补充 钩子·缝隙·纯氛围峰** / P-1 / P-3 / P-4 / **P-补充2 cultural = 0** / **P-补充7 首章记忆灌输命中** / Q 禁用词 / Q 瞬移切换 / **R 排除枚举 / R 教程体链 / R 验收对** / **R-补充「不是…是…」系 ≥1** / G+1 ≥ 5 / E 独段+粗体 / **E-补充8 微表情模板复用过密** / K 全 0 长段 / **K-补充 场景块违规 ≥ 5** / C ≥ 6 连续或占比 > 0.5 / **N-补充2 首章宣言式闭合**）
 - [ ] 关键角色首登章 ≥ 1 处灵魂渗透？出场 ≥ 2 次有名角色每次 ≥ 1 处？反派有第三维度？动物独立反应占比 ≥ 50%？渗透句通过"删除验证"？
 - [ ] 9 种定义体模板命中 ≤ 2？全章粗体 ≤ 1 且仅用于物理文本？
 - [ ] 长段（> 80 字）≥ 3 段（含 ≥ 1 段 > 120 字）？单句段占比 ≤ 30%？连续单句段 ≤ 2？
@@ -206,6 +217,12 @@ Agent 按用户意图按需读取对应 `workflow.md`。`{baseDir}` 指本 skill
 - [ ] **G-补充**：系统提示模板命中 ≤ 2？技术术语密度 ≤ 8/千字？技术长说明段 ≤ 1？
 - [ ] **P-补充**：巧合链条 ≤ 3？强导向 `forced_detour_hits` ≤ 1（推荐 0）？
 - [ ] **P-补充2**：`cultural_shorthand_clash_hits` ≥ 1？`withhold_beat_present` = true？
+- [ ] **P-补充7**：`background_dump_blocks_over_120` = 0？若 chapter 1，`memory_infusion_exposition_hits` = 0？
+- [ ] **E-补充8**：`micro_emotion_template_repeat_hits` ≤ 1？
+- [ ] **N-补充2**：若 chapter 1，`first_chapter_oath_closure_hits` = 0？
+- [ ] **B-补充5 / E-补充9 / C-补充2**：`detail_density_flat_run_max` ≤ 4、`emotion_temp_range` ≥ 0.25、`para_function_type_count` ≥ 4？
+- [ ] **G-补充4 / O-补充2 / N-补充3**：`modern_metaphor_unanchored_hits` = 0、`decorative_crack_hits` = 0、高工整收束时已落 `anti_closure_noise_present = true`？
+- [ ] **绿线分布**：本章 `style_temperature_band` 已声明？`human_noise_hits` / `clean_closure_hits` / `exposition_density_band` / `dialogue_mismatch_ratio` 已回填并与近 3 章做偏离说明？
 - [ ] **B-补充**：词簇复读 ≤ 3？抽象气场词密度 ≤ 10/千字？
 - [ ] 项目型正文已走 memory LOAD/PERSIST？（仅一次性短文声明可豁免）所有落盘路径都以 `<project_root>/` 开头？
 - [ ] 改写类任务给足原文→改写→理由？

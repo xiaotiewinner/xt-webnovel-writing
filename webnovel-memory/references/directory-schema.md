@@ -204,6 +204,9 @@ hooks_planted: [foreshadow-12, foreshadow-13]
 hooks_resolved: [foreshadow-05]
 created_at: 2026-04-20
 # … 与 write-protocol 输入的 chapter_meta 同构，含 stats 等
+# 2026-04 新增去模板化统计（示例）：detail_density_std / detail_density_flat_run_max /
+# emotion_temp_range / flat_affect_streak_max / modern_metaphor_unanchored_hits /
+# decorative_crack_hits / symmetry_closure_hits / single_mode_streak_max（以 write-protocol 为准）
 ```
 
 ### `state/foreshadow.md`

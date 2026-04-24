@@ -126,6 +126,34 @@ chapter_meta:
     trope_chain_hits: 2                      # 反 P-补充3 · 模板剧情节点命中数（>=4 FAIL）
     trope_chain_max_run: 1                   # 反 P-补充3 · 连续模板节点最长链（>=3 且怪异预算=0 回滚）
     predictability_score: low                # 反 P-补充3 · 低/中/高（high 需重排节拍）
+    background_dump_blocks_over_120: 0       # 反 P-补充7 · >120字背景打包投喂段命中（需 = 0）
+    memory_infusion_exposition_hits: 0        # 反 P-补充7 · “记忆涌入式设定灌输”命中（首章需 = 0）
+    micro_emotion_template_repeat_hits: 0     # 反 E-补充8 · 同构微表情模板复用命中（需 ≤ 1）
+    first_chapter_oath_closure_hits: 0        # 反 N-补充2 · 首章章尾宣言式闭合命中（chapter 1 需 = 0）
+    detail_density_std: 0.82                  # 反 B-补充5 · 段落细节密度标准差（过低=过稳）
+    detail_density_flat_run_max: 3            # 反 B-补充5 · 连续细节密度近似段峰值（>=5 FAIL）
+    ornament_overflow_hits: 0                 # 反 B-补充5 · 连续高密修辞段命中（>=2 FAIL）
+    emotion_temp_range: 0.38                  # 反 E-补充9 · 情绪温差（过低+长恒温链=FAIL）
+    flat_affect_streak_max: 3                 # 反 E-补充9 · 连续恒温段峰值（>=5 FAIL）
+    reaction_modality_variety: 4              # 反 E-补充9 · 情绪证据通道数（<=2 FAIL）
+    era_lexicon_collision_hits: 1             # 反 G-补充4 · 跨时代语汇并置命中
+    modern_metaphor_unanchored_hits: 0        # 反 G-补充4 · 现代比喻无角色认知锚点命中（>=1 FAIL）
+    cross_era_bridge_present: true            # 反 G-补充4 · 是否有跨时代桥接句
+    persona_crack_template_hits: 1            # 反 O-补充2 · 人设破绽模板命中
+    decorative_crack_hits: 0                  # 反 O-补充2 · 装饰性破绽命中（>=1 FAIL）
+    crack_followup_payoff_hits: 1             # 反 O-补充2 · 破绽后效命中
+    symmetry_closure_hits: 1                  # 反 N-补充3 · 首尾镜像收束命中
+    closure_neatness_score: 0.54              # 反 N-补充3 · 收束工整度（>0.75 且无噪声 FAIL）
+    anti_closure_noise_present: true          # 反 N-补充3 · 收束前是否有反闭合噪声
+    single_mode_streak_max: 3                 # 反 C-补充2 · 连续同功能段峰值（>=5 FAIL）
+    para_function_type_count: 5               # 反 C-补充2 · 段落功能类型数（<=3 FAIL）
+    micro_closeup_ratio: 0.34                 # 反 C-补充2 · 微特写段占比（>0.65 FAIL）
+    # —— 软分布层（绿线，不触发回滚；用于“去机械化”） ——
+    style_temperature_band: rough              # cold | rough | loose | wry
+    human_noise_hits: 4                        # 人性噪声命中：犹豫/改口/反悔/无用小动作等（目标区间：2~6）
+    clean_closure_hits: 1                      # 教科书式整齐闭合命中（目标区间：0~1）
+    exposition_density_band: mid               # low | mid | high（背景解释密度）
+    dialogue_mismatch_ratio: 0.28              # 问答错拍比例（目标区间：0.15~0.45）
     simile_density_per_1k: 6                 # 反 B-补充3 · 比喻密度（>10 WARN；>14 FAIL）
     simile_cluster_max: 2                    # 反 B-补充3 · 连续比喻峰值（>=4 FAIL）
     simile_pattern_repeat_hits: 1            # 反 B-补充3 · 同构比喻句法重复（>=3 FAIL）
@@ -326,6 +354,22 @@ chapter_meta:
    - **数值化感知面板（反 B-补充4）**：写入 `hyper_precision_detail_hits` / `noninstrumental_numeric_density_per_1k`；超阈值则标记"下一章把伪精确数字改成体感表达"
    - **文化 shorthand 面板（反 P-补充2）**：写入 `cultural_shorthand_clash_hits` / `withhold_beat_present`；`cultural == 0` → 标记"本章已触回滚阈值" + **回滚级硬门**；`withhold == false` → 标记"下一章必须补一处抬高预期后的拒展示/留白收束"；连续 2 章 `cultural == 0` → 标记"下一章文化符号贴脸对抗为回滚级硬门"
    - **模板链条面板（反 P-补充3）**：写入 `trope_chain_hits` / `trope_chain_max_run` / `predictability_score`；`trope_hits >= 4` 或 `predictability == high` → 标记"下一章强制插入非收益扰动节点并拆开模板链"
+   - **信息投放面板（反 P-补充7）**：写入 `background_dump_blocks_over_120` / `memory_infusion_exposition_hits`；任一 > 0 → 标记"下一章背景改分批投放，禁止记忆涌入式整段灌输"
+   - **情绪模板面板（反 E-补充8）**：写入 `micro_emotion_template_repeat_hits`；`>= 2` → 标记"下一章拉开角色情绪证据类型，禁同构微表情复刻"
+   - **首章收束面板（反 N-补充2）**：若 `chapter == 1`，写入 `first_chapter_oath_closure_hits`；`>= 1` → 标记"首章结尾改动作后果/未完成决策，不写宣言式闭合"
+  - **细节密度面板（反 B-补充5）**：写入 `detail_density_std` / `detail_density_flat_run_max` / `ornament_overflow_hits`；若密度过稳或连续高密，标记"下一章先降密再补节奏波峰"
+  - **情绪温差面板（反 E-补充9）**：写入 `emotion_temp_range` / `flat_affect_streak_max` / `reaction_modality_variety`；若恒温链过长，标记"下一章必须增加反应通道与温度折返"
+  - **跨时代语汇面板（反 G-补充4）**：写入 `era_lexicon_collision_hits` / `modern_metaphor_unanchored_hits` / `cross_era_bridge_present`；无锚比喻命中则标记"下一章补角色认知锚点"
+  - **破绽后效面板（反 O-补充2）**：写入 `persona_crack_template_hits` / `decorative_crack_hits` / `crack_followup_payoff_hits`；装饰性破绽命中则标记"下一章必须兑现后效"
+  - **收束工整度面板（反 N-补充3）**：写入 `symmetry_closure_hits` / `closure_neatness_score` / `anti_closure_noise_present`；若过工整且无噪声则标记"下一章结尾改未完成动作收束"
+  - **段落功能面板（反 C-补充2）**：写入 `single_mode_streak_max` / `para_function_type_count` / `micro_closeup_ratio`；单功能长链命中则标记"下一章强制切入推进/关系段"
+   - **软分布面板（绿线）**：写入 `style_temperature_band` / `human_noise_hits` / `clean_closure_hits` / `exposition_density_band` / `dialogue_mismatch_ratio`；
+     - 若 `human_noise_hits` 连续 3 章 < 2 → 标记 "下一章补 2 处犹豫/改口/反悔型噪声，避免过稳"
+     - 若 `clean_closure_hits` 连续 3 章 > 1 → 标记 "下一章章尾改未完成动作收束，禁口号闭合"
+     - 若 `dialogue_mismatch_ratio` 连续 3 章 < 0.1 或 > 0.5 → 标记 "下一章回中区间（0.15~0.45），增加或收敛问答错拍"
+    - 若 `detail_density_std` 连续 3 章 < 0.6 或 `detail_density_flat_run_max` 连续 2 章 >= 5 → 标记 "下一章细节密度必须做疏密分层"
+    - 若 `emotion_temp_range` 连续 3 章 < 0.25 或 `flat_affect_streak_max` 连续 2 章 >= 5 → 标记 "下一章必须出现温度折返"
+     - **绿线仅告警**：不得单独触发回滚或拒绝 PERSIST
    - **系统面板面板（反 G-补充3）**：写入 `system_option_matrix_hits` / `bracket_system_block_count`；超阈值则标记"下一章系统信息必须碎片化"
    - **跨题材缝合面板（反 P-补充4）**：写入 `multi_genre_graft_count` / `graft_overload_hits`；首章若超阈值标记"回滚级重写开局节拍"
    - **伏笔装载面板（反 P-补充5）**：写入 `foreshadow_pack_density_per_1k` / `high_priority_foreshadow_count`；超阈值标记"下一章降伏笔装载密度"
@@ -492,6 +536,8 @@ chapter_meta:
    - `stats.trope_chain_hits < 4`，**>= 4 → FAIL**（反 P-补充3）
    - `stats.trope_chain_max_run < 3` 或 `stats.weirdness_budget_count ≥ 1`，**连链>=3 且怪异预算=0 → 回滚级 FAIL**（反 P-补充3）
    - `stats.predictability_score != high`（反 P-补充3）
+   - `stats.background_dump_blocks_over_120 == 0`，**>= 1 → FAIL**（反 P-补充7）
+   - 若 `chapter == 1`：`stats.memory_infusion_exposition_hits == 0`，**>= 1 → 回滚级 FAIL**（反 P-补充7 · 首章禁“记忆涌入式整段设定灌输”）
    - `stats.multi_genre_graft_count ≤ 2`，**>= 3 → FAIL**（反 P-补充4）
    - `stats.graft_overload_hits == 0`，**>= 1 → FAIL**（反 P-补充4；chapter 1 命中按回滚级）
    - `stats.foreshadow_pack_density_per_1k ≤ 3`，**> 5 → FAIL**（反 P-补充5）
@@ -517,6 +563,37 @@ chapter_meta:
    **H-2. 收束腔调硬门**（反 N-补充）
    - `stats.golden_closing_line_hits ≤ 1`
    - `stats.maxim_style_summary_hits ≤ 1`，**>= 2 → FAIL**（格言体过密）
+   - 若 `chapter == 1`：`stats.first_chapter_oath_closure_hits == 0`，**>= 1 → FAIL**（反 N-补充2 · 首章宣言式闭合过满）
+
+  **H-2b. 细节分布硬门**（反 B-补充5）
+  - `stats.detail_density_flat_run_max <= 4`，**>= 5 → FAIL**
+  - `stats.ornament_overflow_hits <= 1`，**>= 2 → FAIL**
+  - `stats.detail_density_std >= 0.6` 或 `stats.ornament_overflow_hits == 0`；否则 **FAIL**（细节密度过稳）
+
+  **H-2c. 情绪温差硬门**（反 E-补充9）
+  - `stats.flat_affect_streak_max <= 4`，**>= 5 → FAIL**
+  - `stats.reaction_modality_variety >= 3`，**<= 2 → FAIL**
+  - `stats.emotion_temp_range >= 0.25` 或 `stats.flat_affect_streak_max <= 3`；否则 **FAIL**
+
+  **H-2d. 跨时代语汇硬门**（反 G-补充4）
+  - `stats.modern_metaphor_unanchored_hits == 0`，**>= 1 → FAIL**
+  - 若 `stats.era_lexicon_collision_hits >= 2`：`stats.cross_era_bridge_present == true`，否则 **FAIL**
+
+  **H-2e. 破绽后效硬门**（反 O-补充2）
+  - `stats.decorative_crack_hits == 0`，**>= 1 → FAIL**
+  - 若 `stats.persona_crack_template_hits >= 2`：`stats.crack_followup_payoff_hits >= 1`，否则 **FAIL**
+
+  **H-2f. 对称收束硬门**（反 N-补充3）
+  - `stats.symmetry_closure_hits <= 1`，**>= 2 → FAIL**
+  - 若 `stats.closure_neatness_score > 0.75`：`stats.anti_closure_noise_present == true`，否则 **FAIL**
+
+  **H-2g. 段落功能硬门**（反 C-补充2）
+  - `stats.single_mode_streak_max <= 4`，**>= 5 → FAIL**
+  - `stats.para_function_type_count >= 4`，**<= 3 → FAIL**
+  - `stats.micro_closeup_ratio <= 0.65`，**> 0.65 → FAIL**
+
+   **H-3. 情绪证据同构硬门**（反 E-补充8）
+   - `stats.micro_emotion_template_repeat_hits ≤ 1`，**>= 2 → FAIL**（同构微表情模板复用过密，退回 `webnovel-excitement-and-craft` 做角色差异化改写）
 
    **I. 章首钩子与好奇缝隙硬门**（反 **A-补充** · 回滚级）
    - `stats.opening_hook_spike == true`，**== false → 回滚级 FAIL**（退回 plot-design 重写章首 ≈200 字）
@@ -526,6 +603,11 @@ chapter_meta:
 
 任一"普通硬门"失败 → 回滚写入，要求 `webnovel-plot-design` 重写当章。
 任一"回滚级 FAIL" → 回滚写入 + 强制回退到指定 workflow（见对应硬门注释）+ 标记该章必须整体重做，不允许仅局部修补。
+
+8. **软分布层（绿线，非阻断）**：
+   - 读取并记录：`style_temperature_band` / `human_noise_hits` / `clean_closure_hits` / `exposition_density_band` / `dialogue_mismatch_ratio` / `detail_density_std` / `detail_density_flat_run_max` / `emotion_temp_range` / `flat_affect_streak_max`
+   - 绿线目标区间（默认）：`human_noise_hits` 2~6，`clean_closure_hits` 0~1，`dialogue_mismatch_ratio` 0.15~0.45，`detail_density_std` 0.6~1.8，`detail_density_flat_run_max` 1~4，`emotion_temp_range` 0.25~0.7，`flat_affect_streak_max` 1~4
+   - 只输出偏离告警与下章纠偏建议；**不得**因绿线单独 FAIL/回滚
 
 **回滚路径映射速查**：
 

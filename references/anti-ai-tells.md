@@ -1192,6 +1192,152 @@
 - `trope_chain_hits >= 4` 判 FAIL。
 - `trope_chain_max_run >= 3` 且 `weirdness_budget_count == 0` 判回滚级 FAIL。
 - `predictability_score == high` 时必须重排章节节拍并补“非收益扰动节点”。
+- **首章特判（chapter 1）**：`trope_chain_hits >= 3` 即 FAIL；`trope_chain_max_run >= 2` 且 `weirdness_budget_count == 0` 即回滚级 FAIL（首章禁止“公式直线开局”）。
+
+### P-补充7 · 背景灌输块 / 记忆涌入式设定投喂（并入 P，不增加 25 项计数）
+
+**症状**：通过“记忆涌入/脑海闪回/他这才知道”在单段一次性交代完整背景账单（身世 + 债务 + 仇家 + 父母死因 + 阵营关系），信息过整齐，像填表而不是叙事生长。
+
+**改写方向**：
+- 背景拆批投放：首章只给“立即决策必需信息”，其余改为后续场景触发式揭示。
+- 禁止“整段结论先行”；先给可观察证据，再给局部解释，最后留缺口。
+
+**检测信号**：
+- `background_dump_blocks_over_120`：单段 >120 字且含 3 组以上背景事实打包投喂的命中数。
+- `memory_infusion_exposition_hits`：以“记忆涌入/脑海灌输”承载背景设定的命中数。
+
+**生成期规则**：
+- 正文章要求 `background_dump_blocks_over_120 == 0`；`>= 1` 判 FAIL。
+- 首章 `memory_infusion_exposition_hits == 0`；`>= 1` 判回滚级 FAIL。
+
+### E-补充8 · 微表情模板复用（并入 E，不增加 25 项计数）
+
+**症状**：角色情绪全靠同构“外部信号”重复推进（如“脸色微变/眼中复杂/肩膀绷紧/欲言又止”），不同角色像同一个模版人。
+
+**改写方向**：
+- 情绪证据差异化：关键角色优先用“动作习惯/语气断裂/决策偏差”，重要角色用“局部生理+关系语境”，次要角色可轻写但不得同句法复刻。
+- 禁止同一微表情模板跨角色连续复现。
+
+**检测信号**：
+- `micro_emotion_template_repeat_hits`：同构微表情模板在不同角色或相邻段落复用命中数。
+
+**生成期规则**：
+- `micro_emotion_template_repeat_hits <= 1`；`>= 2` 判 FAIL。
+
+### N-补充2 · 首章宣言式闭合过满（并入 N，不增加 25 项计数）
+
+**症状**：章尾以“清算宣言/命运反转宏愿/格言化口号”完成教科书式闭合，读感像模板收束而非人物未完动作。
+
+**检测信号**：
+- `first_chapter_oath_closure_hits`：首章章尾 200 字内“宏愿宣言式闭合”命中数。
+
+**生成期规则**：
+- 若 `chapter == 1`：`first_chapter_oath_closure_hits == 0`；`>= 1` 判 FAIL（改为动作后果或未完成决策收束）。
+
+### B-补充5 · 细节密度过稳（并入 B，不增加 25 项计数）
+
+**症状**：每段都维持近似强度的“精致细节/意象堆叠”，几乎无疏密变化，读感像同一笔刷持续平涂。
+
+**改写方向**：
+- 做“疏密分层”：推进段减意象，情绪峰值段再加密，避免段段都满配。
+- 连续高密段后必须接 1 段低密功能段（动作推进/关系推进/信息决策）。
+
+**检测信号**：
+- `detail_density_std`：章内段落细节密度标准差（过低表示过稳）。
+- `detail_density_flat_run_max`：连续细节密度近似段最长链。
+- `ornament_overflow_hits`：连续高密修辞段命中数。
+
+**生成期规则**：
+- `detail_density_flat_run_max <= 4`；`>= 5` 判 FAIL。
+- `ornament_overflow_hits <= 1`；`>= 2` 判 FAIL。
+- `detail_density_std < 0.6` 且 `ornament_overflow_hits >= 1` 判 FAIL（优先降密再补节奏）。
+
+### E-补充9 · 情绪温度恒温（并入 E，不增加 25 项计数）
+
+**症状**：全章持续“克制冷静”或同档情绪，不升不降；人物反应像策略模板而非现场波动。
+
+**改写方向**：
+- 每章至少布置 1 次“温度折返”（压住 -> 失拍 -> 再压住，或相反）。
+- 情绪表达通道混用：动作失拍 / 决策偏差 / 语气断裂 / 延迟反应，不只“冷静叙述”。
+
+**检测信号**：
+- `emotion_temp_range`：章内情绪温差。
+- `flat_affect_streak_max`：连续恒温段峰值。
+- `reaction_modality_variety`：反应通道种类数。
+
+**生成期规则**：
+- `flat_affect_streak_max <= 4`；`>= 5` 判 FAIL。
+- `reaction_modality_variety >= 3`；`<= 2` 判 FAIL。
+- `emotion_temp_range < 0.25` 且 `flat_affect_streak_max >= 4` 判 FAIL。
+
+### G-补充4 · 跨时代语汇无锚缝合（并入 G，不增加 25 项计数）
+
+**症状**：现代语汇/比喻与古风语境直接拼接且过于丝滑，缺角色认知锚点与语境摩擦，读感像语料拼接。
+
+**改写方向**：
+- 跨时代比喻必须绑定“角色来源认知”或“场景触发桥”。
+- 同段若出现跨时代词汇，补 1 处语境摩擦（误读/停顿/反问/纠正）。
+
+**检测信号**：
+- `era_lexicon_collision_hits`：跨时代语汇并置命中。
+- `modern_metaphor_unanchored_hits`：无角色认知锚点的现代比喻命中。
+- `cross_era_bridge_present`：是否出现跨时代桥接说明（bool）。
+
+**生成期规则**：
+- `modern_metaphor_unanchored_hits == 0`；`>= 1` 判 FAIL。
+- `era_lexicon_collision_hits >= 2` 且 `cross_era_bridge_present == false` 判 FAIL。
+
+### O-补充2 · 人设破绽模板化（并入 O，不增加 25 项计数）
+
+**症状**：角色“冷感人设”被插入标准破绽镜头（绊步/手抖/停顿）以制造立体感，但后续无行为后果，显得功能化。
+
+**改写方向**：
+- 破绽必须带后效（关系变化/决策偏移/对话失真）之一。
+- 禁止把“破绽镜头”当一次性装饰；需在后文至少被一次间接兑现。
+
+**检测信号**：
+- `persona_crack_template_hits`：模板化破绽命中。
+- `decorative_crack_hits`：仅装饰无后效命中。
+- `crack_followup_payoff_hits`：破绽后效命中。
+
+**生成期规则**：
+- `decorative_crack_hits == 0`；`>= 1` 判 FAIL。
+- `persona_crack_template_hits >= 2` 且 `crack_followup_payoff_hits == 0` 判 FAIL。
+
+### N-补充3 · 对称收束过工整（并入 N，不增加 25 项计数）
+
+**症状**：首尾回环/物件镜像过于“教科书式整齐”，缺噪声与余波，像执行闭环指令。
+
+**改写方向**：
+- 保留回环时必须引入“未对齐噪声”（动作中断/信息残缺/关系未解）。
+- 章尾优先“动作后果”而非“结构对称完成感”。
+
+**检测信号**：
+- `symmetry_closure_hits`：首尾镜像收束命中。
+- `closure_neatness_score`：收束工整度评分（0~1）。
+- `anti_closure_noise_present`：收束前是否存在反闭合噪声（bool）。
+
+**生成期规则**：
+- `symmetry_closure_hits <= 1`；`>= 2` 判 FAIL。
+- `closure_neatness_score > 0.75` 且 `anti_closure_noise_present == false` 判 FAIL。
+
+### C-补充2 · 段落功能单一化（并入 C，不增加 25 项计数）
+
+**症状**：段落长期停留在“特写微动作+轻描景物”单一模式，缺推进/关系/决策功能切换，读感像连续镜头拼贴。
+
+**改写方向**：
+- 章节至少覆盖 4 类段落功能（推进/关系/信息/情绪/悬念等）。
+- 连续特写段后强制切到“决策或关系动作”段。
+
+**检测信号**：
+- `single_mode_streak_max`：连续同功能段峰值。
+- `para_function_type_count`：段落功能类型数。
+- `micro_closeup_ratio`：微特写段占比。
+
+**生成期规则**：
+- `single_mode_streak_max <= 4`；`>= 5` 判 FAIL。
+- `para_function_type_count >= 4`；`<= 3` 判 FAIL。
+- `micro_closeup_ratio <= 0.55`；`> 0.65` 判 FAIL。
 
 ### P-补充4 · 跨题材缝合过载（并入 P，不增加 25 项计数）
 
