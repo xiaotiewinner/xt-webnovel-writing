@@ -1339,6 +1339,125 @@
 - `para_function_type_count >= 4`；`<= 3` 判 FAIL。
 - `micro_closeup_ratio <= 0.55`；`> 0.65` 判 FAIL。
 
+### D-补充5 · 开局身体感优先与认知自然浮现（并入 D，不增加 25 项计数）
+
+**症状**：首章开局先讲设定结论，再补感官；角色像“知道自己在剧情里”，没有“跟读者一起醒过来”的过程。
+
+**改写方向**：
+- 首屏优先“破碎感官碎片 + 身体反应”而非“世界观说明”。
+- 允许主角困惑/发呆/喘不过气等无效率反应，不要求每个动作都推动主线。
+- 禁止“替读者总结”的元解释句（如“他意识到自己穿越了”）。
+
+**检测信号**：
+- `opening_body_sensation_anchor_present`：首章开局是否以身体/感官锚切入（bool）。
+- `opening_exposition_first_screen_hits`：首屏设定先行命中（int）。
+- `forced_realization_statement_hits`：总结式认知宣告命中（int）。
+- `nonfunctional_emotion_beats`：非功能情绪拍点命中（int）。
+
+**生成期规则**：
+- 若 `chapter == 1`：`opening_body_sensation_anchor_present == true` 且 `opening_exposition_first_screen_hits == 0`。
+- `forced_realization_statement_hits == 0`。
+- `nonfunctional_emotion_beats >= 1`（可为困惑/恐惧/停顿，不以剧情推进为目的）。
+
+### G-补充5 · 知识背景隐性共振（并入 G，不增加 25 项计数）
+
+**症状**：现代背景只当标签使用，不参与观察与判断；或直接写成“职业设定说明书”。
+
+**改写方向**：
+- 让现代专业思维进入“看法与动作”层，而不是百科交代层。
+- 优先“隐性共振”而非术语灌输（如决策方式、风险直觉、拆解路径）。
+
+**检测信号**：
+- `knowledge_resonance_present`：本章是否出现“知识背景 × 当前情境”的隐性共振（bool）。
+- `knowledge_exposition_dump_hits`：知识背景说明书式直讲命中（int）。
+
+**生成期规则**：
+- `knowledge_resonance_present == true`（存在即可，不要求次数）。
+- `knowledge_exposition_dump_hits == 0`（禁止背景说明书化）。
+
+### O-补充3 · 视觉锚留白出场（并入 O，不增加 25 项计数）
+
+**症状**：角色长期“无可视信息”，只剩功能对话；或反向走成“外貌清单填写题”。
+
+**改写方向**：
+- 关键角色首登给“可视锚点”（面部/体态/步态/表情机制中任选其一），不做清单式全填。
+- 通过动作与关系后果呈现，不写“心理注脚式解释”。
+- 允许留白：不给全套脸谱，但必须“被看见过”。
+
+**检测信号**：
+- `key_role_visual_anchor_on_debut`：关键角色首登是否有可视锚（bool）。
+- `visual_anchor_refresh_gap_chapters`：可视锚刷新间隔章数。
+- `appearance_checklist_dump_hits`：外貌清单式罗列命中。
+
+**生成期规则**：
+- 关键角色首登章：`key_role_visual_anchor_on_debut == true`。
+- `appearance_checklist_dump_hits == 0`（禁止清单式填写）。
+- `visual_anchor_refresh_gap_chapters <= 5`（超窗触发下章强制刷新）。
+
+### B-补充6 · 具象锚替代抽象判断（并入 B，不增加 25 项计数）
+
+**症状**：大量“紧张/虚弱/冷静/危险”等抽象判断词，缺具体可见证据。
+
+**改写方向**：
+- 用“可观察物理细节”替代抽象判断（指节、呼吸、步态、姿态、接触反馈）。
+- 抽象词可保留，但必须由具象证据托底。
+
+**检测信号**：
+- `concrete_anchor_vs_abstract_ratio`：具象锚 / 抽象判断比。
+- `abstract_judgement_without_anchor_hits`：无具象锚支撑的抽象判断命中。
+
+**生成期规则**：
+- `abstract_judgement_without_anchor_hits == 0`。
+- `concrete_anchor_vs_abstract_ratio >= 1.0`（至少不低于抽象判断量级）。
+
+### I-补充2 · 对话双功能承载（并入 I，不增加 25 项计数）
+
+**症状**：对话只传信息，不塑造人物；或只做人设口癖，不推进信息。
+
+**改写方向**：
+- 核心对话尽量同时承载“信息推进 + 人设显影”双功能。
+- 用措辞选择、禁令句、避答方式显性化人物，而非旁白解释。
+
+**检测信号**：
+- `dual_function_dialogue_beats`：双功能对话拍点命中。
+- `info_only_dialogue_block_hits`：纯信息播报对话块命中。
+
+**生成期规则**：
+- `dual_function_dialogue_beats >= 1`（每章至少一个双功能锚点）。
+- `info_only_dialogue_block_hits` 超阈值时重写为“信息+人设”。
+
+### N-补充4 · 实物钩子优先（并入 N，不增加 25 项计数）
+
+**症状**：章尾只剩氛围与沉思，钩子不可触摸、不可行动，后续承接弱。
+
+**改写方向**：
+- 章尾优先落“实物/文书/账本/器物/位置关系”等可触发动作的钩子。
+- 氛围可保留，但不能替代可操作悬念。
+
+**检测信号**：
+- `tangible_hook_present`：章尾是否存在可触摸钩子（bool）。
+- `atmospheric_only_ending_hits`：纯氛围收束命中（int）。
+
+**生成期规则**：
+- `tangible_hook_present == true`（chapter 1 强制）。
+- `atmospheric_only_ending_hits == 0`（至少需一处可操作钩子）。
+
+### L-补充 · 叙述者隐身（并入 L，不增加 25 项计数）
+
+**症状**：读者明显感到“有人在讲给我听”，解释腔重、导语重、结论先行。
+
+**改写方向**：
+- 让认知从身体感、碎片记忆、环境线索自然浮现。
+- 减少裁判式总结语，让叙述者退后。
+
+**检测信号**：
+- `narrator_explanation_overt_hits`：叙述者过度解释命中。
+- `reader_guidance_phrases_hits`：引导读者结论式短语命中。
+
+**生成期规则**：
+- `narrator_explanation_overt_hits == 0`。
+- `reader_guidance_phrases_hits == 0`。
+
 ### P-补充4 · 跨题材缝合过载（并入 P，不增加 25 项计数）
 
 **症状**：同章同时高密度拼接职场/修真/系统/悬疑等多赛道爽点，读者能看出“要素清单式堆叠”。

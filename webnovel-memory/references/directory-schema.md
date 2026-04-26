@@ -2,6 +2,8 @@
 
 所有项目型写作都必须落在一个 **project_root** 下，并遵循下列固定目录。新建项目时 `webnovel-memory` 会一次性建好全部空壳。
 
+模板参考：`webnovel-memory/references/book-plan-templates.md`（包含 `blocks-index.md` 与 Block 文件可复制模板）。
+
 ```
 <project_root>/
 ├── book.yaml                  书籍元数据（由 story-blueprint 产出后固化）
@@ -17,6 +19,12 @@
 ├── arcs/                      剧情弧（按主线 L 层 + 分段）
 │   ├── _index.md              arc 索引
 │   └── arc-<NN>-<slug>.md     每 arc：矛盾 / 八步 / 起止章号 / 结果
+├── 全书企划/                  全书长期规划（10章块管理）
+│   ├── README.md              读写约定（写前读什么、写后更新什么）
+│   ├── 00-总览.md             全书总览（总章数/每章字数/总字数/阶段分布/矛盾链）
+│   ├── blocks-index.md        Block 索引（block_id / 章范围 / 状态 / 进度）
+│   └── blocks/
+│       └── block-<NNN>-ch<start>-ch<end>.md  每10章一块；Block首章需先产详细10章纲要
 ├── chapters/                  正文章节
 │   └── ch<NNNN>_<短标题>.md  单章终稿：仅一级标题 + 小说正文，无 frontmatter（SFNC 见 write-protocol · STEP 0）
 ├── state/                     动态状态（最频繁更新）
@@ -47,6 +55,9 @@ type: 玄幻 | 仙侠 | 都市 | ...
 subgenre: <子类型>
 target_length: short | medium | long   # long = > 100 万字
 estimated_chapter_length: 3000 | 4000 | 6000   # 单章字数基线
+total_word_target: 8000000                     # 新书必填：总字数目标
+chapter_count_target: 1600                     # 新书必填：总章节目标
+block_size: 10                                 # 固定：每10章一个Block
 l1_conflict: <主线 L1 矛盾句>
 main_axis:                              # L1–L5 主线矛盾链
   - level: L1
@@ -186,6 +197,49 @@ status: 活跃 | 退场 | 死亡 | 冷藏
 # 一剑破阵
 
 <小说正文，无 YAML / 无 HTML 注释 / 无代码块 / 无除本 H1 外的 Markdown 结构>
+```
+
+### `全书企划/00-总览.md`
+
+```markdown
+# 《书名》全书企划
+
+## 总览
+- 总章数：1600（160 个 10 章块）
+- 每章字数：~5000
+- 总字数：~800万
+- 矛盾链：L1 -> L2 -> L3 -> L4 -> L5
+
+## 阶段分布
+| 阶段 | 章范围 | 10章块数 | 核心主题 |
+|---|---|---:|---|
+| Phase 1 | 1-100 | 10 | ... |
+```
+
+### `全书企划/blocks/block-<NNN>-ch<start>-ch<end>.md`
+
+```markdown
+## Block N（ch<start>-ch<end>）
+
+- 本块目标：
+- 本块核心冲突：
+- 本块结束状态：
+- 本块10章标题梗概：
+  1. ...
+  2. ...
+  ...
+  10. ...
+
+## 详细10章纲要（Block首章前必填）
+- ch<start>：
+- ch<start+1>：
+- ...
+- ch<end>：
+
+## 进度
+- 已写：
+- 待写：
+- 最近更新：
 ```
 
 ### `state/chapter_meta/ch<NNNN>.yaml`（原章节 frontmatter 全量落此文件）

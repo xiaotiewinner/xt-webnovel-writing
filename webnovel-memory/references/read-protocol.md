@@ -23,12 +23,16 @@ mode: draft | revise | diagnose
 7. `state/power-level.md` → 主角当前修为状态
 8. `state/open-threads.md` → 未收束矛盾
 9. `state/anti-trope-log.md`（最近 3 章）→ 最近使用的"真实接续"列表（避免复用）+ 最近的怪异预算 / 延迟兑付清单（避免同质化）
+10. `全书企划/00-总览.md` → 全书总目标（总章数 / 每章字数 / 阶段主题 / 矛盾链）
+11. `全书企划/blocks-index.md` → 章节到 Block 的映射与当前进度
 
 ## Phase 2 · 当前 arc 上下文
 
 1. 从 `arcs/_index.md` 查 `target_chapter` 所属 arc
 2. 读该 arc 文件（矛盾 / 八步位置 / 已写到第几步）
 3. 根据八步位置，决定本章承担步骤
+4. 从 `全书企划/blocks-index.md` 计算 `target_chapter` 所属 10 章 Block，只读取该 Block 文件（`全书企划/blocks/block-<NNN>-ch<start>-ch<end>.md`）
+5. 若 `target_chapter` 为 Block 首章（`chapter % 10 == 1`），必须先确认该 Block 文件存在"详细10章纲要"；缺失则中止正文生成并先补全详细纲要
 
 ## Phase 3 · 相邻章节上下文
 
@@ -68,6 +72,12 @@ Phase 1–4 的结果在进 prompt 前压成下列结构，而不是原样塞入
 
 ### 当前 arc
 - arc-NN · 矛盾句 · 现在处于八步的第 X 步
+
+### 全书企划
+- 全书目标：总章数 / 每章字数 / 阶段目标（浓缩）
+- 当前 Block：block-<NNN>（ch<start>-ch<end>）
+- Block 目标与结束状态（2-4 行）
+- 若本章为 Block 首章：已确认本块 10 章详细纲要存在
 
 ### 必须承接
 - 第 N-1 章钩子：<原话 1 句>
@@ -135,6 +145,7 @@ Phase 1–4 的结果在进 prompt 前压成下列结构，而不是原样塞入
 - **绿线分布（非阻断）**：读取近 3 章 `style_temperature_band` / `human_noise_hits` / `clean_closure_hits` / `exposition_density_band` / `dialogue_mismatch_ratio`，用于本章“分布校准”，只产生偏离告警与下章纠偏建议，**不得**作为回滚硬门。
 - **分布去模板化补充（非阻断）**：读取近 3 章 `detail_density_std` / `detail_density_flat_run_max` / `emotion_temp_range` / `flat_affect_streak_max`，若连续过稳则本章必须声明“疏密变化点 + 情绪折返点”。
 - **结构化痕迹补充（硬门随主条款）**：读取 `modern_metaphor_unanchored_hits` / `decorative_crack_hits` / `closure_neatness_score` / `single_mode_streak_max` 等近 3 章趋势；若连续命中，按 B/E/G/O/N/C 对应条款收紧本章阈值。
+- **身体感与留白补充（硬门随主条款）**：读取近 3 章 `opening_body_sensation_anchor_present` / `opening_exposition_first_screen_hits` / `forced_realization_statement_hits` / `knowledge_resonance_present` / `key_role_visual_anchor_on_debut` / `concrete_anchor_vs_abstract_ratio` / `dual_function_dialogue_beats` / `tangible_hook_present` / `narrator_explanation_overt_hits`；若连续偏离，本章强制做“身体感切入 + 可视锚留白 + 实物钩子收束”。
 - **章际节奏矩阵**：读取近 3 章 `chapter_pacing_matrix`（`relation_tension` / `mc_info_delta` / `chapter_mood` / `ending_hook_type`），若任一维度连续 3 章同值，本章该维度强制变向。
 - **转场硬门（反 Q · 回滚级）**：
   - 本章每次场景切换必须显式声明使用的桥类型（**Q-1 感官桥 / Q-2 物件桥 / Q-3 对话打断桥 / Q-4 摩擦点桥 / Q-5 情绪错位桥**）+ 锚点（具体感官 / 具体物件 / 具体对话 / 具体摩擦 / 具体情绪错位）

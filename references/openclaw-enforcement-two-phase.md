@@ -19,7 +19,8 @@
 ### 阶段 0 · 项目前置（缺一不得进入阶段 1）
 
 1. 已锁定 `project_root`；若无项目目录 → 先执行 `webnovel-memory` · **INIT**。
-2. 写本章正文前 → 必须执行 `webnovel-memory` · **LOAD(project_root, target_chapter)**，把记忆快照（含 `used-patterns`、`soul_fields` 必现清单等）并入上下文。
+2. 写本章正文前 → 必须执行 `webnovel-memory` · **LOAD(project_root, target_chapter)**，把记忆快照（含 `used-patterns`、`soul_fields` 必现清单等）并入上下文；并读取 `全书企划/00-总览.md` + 当前章节所属 Block（仅当前 Block）。
+3. 若 `target_chapter` 为 Block 首章（每 10 章第 1 章），需先确认该 Block 已有“详细10章纲要”；缺失时先补纲要再进入阶段 1。
 
 ### 阶段 1 · 仅出稿（DRAFT）
 
@@ -37,7 +38,7 @@
 3. **E-扩展4 风控面板（必填）**：必须单独给出 `romance_target_ratio / erotic_tension_target_ratio / explicitness_target_ratio / combat_target_ratio / suggestive_erotic_risk_hits / explicit_sexual_content_hits / high_risk_relationship_hits / chapter1_tension_hook_present`。缺任一字段视为 **FAIL**，不得进入阶段 3。
 4. **E-扩展6 关系递增面板（必填）**：必须给出 `romance_arc_step / friendship_arc_step / relationship_progression_beats / relationship_jump_without_cause_hits / romance_step_delta_from_prev / friendship_step_delta_from_prev`；关系阶段允许负值到正值（如仇恨/敌对起步）。若任一 `*_step_delta_from_prev >= 2`，还必须给出 `relationship_jump_with_cause_hits / post_jump_emotional_turbulence_hits`。缺字段或无因跨级视为 **FAIL**。
 5. **E-扩展7 主角与刺激面板（必填）**：必须给出 `combat_target_ratio / combat_presence_hits / protagonist_distinctive_traits_count / protagonist_initiative_conflict_hits / protagonist_impulse_or_humor_hits / protagonist_template_similarity_hits`。缺字段、主角模板化、或刺激要素缺席视为 **FAIL**。
-6. **完整 `chapter_meta.stats`**：字段集合与阈值以 `webnovel-memory/references/write-protocol.md`「一致性检查」为准；数值须与正文可核对。**其中 R-补充（「不是…是…」系）须满足 `contrastive_negation_hits == 0` 且 `keyzone_contrastive_negation_hits == 0`（全章零容忍；缺字段视为 FAIL）。D-4（`narration_buffer_marks` / `clip_style_chain_max` / `d4_pov`）须与 `anti-ai-tells.md` · D-4 及同文件一致性检查一致；O-补充（`character_focus_plan_declared` / `key_character_portrayal_beats` / `important_character_portrayal_beats` / `scenic_counterpoint_portrayal_hits` / `equal_treatment_flatness_hits`）须与 `anti-ai-tells.md` · O-补充及同文件一致性检查一致；P-补充7 / E-补充8 / N-补充2（`background_dump_blocks_over_120` / `memory_infusion_exposition_hits` / `micro_emotion_template_repeat_hits` / `first_chapter_oath_closure_hits`）须与同文件硬门一致；新增去模板化字段（`detail_density_std` / `detail_density_flat_run_max` / `ornament_overflow_hits` / `emotion_temp_range` / `flat_affect_streak_max` / `reaction_modality_variety` / `modern_metaphor_unanchored_hits` / `decorative_crack_hits` / `symmetry_closure_hits` / `single_mode_streak_max`）须与 B/E/G/O/N/C 对应硬门一致；绿线分布字段（`style_temperature_band` / `human_noise_hits` / `clean_closure_hits` / `exposition_density_band` / `dialogue_mismatch_ratio` / `detail_density_std` / `detail_density_flat_run_max` / `emotion_temp_range` / `flat_affect_streak_max`）须输出并用于偏离说明。**
+6. **完整 `chapter_meta.stats`**：字段集合与阈值以 `webnovel-memory/references/write-protocol.md`「一致性检查」为准；数值须与正文可核对。**其中 R-补充（「不是…是…」系）须满足 `contrastive_negation_hits == 0` 且 `keyzone_contrastive_negation_hits == 0`（全章零容忍；缺字段视为 FAIL）。D-4（`narration_buffer_marks` / `clip_style_chain_max` / `d4_pov`）须与 `anti-ai-tells.md` · D-4 及同文件一致性检查一致；O-补充（`character_focus_plan_declared` / `key_character_portrayal_beats` / `important_character_portrayal_beats` / `scenic_counterpoint_portrayal_hits` / `equal_treatment_flatness_hits`）须与 `anti-ai-tells.md` · O-补充及同文件一致性检查一致；P-补充7 / E-补充8 / N-补充2（`background_dump_blocks_over_120` / `memory_infusion_exposition_hits` / `micro_emotion_template_repeat_hits` / `first_chapter_oath_closure_hits`）须与同文件硬门一致；新增去模板化字段（`detail_density_std` / `detail_density_flat_run_max` / `ornament_overflow_hits` / `emotion_temp_range` / `flat_affect_streak_max` / `reaction_modality_variety` / `modern_metaphor_unanchored_hits` / `decorative_crack_hits` / `symmetry_closure_hits` / `single_mode_streak_max`）须与 B/E/G/O/N/C 对应硬门一致；新增身体感与叙述者隐身字段（`opening_body_sensation_anchor_present` / `opening_exposition_first_screen_hits` / `forced_realization_statement_hits` / `nonfunctional_emotion_beats` / `knowledge_resonance_present` / `knowledge_exposition_dump_hits` / `key_role_visual_anchor_on_debut` / `appearance_checklist_dump_hits` / `concrete_anchor_vs_abstract_ratio` / `abstract_judgement_without_anchor_hits` / `dual_function_dialogue_beats` / `info_only_dialogue_block_hits` / `tangible_hook_present` / `atmospheric_only_ending_hits` / `narrator_explanation_overt_hits` / `reader_guidance_phrases_hits`）须与 D/G/O/B/I/N/L 对应硬门一致；绿线分布字段（`style_temperature_band` / `human_noise_hits` / `clean_closure_hits` / `exposition_density_band` / `dialogue_mismatch_ratio` / `detail_density_std` / `detail_density_flat_run_max` / `emotion_temp_range` / `flat_affect_streak_max`）须输出并用于偏离说明。**
 7. **闭环**：
    - 若存在任一 **FAIL** 或 **回滚级 FAIL**：**不得**进入阶段 3；须在同一回复内**改写正文**（或明确说明退回 `webnovel-plot-design` / `webnovel-story-blueprint` 重做哪一步），然后**重新执行阶段 2**。
    - 若命中 E-扩展4（露骨性描写 / 高风险关系 / 占比未确认 / 风控面板缺字段）：只能“降级改写后重跑阶段 2”，**禁止**跳过改写直接声称“已过审”。
@@ -51,7 +52,7 @@
 
 ### 阶段 3 · 仅当阶段 2 全 PASS（项目正文）
 
-- 执行 `webnovel-memory` · **PERSIST**（`write-protocol.md` 八步 + STEP 0 路径契约）。
+- 执行 `webnovel-memory` · **PERSIST**（`write-protocol.md` 八步 + STEP 0 路径契约），并同步更新 `全书企划`（Block 进度 / 下一章承接点 / Block 首章细纲状态）。
 - **仅当** PERSIST 成功完成后，方可向用户报告「本章已落盘 / 已写入 project」。
 
 ---

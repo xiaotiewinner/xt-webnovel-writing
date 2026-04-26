@@ -54,5 +54,7 @@ hooks/two-phase-guard/handler.ts
 2. 启用本 hook（会话内持续提醒，减少漏检）。
 3. 项目正文任务务必让输出包含 `chapter_meta.stats` 与绿线字段（`style_temperature_band` / `human_noise_hits` / `clean_closure_hits` / `exposition_density_band` / `dialogue_mismatch_ratio`），并执行 `write-protocol` 的一致性硬门（绿线偏离仅告警，不单独回滚）。
 4. 若启用新版“去模板化反制”，需确认 `chapter_meta.stats` 同步包含 `detail_density_std` / `detail_density_flat_run_max` / `emotion_temp_range` / `flat_affect_streak_max` / `modern_metaphor_unanchored_hits` / `decorative_crack_hits` / `symmetry_closure_hits` / `single_mode_streak_max` 等字段；这些字段按 `write-protocol` 硬门判定，不受绿线豁免。
+5. 若启用“叙述者隐身与身体感开局”链路，需同步包含 `opening_body_sensation_anchor_present` / `opening_exposition_first_screen_hits` / `forced_realization_statement_hits` / `nonfunctional_emotion_beats` / `knowledge_resonance_present` / `knowledge_exposition_dump_hits` / `key_role_visual_anchor_on_debut` / `appearance_checklist_dump_hits` / `concrete_anchor_vs_abstract_ratio` / `abstract_judgement_without_anchor_hits` / `dual_function_dialogue_beats` / `tangible_hook_present` / `atmospheric_only_ending_hits` / `narrator_explanation_overt_hits` / `reader_guidance_phrases_hits`；缺字段按 `write-protocol` 一致性检查 FAIL 处理。
+6. 启用“全书企划”后，正文任务需确认：`LOAD` 已读取 `全书企划/00-总览.md` + 当前章节所属 Block；若为 Block 首章，必须先有该 Block 的详细10章纲要；`PERSIST` 后应回写 `blocks-index` 与当前 Block 进度。
 
 若第 1 层缺失，模型仍可能直接“写完就收尾”。

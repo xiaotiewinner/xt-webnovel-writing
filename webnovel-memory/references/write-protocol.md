@@ -148,6 +148,23 @@ chapter_meta:
     single_mode_streak_max: 3                 # 反 C-补充2 · 连续同功能段峰值（>=5 FAIL）
     para_function_type_count: 5               # 反 C-补充2 · 段落功能类型数（<=3 FAIL）
     micro_closeup_ratio: 0.34                 # 反 C-补充2 · 微特写段占比（>0.65 FAIL）
+    opening_body_sensation_anchor_present: true # 反 D-补充5 · 首章开局身体/感官锚（chapter 1 需 true）
+    opening_exposition_first_screen_hits: 0   # 反 D-补充5 · 首屏设定先行命中（chapter 1 需 0）
+    forced_realization_statement_hits: 0      # 反 D-补充5 · “他意识到自己穿越了”式宣告命中（需 0）
+    nonfunctional_emotion_beats: 2            # 反 D-补充5 · 非功能情绪拍点（困惑/恐惧/停顿等，需 >=1）
+    knowledge_resonance_present: true         # 反 G-补充5 · 知识背景与情境隐性共振（需 true）
+    knowledge_exposition_dump_hits: 0         # 反 G-补充5 · 知识背景说明书直讲命中（需 0）
+    key_role_visual_anchor_on_debut: true     # 反 O-补充3 · 关键角色首登可视锚（首登章需 true）
+    visual_anchor_refresh_gap_chapters: 2     # 反 O-补充3 · 可视锚刷新间隔（>5 触发纠偏）
+    appearance_checklist_dump_hits: 0         # 反 O-补充3 · 外貌清单式罗列命中（需 0）
+    concrete_anchor_vs_abstract_ratio: 1.6    # 反 B-补充6 · 具象锚/抽象判断比（需 >=1.0）
+    abstract_judgement_without_anchor_hits: 0 # 反 B-补充6 · 无锚抽象判断命中（需 0）
+    dual_function_dialogue_beats: 3           # 反 I-补充2 · 信息+人设双功能对话拍点（需 >=1）
+    info_only_dialogue_block_hits: 0          # 反 I-补充2 · 纯信息播报对话块命中（过高需改写）
+    tangible_hook_present: true               # 反 N-补充4 · 实物钩子是否存在（首章需 true）
+    atmospheric_only_ending_hits: 0           # 反 N-补充4 · 纯氛围结尾命中（需 0）
+    narrator_explanation_overt_hits: 0        # 反 L-补充 · 叙述者过度解释命中（需 0）
+    reader_guidance_phrases_hits: 0           # 反 L-补充 · “替读者总结”引导语命中（需 0）
     # —— 软分布层（绿线，不触发回滚；用于“去机械化”） ——
     style_temperature_band: rough              # cold | rough | loose | wry
     human_noise_hits: 4                        # 人性噪声命中：犹豫/改口/反悔/无用小动作等（目标区间：2~6）
@@ -251,13 +268,13 @@ chapter_meta:
 在写任何文件之前，对 `files_to_write` 列表执行：
 
 1. 每条路径必须以 `<project_root>/` 开始（绝对或相对一致展开后）；否则立即 **PERSIST 拒收**。
-2. 路径中**第一层**项必须落在 `{book.yaml, fingerprint.md, bible/, characters/, arcs/, chapters/, state/, index/, .webnovel-memory/}` 之一；否则立即 **PERSIST 拒收**。
+2. 路径中**第一层**项必须落在 `{book.yaml, fingerprint.md, bible/, characters/, arcs/, 全书企划/, chapters/, state/, index/, .webnovel-memory/}` 之一；否则立即 **PERSIST 拒收**。
 3. 章节**正文**文件必须（且该章仅允许这一份正文）落在 `chapters/`，**命名 SFNC**：`ch<4位零填充>_<短标题>.md`（如 `chapters/ch0001_一剑破阵.md`）。`短标题` 与首行 H1 标题一致（为文件名可替换非法路径字符为 `_`，见下）。必须匹配正则 `^ch\d{4}_[^/\\:\*\?"<>\|]+\.md$`；否则拒收。同一 `NNNN` 在 `chapters/` 下**只能有一个**以 `chNNNN_` 开头的终稿文件。
 4. 禁止章节终稿使用碎片化命名（如 `part1` / `part2` / `expanded_beats` / `draft` / `tmp` 等）；命中即拒收；不得只写 `ch0001.md` 而无 `_短标题`。
 5. 章**元数据**（原写在章节 frontmatter 的 arc/pov/统计等）**仅**可写在 `state/chapter_meta/ch<NNNN>.yaml`；不得写回正文章节文件。该路径必须匹配 `^state/chapter_meta/ch\d{4}\.yaml$`。
 6. 章节 **`.md` 正文文件**内**仅允许**一行一级标题（`# …`）与小说正文；禁止 YAML frontmatter、`---` 分隔线、HTML/XML 注释、`` ``` `` 代码围栏、除该 H1 外的任何 Markdown 结构；正文段内规则仍按根 `SKILL.md` 与 OpenClaw「纯叙事」约束执行。
 7. 人物卡必须落在 `characters/<name>.md`；arc 文件必须落在 `arcs/arc-<NN>-<slug>.md`；否则拒收。
-8. 禁止新建契约以外的目录（如 `drafts/` `output/` `tmp/` `generated/`）——一经发现，整轮 PERSIST 失败并回滚。
+8. 禁止新建契约以外的目录（如 `drafts/` `output/` `tmp/` `generated/`）——一经发现，整轮 PERSIST 失败并回滚。`全书企划/` 是允许且推荐的固定目录。
 
 **`短标题` 与非法字符**（与首行 H1 对齐）：`chapter_file_slug` 可随 `chapter_body` 一并传入 PERSIST；若缺省，则取 `chapter_title` / H1 文本，**去除** Windows 保留字符 `\ / : * ? " < > |` 后作为文件名用短标题，空格可保留；若结果为空用 `untitled`。
 
@@ -363,6 +380,13 @@ chapter_meta:
   - **破绽后效面板（反 O-补充2）**：写入 `persona_crack_template_hits` / `decorative_crack_hits` / `crack_followup_payoff_hits`；装饰性破绽命中则标记"下一章必须兑现后效"
   - **收束工整度面板（反 N-补充3）**：写入 `symmetry_closure_hits` / `closure_neatness_score` / `anti_closure_noise_present`；若过工整且无噪声则标记"下一章结尾改未完成动作收束"
   - **段落功能面板（反 C-补充2）**：写入 `single_mode_streak_max` / `para_function_type_count` / `micro_closeup_ratio`；单功能长链命中则标记"下一章强制切入推进/关系段"
+  - **开局身体感面板（反 D-补充5）**：写入 `opening_body_sensation_anchor_present` / `opening_exposition_first_screen_hits` / `forced_realization_statement_hits` / `nonfunctional_emotion_beats`；若首章设定先行或认知宣告命中，标记"下章改身体感切入并删除总结句"
+  - **知识共振面板（反 G-补充5）**：写入 `knowledge_resonance_present` / `knowledge_exposition_dump_hits`；若无共振或直讲命中，标记"下章改为隐性专业判断"
+  - **视觉锚面板（反 O-补充3）**：写入 `key_role_visual_anchor_on_debut` / `visual_anchor_refresh_gap_chapters` / `appearance_checklist_dump_hits`；若首登无锚或出现清单描写，标记"下章改可视锚留白"
+  - **具象锚面板（反 B-补充6）**：写入 `concrete_anchor_vs_abstract_ratio` / `abstract_judgement_without_anchor_hits`；无锚抽象命中则标记"下章抽象判断改具象证据"
+  - **对话双功能面板（反 I-补充2）**：写入 `dual_function_dialogue_beats` / `info_only_dialogue_block_hits`；若双功能不足则标记"下章补信息+人设同句承载"
+  - **实物钩子面板（反 N-补充4）**：写入 `tangible_hook_present` / `atmospheric_only_ending_hits`；若章尾纯氛围，标记"下章改实物钩子收束"
+  - **叙述者隐身面板（反 L-补充）**：写入 `narrator_explanation_overt_hits` / `reader_guidance_phrases_hits`；命中则标记"下章删解释腔与总结语"
    - **软分布面板（绿线）**：写入 `style_temperature_band` / `human_noise_hits` / `clean_closure_hits` / `exposition_density_band` / `dialogue_mismatch_ratio`；
      - 若 `human_noise_hits` 连续 3 章 < 2 → 标记 "下一章补 2 处犹豫/改口/反悔型噪声，避免过稳"
      - 若 `clean_closure_hits` 连续 3 章 > 1 → 标记 "下一章章尾改未完成动作收束，禁口号闭合"
@@ -395,6 +419,18 @@ chapter_meta:
    - 延迟兑付：叶无尘手腕内侧一道未解释的旧疤（预计 30 章后）
    ```
 7. `state/open-threads.md`：把本章出现的新矛盾/疑团加入列表；把本章收束的从列表中移除
+
+### STEP 5b · 更新全书企划（长篇防跑偏）
+
+1. 打开 `全书企划/blocks-index.md`，定位本章所属 Block（每 10 章一块）并更新进度：
+   - `已写章节` / `待写章节`
+   - `last_updated_chapter`
+2. 打开当前 Block 文件 `全书企划/blocks/block-<NNN>-ch<start>-ch<end>.md`：
+   - 追加本章完成记录（本章标题 / 核心推进 / 下一章承接点）
+   - 同步本块"结束状态"偏移（若有）
+3. 若本章是 Block 首章（`chapter_number % 10 == 1`）：
+   - 必须检查该 Block 的"详细10章纲要"段落是否存在且非空
+   - 缺失则判 **FAIL（拒绝 PERSIST）**，返回"请先补全当前 Block 十章详细纲要"
 
 ### STEP 6 · 更新人物卡
 
@@ -591,6 +627,18 @@ chapter_meta:
   - `stats.single_mode_streak_max <= 4`，**>= 5 → FAIL**
   - `stats.para_function_type_count >= 4`，**<= 3 → FAIL**
   - `stats.micro_closeup_ratio <= 0.65`，**> 0.65 → FAIL**
+
+  **H-2h. 身体感/留白/钩子硬门**（反 D-补充5 / G-补充5 / O-补充3 / B-补充6 / I-补充2 / N-补充4 / L-补充）
+  - 若 `chapter == 1`：`stats.opening_body_sensation_anchor_present == true` 且 `stats.opening_exposition_first_screen_hits == 0`，否则 **FAIL**
+  - `stats.forced_realization_statement_hits == 0`，**>= 1 → FAIL**
+  - `stats.nonfunctional_emotion_beats >= 1`，**== 0 → FAIL**
+  - `stats.knowledge_resonance_present == true` 且 `stats.knowledge_exposition_dump_hits == 0`，否则 **FAIL**
+  - 关键角色首登章：`stats.key_role_visual_anchor_on_debut == true`，否则 **FAIL**
+  - `stats.appearance_checklist_dump_hits == 0`，**>= 1 → FAIL**
+  - `stats.abstract_judgement_without_anchor_hits == 0` 且 `stats.concrete_anchor_vs_abstract_ratio >= 1.0`，否则 **FAIL**
+  - `stats.dual_function_dialogue_beats >= 1`，不足则 **FAIL**
+  - 若 `chapter == 1`：`stats.tangible_hook_present == true` 且 `stats.atmospheric_only_ending_hits == 0`，否则 **FAIL**
+  - `stats.narrator_explanation_overt_hits == 0` 且 `stats.reader_guidance_phrases_hits == 0`，否则 **FAIL**
 
    **H-3. 情绪证据同构硬门**（反 E-补充8）
    - `stats.micro_emotion_template_repeat_hits ≤ 1`，**>= 2 → FAIL**（同构微表情模板复用过密，退回 `webnovel-excitement-and-craft` 做角色差异化改写）

@@ -27,6 +27,7 @@ metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
 | 文件 | 何时读 |
 |---|---|
 | `./references/directory-schema.md` | 初始化项目 / 确认某个文件的字段模板时 |
+| `./references/book-plan-templates.md` | 初始化或重建 `全书企划` 时，直接套用 Block 索引与 Block 文件模板 |
 | `./references/read-protocol.md` | 每次生成新章**之前**，拉取必要上下文 |
 | `./references/write-protocol.md` | 每次生成新章**之后**，把状态固化到磁盘 |
 
@@ -45,11 +46,17 @@ metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
    4. 若什么都缺 → 退出并要求用户补齐
 
    `project_root` 一旦确定 → 立即锁定写入 `book.yaml.project_root`，本次会话不得更改。
-2. 询问：作品预估规模（总字数 / 单章字数 / 章数估计），填入 `book.yaml.target_length` 和 `estimated_chapter_length`
-3. 按 `directory-schema.md` 创建全部空壳目录和空文件（**必须一次性建全 §11 定义的全部子目录**，包括 `state/chapter_meta/` 与 `state/anti-trope-log.md` 等）
-4. 若用户已有 `webnovel-story-blueprint` 的立书档案 → 直接把字段灌入 `book.yaml` 和 `fingerprint.md`
-5. 若没有 → 路由到 `webnovel-story-blueprint` 先跑立书，再回到本 skill 固化
-6. **输出给上游**：锁定后的绝对 / 相对 `project_root` 路径 + 固定子目录清单。后续所有子 skill 写文件时**必须**以此为前缀，否则 PERSIST 拒收。
+2. 询问并**强制记录**：作品预估规模（`总字数` / `单章字数` / `章数估计`），填入 `book.yaml.total_word_target` / `book.yaml.estimated_chapter_length` / `book.yaml.chapter_count_target`（`target_length` 仍可保留 short|medium|long 作为规模标签）；若缺任一项，不得进入正文生成。
+3. 按 `directory-schema.md` 创建全部空壳目录和空文件（**必须一次性建全 §11 定义的全部子目录**，包括 `state/chapter_meta/`、`state/anti-trope-log.md` 与 `全书企划/`）
+4. 在 `<project_root>/全书企划/` 初始化全书企划文件：
+   - `全书企划/00-总览.md`（总章数/每章字数/总字数/阶段分布/矛盾链）
+   - `全书企划/blocks-index.md`（10 章块索引，`block_id -> 章范围 -> 状态`）
+   - `全书企划/blocks/block-<NNN>-ch<start>-ch<end>.md`（每 10 章一个 Block 纲要）
+   - `全书企划/README.md`（读写约定：写章前读总览+当前 Block；写章后更新进度）
+   若用户已给出全书企划样例，优先按样例落盘并标准化为上述结构。
+5. 若用户已有 `webnovel-story-blueprint` 的立书档案 → 直接把字段灌入 `book.yaml` 和 `fingerprint.md`
+6. 若没有 → 路由到 `webnovel-story-blueprint` 先跑立书，再回到本 skill 固化
+7. **输出给上游**：锁定后的绝对 / 相对 `project_root` 路径 + 固定子目录清单 + 全书企划路径约定。后续所有子 skill 写文件时**必须**以此为前缀，否则 PERSIST 拒收。
 
 ### 模式 2 · LOAD（生成前拉上下文）
 
@@ -58,6 +65,10 @@ metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
 1. 执行 `read-protocol.md` 的 Phase 1–4（总是）+ Phase 6（公共 references）
 2. 按需执行 Phase 5（检索型查询）
 3. 产出"**记忆快照**"（见 read-protocol.md 末尾的装填模板），交给上游 skill 作为 prompt 上下文
+4. 额外执行全书企划装填：
+   - 始终读取 `全书企划/00-总览.md`（压缩为 8–15 行摘要）
+   - 仅读取 `target_chapter` 对应的 10 章 Block 文件（避免跨块超载）
+   - 若 `target_chapter` 是该 Block 的首章（`chapter % 10 == 1`），检查是否存在该 Block 的详细纲要；不存在则先要求上游生成并落盘后再继续正文
 
 ### 模式 3 · PERSIST（生成后落盘）
 
@@ -66,7 +77,11 @@ metadata: {"openclaw":{"emoji":"🧠","os":["darwin","linux","win32"]}}
 1. 接收 `chapter_body` + `chapter_meta`（结构见 write-protocol.md 输入段）
 2. 执行 `write-protocol.md` 的 8 步落盘（STEP 0 路径契约校验 + STEP 1–7 内容落盘）
 3. 跑末尾的一致性检查；失败则回滚
-4. 返回成功确认（写入文件清单 + 受影响的人物 / 伏笔 / arc 列表）
+4. 在一致性检查通过后，更新 `全书企划/`：
+   - 更新 `blocks-index.md` 中当前 Block 的进度（已写章号、剩余章号）
+   - 在当前 Block 文件写入"本章已完成"与"下一章承接点"
+   - 若本章为 Block 首章，且已生成该 Block 10 章详细纲要，写入版本与更新时间
+5. 返回成功确认（写入文件清单 + 受影响的人物 / 伏笔 / arc / 全书企划列表）
 
 ### 模式 4 · QUERY（按需检索）
 

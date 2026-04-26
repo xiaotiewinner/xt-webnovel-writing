@@ -24,7 +24,7 @@ const handler = async (event: HookEvent): Promise<void> => {
   if (event.type === "command" && (event.action === "new" || event.action === "reset")) {
     pushMessage(
       event,
-      "[two-phase-guard] 连载/新书章节请按顺序执行：LOAD -> DRAFT -> VERIFY(自检表+chapter_meta.stats+绿线字段) -> 全PASS后PERSIST。"
+      "[two-phase-guard] 连载/新书章节请按顺序执行：LOAD(含全书企划总览+当前Block) -> DRAFT -> VERIFY(自检表+chapter_meta.stats+绿线字段) -> 全PASS后PERSIST(回写全书企划)。Block首章需先有该Block详细10章纲要。"
     );
     return;
   }
@@ -33,7 +33,7 @@ const handler = async (event: HookEvent): Promise<void> => {
   if (event.type === "command" && event.action === "stop") {
     pushMessage(
       event,
-      "[two-phase-guard] 停止前确认：若是章节正文，请先输出§9自检、chapter_meta.stats 与绿线字段；有FAIL需同轮重写，只有全PASS才可声明已落盘。"
+      "[two-phase-guard] 停止前确认：若是章节正文，请先输出§9自检、chapter_meta.stats 与绿线字段；并确认已读取全书企划当前Block（Block首章先细纲）。有FAIL需同轮重写，只有全PASS才可声明已落盘。"
     );
     return;
   }

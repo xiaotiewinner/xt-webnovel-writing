@@ -35,13 +35,14 @@
 15. **R-补充（「不是…是…」系）全章零容忍**：`contrastive_negation_hits` 与 `keyzone_contrastive_negation_hits` 须均为 **0**（禁止「不是…，是…」「不是…、是…」「不是…，也不是…，是…」等否定对照收束）。**任一 ≥1 → FAIL，禁止 PERSIST**（须退回 `webnovel-plot-design` 全文清零后再检）。
 16. **绿线分布（非阻断）**：必须输出并记录 `style_temperature_band` / `human_noise_hits` / `clean_closure_hits` / `exposition_density_band` / `dialogue_mismatch_ratio`，用于跨章偏离校准；缺字段视为流程不完整需补齐后再 PERSIST。绿线数值偏离只触发告警与下章纠偏，**不得单独判 FAIL 或回滚**。
 17. **去模板化扩展字段（随 write-protocol 硬门）**：`detail_density_std` / `detail_density_flat_run_max` / `ornament_overflow_hits` / `emotion_temp_range` / `flat_affect_streak_max` / `reaction_modality_variety` / `modern_metaphor_unanchored_hits` / `decorative_crack_hits` / `symmetry_closure_hits` / `single_mode_streak_max` 等字段，按 `write-protocol` 一致性检查执行；缺字段或阈值不合规按对应条款 FAIL 处理（非绿线豁免）。
+18. **身体感与叙述者隐身扩展字段（随 write-protocol 硬门）**：`opening_body_sensation_anchor_present` / `opening_exposition_first_screen_hits` / `forced_realization_statement_hits` / `nonfunctional_emotion_beats` / `knowledge_resonance_present` / `knowledge_exposition_dump_hits` / `key_role_visual_anchor_on_debut` / `appearance_checklist_dump_hits` / `concrete_anchor_vs_abstract_ratio` / `abstract_judgement_without_anchor_hits` / `dual_function_dialogue_beats` / `tangible_hook_present` / `atmospheric_only_ending_hits` / `narrator_explanation_overt_hits` / `reader_guidance_phrases_hits` 等字段，按 `write-protocol` 一致性检查执行；缺字段或阈值不合规按对应条款 FAIL 处理（非绿线豁免）。
 
 ---
 
 ## C. 路径与落盘硬约束
 
 1. 项目写入路径必须位于 `<project_root>/` 下固定目录：
-   `book.yaml`, `fingerprint.md`, `bible/`, `characters/`, `arcs/`, `chapters/`, `state/`, `index/`, `.webnovel-memory/`
+   `book.yaml`, `fingerprint.md`, `bible/`, `characters/`, `arcs/`, `全书企划/`, `chapters/`, `state/`, `index/`, `.webnovel-memory/`
 2. 禁止写入上述之外的目录（如 `tmp/`, `drafts/`, `output/`）。
 3. 若路径不合规：立即中止落盘，返回「路径违规 + 正确目标路径」。
 
@@ -67,6 +68,7 @@
 正文禁止「不是…，是…」「不是…、是…」「不是…，也不是…，是…」等 R-补充 对照句；`contrastive_negation_hits` 与 `keyzone_contrastive_negation_hits` 须均为 0，任一非 0 不得落盘。
 绿线分布字段（style_temperature_band / human_noise_hits / clean_closure_hits / exposition_density_band / dialogue_mismatch_ratio）必须回填；缺字段不得落盘。绿线偏离仅告警，不得单独判 FAIL。
 去模板化扩展字段（detail_density_std / detail_density_flat_run_max / emotion_temp_range / flat_affect_streak_max / modern_metaphor_unanchored_hits / decorative_crack_hits / symmetry_closure_hits / single_mode_streak_max）按 write-protocol 回填与校验，不适用“绿线豁免”。
+身体感与叙述者隐身扩展字段（opening_body_sensation_anchor_present / opening_exposition_first_screen_hits / forced_realization_statement_hits / nonfunctional_emotion_beats / knowledge_resonance_present / key_role_visual_anchor_on_debut / concrete_anchor_vs_abstract_ratio / dual_function_dialogue_beats / tangible_hook_present / narrator_explanation_overt_hits）按 write-protocol 回填与校验，不适用“绿线豁免”。
 所有写入必须在 <project_root>/ 固定目录契约内；越界路径一律拒收并返回纠正路径。
 ```
 
