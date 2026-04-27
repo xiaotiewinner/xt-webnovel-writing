@@ -266,6 +266,25 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 - 若与上一章主类型相同，必须在“冲突触发点”或“收束方式”至少变更 1 项，并在草稿注释写出：`variation_point`。
 - 若近 2 章出现同一“场景骨架序列”（如靠近→触碰→能力触发→撤退），本章必须改为“错位对话先行”或“外部事件先行”，不得复用镜像节拍。
 
+### 章首模板池选型决策表（A-补充2 · 写前必跑）
+
+先判输入，再选 `opening_entry_mode`，最后写入 `chapter_meta.stats`。
+
+| 条件优先级 | 触发条件（满足即命中） | 首选模板 | 备选模板 | 必填校验 |
+|---|---|---|---|---|
+| P1 | 上章结尾存在未收的动作/实物钩子，且本章非跨时段 | `carryover` | `aftermath` | `prev_hook_carryover_present = true` |
+| P2 | 本章开场就有对抗/谈判/追逐等高张力进行中 | `in_medias_res` | `relationship_slice` | 首段禁止背景打包 |
+| P3 | 本章重点是“结果先到、原因后补” | `aftermath` | `object_trigger` | 前 300 字内给出至少 1 个可追问缺口 |
+| P4 | 需要跨天/跨周/跨季，但不使用机械时间词 | `time_skip_bridge` | `object_trigger` | `time_skip_bridge_present = true` |
+| P5 | 本章核心推进是关系变化/立场错位 | `relationship_slice` | `in_medias_res` | 对话须带人设功能 |
+| P6 | 本章由账本/信件/伤痕/器物触发信息 | `object_trigger` | `aftermath` | 物件与行动必须同屏 |
+| P7 | 无上列条件，且确需体感唤醒开局 | `wakeup` | `carryover` | `wakeup_opening_count_10ch ≤ 3` |
+
+执行规则：
+- 若 `opening_mode_streak_max_5ch >= 2`，本章首选模板不得与上一章相同。
+- 若首选为 `wakeup` 且 `wakeup_opening_count_10ch == 3`，强制改用备选模板。
+- 模板选定后，先写 80~120 字章首草稿，再反查闸门；不通过就换备选模板重写。
+
 ### 写正文前的十九项闸门（未通过不得开写）
 0. **占比确认闸门（新书/设计/续写必问）**：开写前必须先确认并记录 `romance_target_ratio` / `erotic_tension_target_ratio` / `explicitness_target_ratio` / `combat_target_ratio`。若用户未给值，先追问；仅在用户明确拒答时可落默认 `20% / 8% / 0% / 15%`。若用户不回复占比细节，必须按题材给出“基础刺激提案”并在本章执行（关系高压触点或有效打戏至少一项）。
 1. **词簇闸门**：`lexeme_cluster_repeat_hits` 近 3 章均值 < 4 且 `abstract_aura_token_density_per_1k` 近 3 章均值 ≤ 10；否则先做“抽象词→具象细节”替换再开写。
@@ -461,6 +480,10 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 - `curiosity_gap_markers` ≥ max(2, chapter_word_count // 1200)（反 A-补充；不足回滚级）
 - `flat_atmosphere_streak_max` ≤ 5（反 A-补充；≥ 6 回滚级）
 - 若 `chapter == 1`：`series_opening_strike_count ≥ 2` 且 `opening_question_debt_present = true`（反 A-补充首章特判；任一不满足回滚级）
+- `opening_mode_streak_max_5ch` ≤ 2（反 A-补充2；≥ 3 FAIL）
+- `wakeup_opening_count_10ch` ≤ 3（反 A-补充2；≥ 4 FAIL）
+- 若 `opening_entry_mode != time_skip_bridge`：`prev_hook_carryover_present` = true（反 A-补充2；承接断裂 FAIL）
+- 若 `opening_entry_mode == time_skip_bridge`：`time_skip_bridge_present` = true（反 A-补充2；跳时无桥 FAIL）
 - `system_prompt_template_hits` ≤ 2（反 G-补充；≥ 5 回滚级）
 - `coincidence_chain_hits` ≤ 3（反 P-补充；≥ 6 回滚级）
 - `forced_detour_hits` = 0（反 P-补充；≥ 2 回滚级）
@@ -489,6 +512,7 @@ constraints: <用户给定的硬约束，如"不能死人""必须有双女主登
 - `single_mode_streak_max` ≤ 4、`para_function_type_count` ≥ 4、`micro_closeup_ratio` ≤ 0.65（反 C-补充2）
 - 若 `chapter == 1`：`opening_body_sensation_anchor_present` = true 且 `opening_exposition_first_screen_hits` = 0（反 D-补充5）
 - `forced_realization_statement_hits` = 0 且 `nonfunctional_emotion_beats` ≥ 1（反 D-补充5）
+- `seasonal_sensory_conflict_hits` = 0；若有显著时序跳跃则 `implicit_time_transition_bridge_hits` ≥ 1；`temporal_anchor_consistency_score` ≥ 0.6（反 D-补充6）
 - `knowledge_resonance_present` = true 且 `knowledge_exposition_dump_hits` = 0（反 G-补充5）
 - 关键角色首登章 `key_role_visual_anchor_on_debut` = true，且 `appearance_checklist_dump_hits` = 0（反 O-补充3）
 - `abstract_judgement_without_anchor_hits` = 0 且 `concrete_anchor_vs_abstract_ratio` ≥ 1.0（反 B-补充6）
@@ -541,6 +565,7 @@ PASS 通过后，调用 `webnovel-memory` · PERSIST 执行 8 步落盘（含 ST
 - [ ] （正文模式）`state/anti-trope-log.md` 本章 P-4 5-清单已落盘？真实接续命中第几名（必须 ≥ 4）？
 - [ ] （正文模式）本章转场每次都已声明桥类型与锚点？禁用转场词 = 0？瞬移切换 = 0？
 - [ ] （正文模式）闲笔 ≥ 5 处且剧情无关 ≥ 2？配角自主议题 ≥ 80 字 ≥ 1 位？**D-4** 缀笔计数与 `clip_style_chain_max` 达标？
+- [ ] （正文模式）隐性时序连续性达标？（`seasonal_sensory_conflict_hits = 0`；跨时段有 `implicit_time_transition_bridge_hits`；`temporal_anchor_consistency_score ≥ 0.6`，且未靠生硬时间戳堆砌）
 - [ ] （正文模式）怪异预算 ≥ 1 + 延迟兑付 ≥ 1？
 - [ ] （正文模式）**P-补充2**：`cultural_shorthand_clash_hits` ≥ 1 且 `withhold_beat_present` = true？
 - [ ] （首章模式）前 500 字 `series_opening_strike_count ≥ 2` 且 `opening_question_debt_present = true`？

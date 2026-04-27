@@ -110,6 +110,13 @@ chapter_meta:
     flat_atmosphere_streak_max: 4            # 反 A-补充 · 连续「纯氛围/纯位移/纯等待」段数峰值（需 ≤ 5；≥ 6 → 回滚）
     series_opening_strike_count: 2           # 反 A-补充 · 首章前500字抓手数（仅 chapter 1 强制；需 ≥ 2）
     opening_question_debt_present: true      # 反 A-补充 · 首章是否留下未全兑付的具体追问债（仅 chapter 1 强制）
+    opening_entry_mode: carryover            # 反 A-补充2 · 章首入场模板（carryover/in_medias_res/aftermath/time_skip_bridge/relationship_slice/object_trigger/wakeup/other）
+    opening_mode_reason_code: P1             # 反 A-补充2 · 本章模板命中决策表优先级（P1~P7）
+    opening_mode_fallback_used: false        # 反 A-补充2 · 是否因闸门失败切换到备选模板
+    opening_mode_streak_max_5ch: 2           # 反 A-补充2 · 近5章同模板连续峰值（需 ≤ 2）
+    wakeup_opening_count_10ch: 2             # 反 A-补充2 · 近10章“醒来开头”计数（需 ≤ 3）
+    prev_hook_carryover_present: true        # 反 A-补充2 · 非跨时段章是否承接上章未收钩子
+    time_skip_bridge_present: false          # 反 A-补充2 · 若为跨时段章首，是否给出隐性桥接锚
     system_prompt_template_hits: 1           # 反 G-补充 · 同构系统提示模板命中（如【X：Y——Z】；需 ≤ 2；≥ 5 → 回滚）
     coincidence_chain_hits: 2                # 反 P-补充 · 连续偶然驱动节点数（需 ≤ 3；≥ 6 → 回滚）
     forced_detour_hits: 0                    # 反 P-补充 · 主角可回头但被叙事强导向单一路径次数（需 ≤ 1；≥ 2 → 回滚）
@@ -152,6 +159,10 @@ chapter_meta:
     opening_exposition_first_screen_hits: 0   # 反 D-补充5 · 首屏设定先行命中（chapter 1 需 0）
     forced_realization_statement_hits: 0      # 反 D-补充5 · “他意识到自己穿越了”式宣告命中（需 0）
     nonfunctional_emotion_beats: 2            # 反 D-补充5 · 非功能情绪拍点（困惑/恐惧/停顿等，需 >=1）
+    temporal_anchor_consistency_score: 0.82   # 反 D-补充6 · 与前章体感时序一致度（0~1，需 >=0.6）
+    seasonal_sensory_conflict_hits: 0         # 反 D-补充6 · 季节/温感/昼夜矛盾命中（需 0）
+    implicit_time_transition_bridge_hits: 2   # 反 D-补充6 · 隐性时序过渡桥命中（显著跳跃时需 >=1）
+    hard_timestamp_overuse_hits: 0            # 反 D-补充6 · 生硬时间戳模板命中（建议 <=1）
     knowledge_resonance_present: true         # 反 G-补充5 · 知识背景与情境隐性共振（需 true）
     knowledge_exposition_dump_hits: 0         # 反 G-补充5 · 知识背景说明书直讲命中（需 0）
     key_role_visual_anchor_on_debut: true     # 反 O-补充3 · 关键角色首登可视锚（首登章需 true）
@@ -362,6 +373,7 @@ chapter_meta:
    - **元叙事面板（反 O-在场）**：写入 `meta_language_hits`；`≥ 1` → 标记"下一章全文禁上一章/读者/作者等词 + 本章回滚"
    - **抓眼节奏面板（反 A-补充）**：写入 `opening_hook_spike` / `curiosity_gap_markers` / `flat_atmosphere_streak_max`；`opening_hook_spike == false` 或 `curiosity_gap` 低于阈值 或 `flat_atmosphere_streak_max ≥ 6` → 标记"本章已触回滚阈值须整体重写"；`flat_atmosphere_streak_max == 5` → 标记"下一章减少纯氛围连段并补好奇缝隙"
    - **首章开胃面板（反 A-补充 · chapter 1 特判）**：若本章为 `chapter == 1`，强制写入 `series_opening_strike_count` / `opening_question_debt_present`；`strike_count < 2` 或 `opening_question_debt_present == false` → 标记"首章抓手不足，回滚级重写开头"
+  - **章首模板池面板（反 A-补充2）**：写入 `opening_entry_mode` / `opening_mode_reason_code` / `opening_mode_fallback_used` / `opening_mode_streak_max_5ch` / `wakeup_opening_count_10ch` / `prev_hook_carryover_present` / `time_skip_bridge_present`；`opening_mode_streak_max_5ch >= 3` 或 `wakeup_opening_count_10ch >= 4` → 标记"本章模板复用过高，回滚级重写章首入场"；`opening_entry_mode != time_skip_bridge` 且 `prev_hook_carryover_present == false` 或 `opening_entry_mode == time_skip_bridge` 且 `time_skip_bridge_present == false` → 标记"本章承接/桥接断裂，回滚级重写章首"；`opening_mode_reason_code` 缺失 → 标记"章首模板未按决策表选型，拒绝 PERSIST"
    - **系统提示模板面板（反 G-补充）**：写入 `system_prompt_template_hits`；`≥ 3` → 标记"下一章系统提示改残片化，不得复用同构模板"
    - **巧合闭环面板（反 P-补充）**：写入 `coincidence_chain_hits` / `forced_detour_hits`；`coincidence ≥ 4` 或 `detour ≥ 1` → 标记"下一章强制增加主动决策+代价节点"
    - **技术说明面板（反 G-补充2）**：写入 `tech_jargon_density_per_1k` / `tech_exposition_block_over_120` / `tech_mechanism_closure_hits`；超阈值则标记"下一章技术段先写体感与误判，禁止白皮书化直讲"
@@ -381,6 +393,7 @@ chapter_meta:
   - **收束工整度面板（反 N-补充3）**：写入 `symmetry_closure_hits` / `closure_neatness_score` / `anti_closure_noise_present`；若过工整且无噪声则标记"下一章结尾改未完成动作收束"
   - **段落功能面板（反 C-补充2）**：写入 `single_mode_streak_max` / `para_function_type_count` / `micro_closeup_ratio`；单功能长链命中则标记"下一章强制切入推进/关系段"
   - **开局身体感面板（反 D-补充5）**：写入 `opening_body_sensation_anchor_present` / `opening_exposition_first_screen_hits` / `forced_realization_statement_hits` / `nonfunctional_emotion_beats`；若首章设定先行或认知宣告命中，标记"下章改身体感切入并删除总结句"
+  - **隐性时序面板（反 D-补充6）**：写入 `temporal_anchor_consistency_score` / `seasonal_sensory_conflict_hits` / `implicit_time_transition_bridge_hits` / `hard_timestamp_overuse_hits`；若体感时序矛盾命中或跳跃无桥，标记"下章补隐性时序桥并清理季节温感冲突"
   - **知识共振面板（反 G-补充5）**：写入 `knowledge_resonance_present` / `knowledge_exposition_dump_hits`；若无共振或直讲命中，标记"下章改为隐性专业判断"
   - **视觉锚面板（反 O-补充3）**：写入 `key_role_visual_anchor_on_debut` / `visual_anchor_refresh_gap_chapters` / `appearance_checklist_dump_hits`；若首登无锚或出现清单描写，标记"下章改可视锚留白"
   - **具象锚面板（反 B-补充6）**：写入 `concrete_anchor_vs_abstract_ratio` / `abstract_judgement_without_anchor_hits`；无锚抽象命中则标记"下章抽象判断改具象证据"
@@ -552,6 +565,10 @@ chapter_meta:
    - 若 `stats.important_characters_present_count ≥ 2`：`stats.important_character_portrayal_beats ≥ 1`（重要角色至少有可识别描写拍点）
    - 若 `stats.key_characters_present_count ≥ 2`：`stats.scenic_counterpoint_portrayal_hits ≥ 1`（至少一处对景写人 / 以物映人）
    - **`stats.meta_language_hits == 0`**（反 **O-在场** · 禁「上一章 / 下一章 / 读者 / 作者 / 弹幕」等元叙事语），**≥ 1 → 回滚级 FAIL**（退回 plot-design 全文检索清零）
+  - `stats.opening_mode_streak_max_5ch ≤ 2`（反 A-补充2；**≥ 3 → FAIL**）
+  - `stats.wakeup_opening_count_10ch ≤ 3`（反 A-补充2；**≥ 4 → FAIL**）
+  - 若 `stats.opening_entry_mode != 'time_skip_bridge'`：`stats.prev_hook_carryover_present == true`（反 A-补充2；false → FAIL）
+  - 若 `stats.opening_entry_mode == 'time_skip_bridge'`：`stats.time_skip_bridge_present == true`（反 A-补充2；false → FAIL）
 
    **E. 世界自主生活硬门**（反 D · 回滚级）
    - `stats.filler_count ≥ 5`，**< 3 → 回滚级 FAIL**（反 D-1 · 退回 plot-design 补闲笔）
@@ -628,10 +645,14 @@ chapter_meta:
   - `stats.para_function_type_count >= 4`，**<= 3 → FAIL**
   - `stats.micro_closeup_ratio <= 0.65`，**> 0.65 → FAIL**
 
-  **H-2h. 身体感/留白/钩子硬门**（反 D-补充5 / G-补充5 / O-补充3 / B-补充6 / I-补充2 / N-补充4 / L-补充）
+  **H-2h. 身体感/留白/钩子硬门**（反 D-补充5 / D-补充6 / G-补充5 / O-补充3 / B-补充6 / I-补充2 / N-补充4 / L-补充）
   - 若 `chapter == 1`：`stats.opening_body_sensation_anchor_present == true` 且 `stats.opening_exposition_first_screen_hits == 0`，否则 **FAIL**
   - `stats.forced_realization_statement_hits == 0`，**>= 1 → FAIL**
   - `stats.nonfunctional_emotion_beats >= 1`，**== 0 → FAIL**
+  - `stats.seasonal_sensory_conflict_hits == 0`，**>= 1 → FAIL**
+  - 若存在显著时序跳跃：`stats.implicit_time_transition_bridge_hits >= 1`，否则 **FAIL**
+  - `stats.temporal_anchor_consistency_score >= 0.6`，低于阈值 **FAIL**
+  - `stats.hard_timestamp_overuse_hits <= 1`，超阈值 **FAIL**
   - `stats.knowledge_resonance_present == true` 且 `stats.knowledge_exposition_dump_hits == 0`，否则 **FAIL**
   - 关键角色首登章：`stats.key_role_visual_anchor_on_debut == true`，否则 **FAIL**
   - `stats.appearance_checklist_dump_hits == 0`，**>= 1 → FAIL**

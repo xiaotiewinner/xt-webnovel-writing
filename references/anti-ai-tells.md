@@ -63,6 +63,54 @@
   - 首章必须 `opening_question_debt_present == true`（留下一个当章不完全兑付、但足够具体的追问债）。
   - 任一不满足都按 **回滚级 FAIL** 处理，不允许以“后面再热起来”豁免。
 
+### A-补充2 · 章首入场模板池（并入 A，**不增加 25 项计数**）
+
+**症状**：连续多章都用同一种章首入场（最常见是“从床上醒来”），导致连载阅读产生模板感。读者会觉得每章像“重启”，而不是“延续中的下一刀”。
+
+**改写方向（通用模板，不锁题材）**：
+- 每章章首先在**入场模板池**中选一个，再填充本章内容。模板池建议含 7 类：  
+  1) 上章动作延续（承接钩子后果）  
+  2) 冲突进行中（对话/动作半截切入）  
+  3) 后果现场（结果先到，原因后补）  
+  4) 时移桥接（跨天/跨周，但用隐性桥，不用机械时间词）  
+  5) 关系切面（角色互动先行，再回填情境）  
+  6) 物件触发（实物或痕迹引爆信息）  
+  7) 身体感苏醒（可用，但只作为池中一项）
+- “醒来开头”不是禁用，而是**降频**：把它当调味，不当默认骨架。
+- 跨时段章首必须有桥：衣着、体感、作息、环境痕迹、任务进度至少一项可验证锚点。
+
+**章首模板池选型决策表（总规范单点）**：
+
+| 条件优先级 | 触发条件（满足即命中） | 首选模板 | 备选模板 | 必填校验 |
+|---|---|---|---|---|
+| P1 | 上章结尾存在未收的动作/实物钩子，且本章非跨时段 | `carryover` | `aftermath` | `prev_hook_carryover_present = true` |
+| P2 | 本章开场就有对抗/谈判/追逐等高张力进行中 | `in_medias_res` | `relationship_slice` | 首段禁止背景打包 |
+| P3 | 本章重点是“结果先到、原因后补” | `aftermath` | `object_trigger` | 前 300 字内给出至少 1 个可追问缺口 |
+| P4 | 需要跨天/跨周/跨季，但不使用机械时间词 | `time_skip_bridge` | `object_trigger` | `time_skip_bridge_present = true` |
+| P5 | 本章核心推进是关系变化/立场错位 | `relationship_slice` | `in_medias_res` | 对话须带人设功能 |
+| P6 | 本章由账本/信件/伤痕/器物触发信息 | `object_trigger` | `aftermath` | 物件与行动必须同屏 |
+| P7 | 无上列条件，且确需体感唤醒开局 | `wakeup` | `carryover` | `wakeup_opening_count_10ch ≤ 3` |
+
+**检测信号**：
+- 近 5 章 `opening_entry_mode` 出现单一模板连续 **≥ 3** 章 → FAIL  
+- 近 10 章 `wakeup_opening_count_10ch` **≥ 4** → FAIL（模板池失衡）  
+- 若上章存在未收的实物/行动钩子且本章非跨时段：`prev_hook_carryover_present == false` → FAIL  
+- 跨时段章首 `time_skip_bridge_present == false` → FAIL
+
+**生成期规则**：
+- `chapter_meta.stats` 必填：  
+  - `opening_entry_mode`（枚举：`carryover` / `in_medias_res` / `aftermath` / `time_skip_bridge` / `relationship_slice` / `object_trigger` / `wakeup` / `other`）  
+  - `opening_mode_reason_code`（枚举：`P1`~`P7`，对应上表命中行）  
+  - `opening_mode_fallback_used`（bool，是否从首选切到备选）
+  - `opening_mode_streak_max_5ch`（int）  
+  - `wakeup_opening_count_10ch`（int）  
+  - `prev_hook_carryover_present`（bool）  
+  - `time_skip_bridge_present`（bool）
+- 章首设计顺序固定为：**先选模板，再填内容，再验桥接**。不得反过来“写完再硬贴模板名”。
+- 若 `opening_mode_streak_max_5ch >= 2`，本章首选模板不得与上一章相同。
+- 若首选为 `wakeup` 且 `wakeup_opening_count_10ch == 3`，强制改用备选模板。
+- 模板选定后，先写 80~120 字章首草稿，再反查闸门；不通过就换备选模板重写。
+
 ---
 
 ## B. 句式与语义复用
@@ -1358,6 +1406,27 @@
 - 若 `chapter == 1`：`opening_body_sensation_anchor_present == true` 且 `opening_exposition_first_screen_hits == 0`。
 - `forced_realization_statement_hits == 0`。
 - `nonfunctional_emotion_beats >= 1`（可为困惑/恐惧/停顿，不以剧情推进为目的）。
+
+### D-补充6 · 隐性时序连续性（并入 D，不增加 25 项计数）
+
+**症状**：章节间季节/温度/昼夜/节令体感互相打架（如上一章“年关刚过”，下一章却写“热了一整天的石板”），但文本没有任何过渡或解释。
+
+**改写方向**：
+- 不强制写“具体日期/时刻”，优先保持“体感时序”一致（冷暖、湿度、天光、节俗、作息节奏）。
+- 发生显著时序跳跃时，用**隐性桥**交代（衣着变化、炉火/冰水、天光长度、地面湿热、人物作息错位、节俗道具变更），而不是硬写“X天后”。
+- 若故意制造反常天气/场景，必须给出世界内原因锚（地理、阵法、灾异、季风、屋内外差异等）。
+
+**检测信号**：
+- `temporal_anchor_consistency_score`：本章与前章体感时序一致度（0~1）。
+- `seasonal_sensory_conflict_hits`：季节/温感/昼夜矛盾命中数。
+- `implicit_time_transition_bridge_hits`：隐性时序过渡桥命中数。
+- `hard_timestamp_overuse_hits`：生硬时间戳（“三天后/第二天/某年某月某日”模板化）过量命中。
+
+**生成期规则**：
+- `seasonal_sensory_conflict_hits == 0`（出现即 FAIL）。
+- 若本章存在显著时序跳跃，`implicit_time_transition_bridge_hits >= 1`（无桥即 FAIL）。
+- `temporal_anchor_consistency_score >= 0.6`；低于阈值需回写过渡桥或原因锚。
+- `hard_timestamp_overuse_hits <= 1`（避免把“时间感”写成机械时间戳清单）。
 
 ### G-补充5 · 知识背景隐性共振（并入 G，不增加 25 项计数）
 
